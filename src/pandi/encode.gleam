@@ -74,6 +74,14 @@ fn encode_inline(inline: pd.Inline) -> json.Json {
       json.object([
         #("t", json.string("Space")),
       ])
+    pd.LineBreak ->
+      json.object([
+        #("t", json.string("LineBreak")),
+      ])
+    pd.SoftBreak ->
+      json.object([
+        #("t", json.string("SoftBreak")),
+      ])
     pd.Emph(content) ->
       json.object([
         #("t", json.string("Emph")),

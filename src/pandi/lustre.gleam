@@ -148,6 +148,8 @@ fn inline_to_lustre_with(
       case inline {
         pd.Str(content) -> html.text(content)
         pd.Space -> html.text(" ")
+        pd.LineBreak -> html.br([])
+        pd.SoftBreak -> html.text(" ")
         pd.Emph(content) -> {
           let inlines =
             list.map(content, inline_to_lustre_with(_, inline_renderer, meta))

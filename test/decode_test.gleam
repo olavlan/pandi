@@ -118,3 +118,37 @@ pub fn strikeout_decode_test() {
   doc.blocks
   |> should.equal([pd.Para([pd.Strikeout([pd.Str("strikeout"), pd.Space, pd.Str("text")])])])
 }
+
+pub fn line_break_decode_test() {
+  let result = pandi.from_json(read_resource("line_break"))
+  let doc = result |> should.be_ok
+  doc.blocks
+  |> should.equal([
+    pd.Para([
+      pd.Str("line"),
+      pd.Space,
+      pd.Str("one"),
+      pd.LineBreak,
+      pd.Str("line"),
+      pd.Space,
+      pd.Str("two"),
+    ]),
+  ])
+}
+
+pub fn soft_break_decode_test() {
+  let result = pandi.from_json(read_resource("soft_break"))
+  let doc = result |> should.be_ok
+  doc.blocks
+  |> should.equal([
+    pd.Para([
+      pd.Str("line"),
+      pd.Space,
+      pd.Str("one"),
+      pd.SoftBreak,
+      pd.Str("line"),
+      pd.Space,
+      pd.Str("two"),
+    ]),
+  ])
+}

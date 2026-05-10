@@ -112,6 +112,8 @@ fn inline_decoder() -> decode.Decoder(pd.Inline) {
   case t {
     "Str" -> str_decoder()
     "Space" -> space_decoder()
+    "LineBreak" -> line_break_decoder()
+    "SoftBreak" -> soft_break_decoder()
     "Emph" -> emph_decoder()
     "Strong" -> strong_decoder()
     "Strikeout" -> strikeout_decoder()
@@ -148,6 +150,14 @@ fn str_decoder() -> decode.Decoder(pd.Inline) {
 
 fn space_decoder() -> decode.Decoder(pd.Inline) {
   decode.success(pd.Space)
+}
+
+fn line_break_decoder() -> decode.Decoder(pd.Inline) {
+  decode.success(pd.LineBreak)
+}
+
+fn soft_break_decoder() -> decode.Decoder(pd.Inline) {
+  decode.success(pd.SoftBreak)
 }
 
 fn emph_decoder() -> decode.Decoder(pd.Inline) {

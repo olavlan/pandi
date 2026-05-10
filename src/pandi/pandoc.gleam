@@ -47,6 +47,8 @@ pub type Block {
 pub type Inline {
   Str(content: String)
   Space
+  LineBreak
+  SoftBreak
   Emph(content: List(Inline))
   Strong(content: List(Inline))
   Strikeout(content: List(Inline))
