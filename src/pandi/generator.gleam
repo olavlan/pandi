@@ -10,6 +10,57 @@ fn blocks_generator() -> qcheck.Generator(List(pd.Block)) {
   qcheck.generic_list(block_generator(), qcheck.bounded_int(5, 10))
 }
 
+fn block_generator() -> qcheck.Generator(pd.Block) {
+  qcheck.from_generators(para_generator(), [
+    plain_generator(),
+    header_generator(),
+    code_block_generator(),
+    div_generator(),
+    bullet_list_generator(),
+    ordered_list_generator(),
+  ])
+}
+
+fn para_generator() -> qcheck.Generator(pd.Block) {
+  qcheck.map(inlines_generator(), pd.Para)
+}
+
+fn plain_generator() -> qcheck.Generator(pd.Block) {
+  qcheck.map(inlines_generator(), pd.Plain)
+}
+
+fn header_generator() -> qcheck.Generator(pd.Block) {
+  qcheck.map3(
+    qcheck.bounded_int(1, 6),
+    attributes_generator(),
+    inlines_generator(),
+    pd.Header,
+  )
+}
+
+fn code_block_generator() -> qcheck.Generator(pd.Block) {
+  qcheck.map2(attributes_generator(), tiny_string(), pd.CodeBlock)
+}
+
+fn div_generator() -> qcheck.Generator(pd.Block) {
+  qcheck.map2(attributes_generator(), leaf_blocks_generator(), pd.Div)
+}
+
+fn bullet_list_generator() -> qcheck.Generator(pd.Block) {
+  qcheck.map(
+    qcheck.generic_list(leaf_blocks_generator(), qcheck.bounded_int(2, 5)),
+    pd.BulletList,
+  )
+}
+
+fn ordered_list_generator() -> qcheck.Generator(pd.Block) {
+  qcheck.map2(
+    list_attributes_generator(),
+    qcheck.generic_list(leaf_blocks_generator(), qcheck.bounded_int(2, 5)),
+    pd.OrderedList,
+  )
+}
+
 fn leaf_blocks_generator() -> qcheck.Generator(List(pd.Block)) {
   qcheck.generic_list(leaf_block_generator(), qcheck.bounded_int(1, 3))
 }
@@ -50,17 +101,6 @@ fn soft_break_generator() -> qcheck.Generator(pd.Inline) {
   qcheck.return(pd.SoftBreak)
 }
 
-fn block_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.from_generators(para_generator(), [
-    plain_generator(),
-    header_generator(),
-    code_block_generator(),
-    div_generator(),
-    bullet_list_generator(),
-    ordered_list_generator(),
-  ])
-}
-
 fn leaf_block_generator() -> qcheck.Generator(pd.Block) {
   qcheck.from_generators(para_generator(), [
     plain_generator(),
@@ -89,54 +129,6 @@ fn tiny_string() -> qcheck.Generator(String) {
   )
 }
 
-fn para_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map(inlines_generator(), fn(content) { pd.Para(content) })
-}
-
-fn plain_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map(inlines_generator(), fn(content) { pd.Plain(content) })
-}
-
-fn header_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map3(
-    qcheck.bounded_int(1, 6),
-    attributes_generator(),
-    inlines_generator(),
-    fn(level, attrs, content) { pd.Header(level, attrs, content) },
-  )
-}
-
-fn code_block_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map2(
-    attributes_generator(),
-    tiny_string(),
-    fn(attrs, text) { pd.CodeBlock(attrs, text) },
-  )
-}
-
-fn div_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map2(
-    attributes_generator(),
-    leaf_blocks_generator(),
-    fn(attrs, content) { pd.Div(attrs, content) },
-  )
-}
-
-fn bullet_list_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map(
-    qcheck.generic_list(leaf_blocks_generator(), qcheck.bounded_int(2, 5)),
-    fn(items) { pd.BulletList(items) },
-  )
-}
-
-fn ordered_list_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map2(
-    list_attributes_generator(),
-    qcheck.generic_list(leaf_blocks_generator(), qcheck.bounded_int(2, 5)),
-    fn(attrs, items) { pd.OrderedList(attrs, items) },
-  )
-}
-
 fn str_generator() -> qcheck.Generator(pd.Inline) {
   qcheck.map(tiny_string(), fn(content) { pd.Str(content) })
 }
@@ -162,11 +154,9 @@ fn strikeout_generator() -> qcheck.Generator(pd.Inline) {
 }
 
 fn code_inline_generator() -> qcheck.Generator(pd.Inline) {
-  qcheck.map2(
-    attributes_generator(),
-    tiny_string(),
-    fn(attrs, text) { pd.Code(attrs, text) },
-  )
+  qcheck.map2(attributes_generator(), tiny_string(), fn(attrs, text) {
+    pd.Code(attrs, text)
+  })
 }
 
 fn span_generator() -> qcheck.Generator(pd.Inline) {
