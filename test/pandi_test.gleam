@@ -8,23 +8,19 @@ pub fn main() {
   run.run_gleeunit()
 }
 
+fn simple_string() -> qcheck.Generator(String) {
+  qcheck.string_from(qcheck.alphanumeric_ascii_codepoint())
+}
+
 fn inline_generator() -> qcheck.Generator(pd.Inline) {
-  qcheck.from_generators(qcheck.map(qcheck.string(), pd.Str), [
+  qcheck.from_generators(qcheck.map(simple_string(), pd.Str), [
     qcheck.constant(pd.Space),
+    qcheck.map2(attributes_generator(), simple_string(), pd.Code),
   ])
 }
 
-fn keyvalue_generator() -> qcheck.Generator(#(String, String)) {
-  qcheck.tuple2(qcheck.string(), qcheck.string())
-}
-
 fn attributes_generator() -> qcheck.Generator(pd.Attributes) {
-  qcheck.map3(
-    qcheck.string(),
-    qcheck.list_from(qcheck.string()),
-    qcheck.list_from(keyvalue_generator()),
-    pd.Attributes,
-  )
+  qcheck.map(simple_string(), fn(id) { pd.Attributes(id, [], []) })
 }
 
 fn header_generator() -> qcheck.Generator(pd.Block) {

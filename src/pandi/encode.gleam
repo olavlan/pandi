@@ -69,6 +69,11 @@ fn encode_inline(inline: pd.Inline) -> json.Json {
       json.object([
         #("t", json.string("Space")),
       ])
+    pd.Code(attributes, text) ->
+      json.object([
+        #("t", json.string("Code")),
+        #("c", encode_code_content(attributes, text)),
+      ])
     pd.Span(attributes, content) ->
       json.object([
         #("t", json.string("Span")),
@@ -80,6 +85,16 @@ fn encode_inline(inline: pd.Inline) -> json.Json {
         #("c", encode_link_content(attributes, content, target)),
       ])
   }
+}
+
+fn encode_code_content(
+  attributes: pd.Attributes,
+  text: String,
+) -> json.Json {
+  json.preprocessed_array([
+    encode_attributes(attributes),
+    json.string(text),
+  ])
 }
 
 fn encode_div_content(

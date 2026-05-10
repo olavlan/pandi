@@ -76,6 +76,7 @@ fn inline_decoder() -> decode.Decoder(pd.Inline) {
   case t {
     "Str" -> str_decoder()
     "Space" -> space_decoder()
+    "Code" -> code_decoder()
     "Span" -> span_decoder()
     "Link" -> link_decoder()
     _ -> decode.failure(pd.Space, "Inline")
@@ -108,6 +109,12 @@ fn str_decoder() -> decode.Decoder(pd.Inline) {
 
 fn space_decoder() -> decode.Decoder(pd.Inline) {
   decode.success(pd.Space)
+}
+
+fn code_decoder() -> decode.Decoder(pd.Inline) {
+  use attributes <- decode_c_at(0, attributes_decoder())
+  use text <- decode_c_at(1, decode.string)
+  decode.success(pd.Code(attributes, text))
 }
 
 fn attributes_decoder() -> decode.Decoder(pd.Attributes) {

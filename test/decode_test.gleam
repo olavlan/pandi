@@ -62,3 +62,11 @@ pub fn link_decode_test() {
   target.url |> should.equal("https://example.com")
   target.title |> should.equal("My Title")
 }
+
+pub fn inline_code_decode_test() {
+  let result = pandi.from_json(read_resource("inline_code"))
+  let doc = result |> should.be_ok
+  let assert [pd.Para([_, _, pd.Code(attrs, text)])] = doc.blocks
+  attrs.classes |> should.equal([])
+  text |> should.equal("inline code")
+}

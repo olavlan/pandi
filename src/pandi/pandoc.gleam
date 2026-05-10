@@ -21,6 +21,7 @@ pub type Block {
 pub type Inline {
   Str(content: String)
   Space
+  Code(attributes: Attributes, text: String)
   Span(attributes: Attributes, content: List(Inline))
   Link(attributes: Attributes, content: List(Inline), target: Target)
 }
