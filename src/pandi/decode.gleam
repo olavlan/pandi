@@ -74,7 +74,10 @@ fn bullet_list_decoder() -> decode.Decoder(pd.Block) {
 
 fn ordered_list_decoder() -> decode.Decoder(pd.Block) {
   use attrs <- decode_c_at(0, list_attributes_decoder())
-  use items <- decode_c_at(1, decode.list(decode.list(decode.recursive(block_decoder))))
+  use items <- decode_c_at(
+    1,
+    decode.list(decode.list(decode.recursive(block_decoder))),
+  )
   decode.success(pd.OrderedList(attrs, items))
 }
 
@@ -161,17 +164,26 @@ fn soft_break_decoder() -> decode.Decoder(pd.Inline) {
 }
 
 fn emph_decoder() -> decode.Decoder(pd.Inline) {
-  use content <- decode.field("c", decode.list(decode.recursive(inline_decoder)))
+  use content <- decode.field(
+    "c",
+    decode.list(decode.recursive(inline_decoder)),
+  )
   decode.success(pd.Emph(content))
 }
 
 fn strong_decoder() -> decode.Decoder(pd.Inline) {
-  use content <- decode.field("c", decode.list(decode.recursive(inline_decoder)))
+  use content <- decode.field(
+    "c",
+    decode.list(decode.recursive(inline_decoder)),
+  )
   decode.success(pd.Strong(content))
 }
 
 fn strikeout_decoder() -> decode.Decoder(pd.Inline) {
-  use content <- decode.field("c", decode.list(decode.recursive(inline_decoder)))
+  use content <- decode.field(
+    "c",
+    decode.list(decode.recursive(inline_decoder)),
+  )
   decode.success(pd.Strikeout(content))
 }
 

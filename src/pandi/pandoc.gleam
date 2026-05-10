@@ -38,10 +38,7 @@ pub type Block {
   CodeBlock(attributes: Attributes, text: String)
   Div(attributes: Attributes, content: List(Block))
   BulletList(items: List(List(Block)))
-  OrderedList(
-    attributes: ListAttributes,
-    items: List(List(Block)),
-  )
+  OrderedList(attributes: ListAttributes, items: List(List(Block)))
 }
 
 pub type Inline {

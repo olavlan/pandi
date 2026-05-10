@@ -115,10 +115,7 @@ fn encode_inline(inline: pd.Inline) -> json.Json {
   }
 }
 
-fn encode_code_content(
-  attributes: pd.Attributes,
-  text: String,
-) -> json.Json {
+fn encode_code_content(attributes: pd.Attributes, text: String) -> json.Json {
   json.preprocessed_array([
     encode_attributes(attributes),
     json.string(text),

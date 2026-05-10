@@ -102,21 +102,27 @@ pub fn emph_decode_test() {
   let result = pandi.from_json(read_resource("emph"))
   let doc = result |> should.be_ok
   doc.blocks
-  |> should.equal([pd.Para([pd.Emph([pd.Str("emphasized"), pd.Space, pd.Str("text")])])])
+  |> should.equal([
+    pd.Para([pd.Emph([pd.Str("emphasized"), pd.Space, pd.Str("text")])]),
+  ])
 }
 
 pub fn strong_decode_test() {
   let result = pandi.from_json(read_resource("strong"))
   let doc = result |> should.be_ok
   doc.blocks
-  |> should.equal([pd.Para([pd.Strong([pd.Str("strong"), pd.Space, pd.Str("text")])])])
+  |> should.equal([
+    pd.Para([pd.Strong([pd.Str("strong"), pd.Space, pd.Str("text")])]),
+  ])
 }
 
 pub fn strikeout_decode_test() {
   let result = pandi.from_json(read_resource("strikeout"))
   let doc = result |> should.be_ok
   doc.blocks
-  |> should.equal([pd.Para([pd.Strikeout([pd.Str("strikeout"), pd.Space, pd.Str("text")])])])
+  |> should.equal([
+    pd.Para([pd.Strikeout([pd.Str("strikeout"), pd.Space, pd.Str("text")])]),
+  ])
 }
 
 pub fn line_break_decode_test() {
