@@ -2,7 +2,7 @@
 
 ## Development
 
-* Run `gleam` to see a list of development commands you can run.
+* Use <https://pandoc.org/lua-filters.html#pandoc-functions> as a reference for the block and inline types in the pandoc AST format.
 
 ## Coding style
 
