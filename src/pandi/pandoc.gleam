@@ -9,6 +9,28 @@ pub type Attributes {
   )
 }
 
+pub type ListNumberStyle {
+  Decimal
+  LowerAlpha
+  UpperAlpha
+  LowerRoman
+  UpperRoman
+}
+
+pub type ListNumberDelimiter {
+  Period
+  OneParen
+  TwoParens
+}
+
+pub type ListAttributes {
+  ListAttributes(
+    start: Int,
+    style: ListNumberStyle,
+    delimiter: ListNumberDelimiter,
+  )
+}
+
 pub type Block {
   Header(level: Int, attributes: Attributes, content: List(Inline))
   Para(content: List(Inline))
@@ -16,6 +38,10 @@ pub type Block {
   CodeBlock(attributes: Attributes, text: String)
   Div(attributes: Attributes, content: List(Block))
   BulletList(items: List(List(Block)))
+  OrderedList(
+    attributes: ListAttributes,
+    items: List(List(Block)),
+  )
 }
 
 pub type Inline {

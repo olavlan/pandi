@@ -30,6 +30,7 @@ fn block_decoder() -> decode.Decoder(pd.Block) {
     "CodeBlock" -> code_block_decoder()
     "Div" -> div_decoder()
     "BulletList" -> bullet_list_decoder()
+    "OrderedList" -> ordered_list_decoder()
     _ -> decode.failure(pd.Para([]), "Block")
   }
 }
@@ -69,6 +70,41 @@ fn bullet_list_decoder() -> decode.Decoder(pd.Block) {
     decode.list(decode.list(decode.recursive(block_decoder))),
   )
   decode.success(pd.BulletList(items))
+}
+
+fn ordered_list_decoder() -> decode.Decoder(pd.Block) {
+  use attrs <- decode_c_at(0, list_attributes_decoder())
+  use items <- decode_c_at(1, decode.list(decode.list(decode.recursive(block_decoder))))
+  decode.success(pd.OrderedList(attrs, items))
+}
+
+fn list_attributes_decoder() -> decode.Decoder(pd.ListAttributes) {
+  use start <- decode.field(0, decode.int)
+  use style <- decode.field(1, list_number_style_decoder())
+  use delimiter <- decode.field(2, list_number_delimiter_decoder())
+  decode.success(pd.ListAttributes(start, style, delimiter))
+}
+
+fn list_number_style_decoder() -> decode.Decoder(pd.ListNumberStyle) {
+  use t <- decode.field("t", decode.string)
+  case t {
+    "Decimal" -> decode.success(pd.Decimal)
+    "LowerAlpha" -> decode.success(pd.LowerAlpha)
+    "UpperAlpha" -> decode.success(pd.UpperAlpha)
+    "LowerRoman" -> decode.success(pd.LowerRoman)
+    "UpperRoman" -> decode.success(pd.UpperRoman)
+    _ -> decode.failure(pd.Decimal, "ListNumberStyle")
+  }
+}
+
+fn list_number_delimiter_decoder() -> decode.Decoder(pd.ListNumberDelimiter) {
+  use t <- decode.field("t", decode.string)
+  case t {
+    "Period" -> decode.success(pd.Period)
+    "OneParen" -> decode.success(pd.OneParen)
+    "TwoParens" -> decode.success(pd.TwoParens)
+    _ -> decode.failure(pd.Period, "ListNumberDelimiter")
+  }
 }
 
 fn inline_decoder() -> decode.Decoder(pd.Inline) {

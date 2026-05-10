@@ -55,6 +55,11 @@ fn encode_block(block: pd.Block) -> json.Json {
         #("t", json.string("BulletList")),
         #("c", json.array(items, encode_bullet_list_item)),
       ])
+    pd.OrderedList(attrs, items) ->
+      json.object([
+        #("t", json.string("OrderedList")),
+        #("c", encode_ordered_list_content(attrs, items)),
+      ])
   }
 }
 
@@ -169,4 +174,42 @@ fn encode_keyvalue(keyvalue: #(String, String)) -> json.Json {
 
 fn encode_bullet_list_item(item: List(pd.Block)) -> json.Json {
   json.array(item, encode_block)
+}
+
+fn encode_ordered_list_content(
+  attrs: pd.ListAttributes,
+  items: List(List(pd.Block)),
+) -> json.Json {
+  json.preprocessed_array([
+    encode_list_attributes(attrs),
+    json.array(items, encode_bullet_list_item),
+  ])
+}
+
+fn encode_list_attributes(attrs: pd.ListAttributes) -> json.Json {
+  json.preprocessed_array([
+    json.int(attrs.start),
+    encode_list_number_style(attrs.style),
+    encode_list_number_delimiter(attrs.delimiter),
+  ])
+}
+
+fn encode_list_number_style(style: pd.ListNumberStyle) -> json.Json {
+  let t = case style {
+    pd.Decimal -> "Decimal"
+    pd.LowerAlpha -> "LowerAlpha"
+    pd.UpperAlpha -> "UpperAlpha"
+    pd.LowerRoman -> "LowerRoman"
+    pd.UpperRoman -> "UpperRoman"
+  }
+  json.object([#("t", json.string(t))])
+}
+
+fn encode_list_number_delimiter(delim: pd.ListNumberDelimiter) -> json.Json {
+  let t = case delim {
+    pd.Period -> "Period"
+    pd.OneParen -> "OneParen"
+    pd.TwoParens -> "TwoParens"
+  }
+  json.object([#("t", json.string(t))])
 }

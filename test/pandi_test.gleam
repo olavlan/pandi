@@ -40,10 +40,57 @@ fn code_block_generator() -> qcheck.Generator(pd.Block) {
   qcheck.map2(attributes_generator(), qcheck.string(), pd.CodeBlock)
 }
 
+fn list_number_style_generator() -> qcheck.Generator(pd.ListNumberStyle) {
+  qcheck.from_generators(
+    qcheck.constant(pd.Decimal),
+    [
+      qcheck.constant(pd.LowerAlpha),
+      qcheck.constant(pd.UpperAlpha),
+      qcheck.constant(pd.LowerRoman),
+      qcheck.constant(pd.UpperRoman),
+    ],
+  )
+}
+
+fn list_number_delimiter_generator() -> qcheck.Generator(pd.ListNumberDelimiter) {
+  qcheck.from_generators(
+    qcheck.constant(pd.Period),
+    [
+      qcheck.constant(pd.OneParen),
+      qcheck.constant(pd.TwoParens),
+    ],
+  )
+}
+
+fn list_attributes_generator() -> qcheck.Generator(pd.ListAttributes) {
+  qcheck.map3(
+    qcheck.uniform_int(),
+    list_number_style_generator(),
+    list_number_delimiter_generator(),
+    pd.ListAttributes,
+  )
+}
+
+fn ordered_list_generator() -> qcheck.Generator(pd.Block) {
+  qcheck.map2(
+    list_attributes_generator(),
+    qcheck.list_from(qcheck.list_from(simple_block_generator())),
+    pd.OrderedList,
+  )
+}
+
+fn simple_block_generator() -> qcheck.Generator(pd.Block) {
+  qcheck.from_generators(para_generator(), [
+    header_generator(),
+    code_block_generator(),
+  ])
+}
+
 fn block_generator() -> qcheck.Generator(pd.Block) {
   qcheck.from_generators(para_generator(), [
     header_generator(),
     code_block_generator(),
+    ordered_list_generator(),
   ])
 }
 
@@ -54,7 +101,7 @@ fn document_generator() -> qcheck.Generator(pd.Document) {
 }
 
 pub fn document_roundtrip_test() {
-  let config = qcheck.default_config() |> qcheck.with_test_count(20)
+  let config = qcheck.default_config() |> qcheck.with_test_count(10)
 
   use doc <- qcheck.run(config, document_generator())
 

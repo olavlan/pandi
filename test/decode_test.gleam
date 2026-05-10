@@ -53,6 +53,21 @@ pub fn code_block_decode_test() {
   text |> should.equal("print(\"hello\")")
 }
 
+pub fn ordered_list_decode_test() {
+  let result = pandi.from_json(read_resource("ordered_list"))
+  let doc = result |> should.be_ok
+  let assert [pd.OrderedList(attrs, items)] = doc.blocks
+  attrs.start |> should.equal(1)
+  attrs.style |> should.equal(pd.Decimal)
+  attrs.delimiter |> should.equal(pd.Period)
+  items
+  |> should.equal([
+    [pd.Plain([pd.Str("First")])],
+    [pd.Plain([pd.Str("Second")])],
+    [pd.Plain([pd.Str("Third")])],
+  ])
+}
+
 pub fn link_decode_test() {
   let result = pandi.from_json(read_resource("link"))
   let doc = result |> should.be_ok

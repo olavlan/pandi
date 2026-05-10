@@ -1,3 +1,4 @@
+import gleam/int
 import gleam/list
 import gleam/option.{type Option, None, Some}
 import gleam/string
@@ -78,7 +79,7 @@ fn block_to_lustre_with(
   block_renderer: BlockRenderer(msg),
   inline_renderer: InlineRenderer(msg),
   meta: pd.Meta,
-) {
+) -> Element(msg) {
   case block_renderer(block, meta) {
     Some(el) -> el
     None ->
@@ -119,21 +120,18 @@ fn block_to_lustre_with(
         }
         pd.BulletList(items) -> {
           let list_items =
-            list.map(items, fn(item) {
-              let blocks =
-                list.map(item, block_to_lustre_with(
-                  _,
-                  block_renderer,
-                  inline_renderer,
-                  meta,
-                ))
-              html.li([], blocks)
-            })
+            list_items_to_lustre(items, block_renderer, inline_renderer, meta)
           html.ul([], list_items)
         }
         pd.CodeBlock(attrs, text) -> {
           let attributes = attributes_to_lustre(attrs)
           html.pre(attributes, [html.code([], [html.text(text)])])
+        }
+        pd.OrderedList(attrs, items) -> {
+          let list_items =
+            list_items_to_lustre(items, block_renderer, inline_renderer, meta)
+          let attributes = list_attributes_to_lustre(attrs)
+          html.ol(attributes, list_items)
         }
       }
   }
@@ -189,4 +187,36 @@ fn attributes_to_lustre(
   let keyvalues =
     list.map(attrs.keyvalues, fn(kv) { attribute.attribute(kv.0, kv.1) })
   list.flatten([id, classes, keyvalues])
+}
+
+fn list_attributes_to_lustre(
+  attrs: pd.ListAttributes,
+) -> List(attribute.Attribute(msg)) {
+  let start = attribute.attribute("start", int.to_string(attrs.start))
+  let type_ = case attrs.style {
+    pd.Decimal -> attribute.attribute("type", "1")
+    pd.LowerAlpha -> attribute.attribute("type", "a")
+    pd.UpperAlpha -> attribute.attribute("type", "A")
+    pd.LowerRoman -> attribute.attribute("type", "i")
+    pd.UpperRoman -> attribute.attribute("type", "I")
+  }
+  [start, type_]
+}
+
+fn list_items_to_lustre(
+  items: List(List(pd.Block)),
+  block_renderer: BlockRenderer(msg),
+  inline_renderer: InlineRenderer(msg),
+  meta: pd.Meta,
+) -> List(Element(msg)) {
+  list.map(items, fn(item) {
+    let blocks =
+      list.map(item, block_to_lustre_with(
+        _,
+        block_renderer,
+        inline_renderer,
+        meta,
+      ))
+    html.li([], blocks)
+  })
 }
