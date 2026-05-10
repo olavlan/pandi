@@ -74,6 +74,21 @@ fn encode_inline(inline: pd.Inline) -> json.Json {
       json.object([
         #("t", json.string("Space")),
       ])
+    pd.Emph(content) ->
+      json.object([
+        #("t", json.string("Emph")),
+        #("c", json.array(content, encode_inline)),
+      ])
+    pd.Strong(content) ->
+      json.object([
+        #("t", json.string("Strong")),
+        #("c", json.array(content, encode_inline)),
+      ])
+    pd.Strikeout(content) ->
+      json.object([
+        #("t", json.string("Strikeout")),
+        #("c", json.array(content, encode_inline)),
+      ])
     pd.Code(attributes, text) ->
       json.object([
         #("t", json.string("Code")),

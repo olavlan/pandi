@@ -148,6 +148,21 @@ fn inline_to_lustre_with(
       case inline {
         pd.Str(content) -> html.text(content)
         pd.Space -> html.text(" ")
+        pd.Emph(content) -> {
+          let inlines =
+            list.map(content, inline_to_lustre_with(_, inline_renderer, meta))
+          html.em([], inlines)
+        }
+        pd.Strong(content) -> {
+          let inlines =
+            list.map(content, inline_to_lustre_with(_, inline_renderer, meta))
+          html.strong([], inlines)
+        }
+        pd.Strikeout(content) -> {
+          let inlines =
+            list.map(content, inline_to_lustre_with(_, inline_renderer, meta))
+          html.s([], inlines)
+        }
         pd.Code(attrs, text) -> {
           let attributes = attributes_to_lustre(attrs)
           html.code(attributes, [html.text(text)])

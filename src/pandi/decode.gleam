@@ -112,6 +112,9 @@ fn inline_decoder() -> decode.Decoder(pd.Inline) {
   case t {
     "Str" -> str_decoder()
     "Space" -> space_decoder()
+    "Emph" -> emph_decoder()
+    "Strong" -> strong_decoder()
+    "Strikeout" -> strikeout_decoder()
     "Code" -> code_decoder()
     "Span" -> span_decoder()
     "Link" -> link_decoder()
@@ -145,6 +148,21 @@ fn str_decoder() -> decode.Decoder(pd.Inline) {
 
 fn space_decoder() -> decode.Decoder(pd.Inline) {
   decode.success(pd.Space)
+}
+
+fn emph_decoder() -> decode.Decoder(pd.Inline) {
+  use content <- decode.field("c", decode.list(decode.recursive(inline_decoder)))
+  decode.success(pd.Emph(content))
+}
+
+fn strong_decoder() -> decode.Decoder(pd.Inline) {
+  use content <- decode.field("c", decode.list(decode.recursive(inline_decoder)))
+  decode.success(pd.Strong(content))
+}
+
+fn strikeout_decoder() -> decode.Decoder(pd.Inline) {
+  use content <- decode.field("c", decode.list(decode.recursive(inline_decoder)))
+  decode.success(pd.Strikeout(content))
 }
 
 fn code_decoder() -> decode.Decoder(pd.Inline) {

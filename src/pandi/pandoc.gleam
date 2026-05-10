@@ -47,6 +47,9 @@ pub type Block {
 pub type Inline {
   Str(content: String)
   Space
+  Emph(content: List(Inline))
+  Strong(content: List(Inline))
+  Strikeout(content: List(Inline))
   Code(attributes: Attributes, text: String)
   Span(attributes: Attributes, content: List(Inline))
   Link(attributes: Attributes, content: List(Inline), target: Target)

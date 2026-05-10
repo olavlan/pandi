@@ -78,6 +78,15 @@ fn walk_inlines(
       Some(new_inlines) -> new_inlines
       None -> {
         case inline {
+          pd.Emph(content) -> [
+            pd.Emph(walk_inlines(content, meta, filter)),
+          ]
+          pd.Strong(content) -> [
+            pd.Strong(walk_inlines(content, meta, filter)),
+          ]
+          pd.Strikeout(content) -> [
+            pd.Strikeout(walk_inlines(content, meta, filter)),
+          ]
           pd.Span(attrs, content) -> [
             pd.Span(attrs, walk_inlines(content, meta, filter)),
           ]
