@@ -2,12 +2,16 @@
 default:
     @just --list
 
+# Checks that should be run after making a change
+check:
+    gleam check && gleam fix && gleam test && gleam format
+
 # Convert markdown to pandoc JSON AST
 md-to-pandoc content:
     echo "{{ content }}" | pandoc --from markdown --to json
 
 # Generate a random document sample and convert to the given format (e.g. markdown, html)
-document-sample format:
+generate-document format:
     gleam run -m sample | pandoc --from json --to {{ format }}
 
 # Convert all .md files in test/resources/ to pandoc JSON AST
