@@ -28,7 +28,9 @@ pub fn div_decode_test() {
   let result = pandi.from_json(read_resource("div"))
   let doc = result |> should.be_ok
   let assert [pd.Div(attrs, content)] = doc.blocks
+  attrs.id |> should.equal("myid")
   attrs.classes |> should.equal(["mydiv"])
+  attrs.keyvalues |> should.equal([#("color", "blue")])
   content
   |> should.equal([pd.Para([pd.Str("Hello"), pd.Space, pd.Str("world")])])
 }
@@ -76,6 +78,16 @@ pub fn link_decode_test() {
   content |> should.equal([pd.Str("Click"), pd.Space, pd.Str("here")])
   target.url |> should.equal("https://example.com")
   target.title |> should.equal("My Title")
+}
+
+pub fn span_decode_test() {
+  let result = pandi.from_json(read_resource("span"))
+  let doc = result |> should.be_ok
+  let assert [pd.Para([_, _, pd.Span(attrs, content)])] = doc.blocks
+  attrs.id |> should.equal("myid")
+  attrs.classes |> should.equal(["highlight"])
+  attrs.keyvalues |> should.equal([#("color", "blue")])
+  content |> should.equal([pd.Str("world")])
 }
 
 pub fn inline_code_decode_test() {

@@ -1,3 +1,3 @@
-::: mydiv
+::: {#myid .mydiv color=blue}
 Hello world
 :::
