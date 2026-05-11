@@ -44,8 +44,23 @@ pub fn header6_test() {
   |> snapshot("header level 6")
 }
 
+pub fn bullet_list_test() {
+  pd.BulletList([list_item(), list_item()])
+  |> snapshot("bullet list with two simple items")
+}
+
+pub fn ordered_list_test() {
+  let list_attributes = pd.ListAttributes(1, pd.Decimal, pd.Period)
+  pd.OrderedList(list_attributes, [list_item(), list_item()])
+  |> snapshot("ordered list with two items (start=1, decimal, period)")
+}
+
 fn header(level: Int) -> pd.Block {
   pd.Header(level, empty_attributes(), [pd.Str("Header")])
+}
+
+fn list_item() -> List(pd.Block) {
+  [pd.Plain([pd.Str("Item")])]
 }
 
 fn empty_attributes() -> pd.Attributes {
