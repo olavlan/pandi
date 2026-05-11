@@ -67,8 +67,3 @@ However, we want more useful typed constructors.
 The best reference for the raw, JSON-serialized pandoc AST format is to run `just md-to-pandoc` with a minimal markdown example.
 For a reference on how to create a markdown example, use <https://pandoc.org/MANUAL.html#pandocs-markdown>.
 A good reference for the AST types we want is the Lua implementation: <https://pandoc.org/lua-filters.html#pandoc-functions>
-
-## Coding style
-
-* Always prefer readability and explicitness over abstraction.
-* Use few and repeated patterns in each module. Functions that look similar improves readability.
