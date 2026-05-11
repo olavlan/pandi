@@ -1,0 +1,5 @@
+---
+version: 2.0.0
+title: Decode span:\nHello [world]{#myid .highlight color=blue}
+---
+Document([Para([Str("Hello"), Space, Span(Attributes("myid", ["highlight"], [#("color", "blue")]), [Str("world")])])], [])

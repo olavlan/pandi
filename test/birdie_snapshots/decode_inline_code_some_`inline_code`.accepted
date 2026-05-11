@@ -1,0 +1,5 @@
+---
+version: 2.0.0
+title: Decode inline_code:\nsome `inline code`
+---
+Document([Para([Str("some"), Space, Code(Attributes("", [], []), "inline code")])], [])

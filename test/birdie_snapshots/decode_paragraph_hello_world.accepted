@@ -1,5 +1,5 @@
 ---
 version: 2.0.0
-title: Hello world
+title: Decode paragraph:\nHello world
 ---
 Document([Para([Str("Hello"), Space, Str("world")])], [])

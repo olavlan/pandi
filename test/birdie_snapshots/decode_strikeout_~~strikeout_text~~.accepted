@@ -1,0 +1,5 @@
+---
+version: 2.0.0
+title: Decode strikeout:\n~~strikeout text~~
+---
+Document([Para([Strikeout([Str("strikeout"), Space, Str("text")])])], [])
