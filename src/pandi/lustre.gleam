@@ -91,6 +91,7 @@ fn block_to_lustre_with(
           case level {
             1 -> html.h1(attrs, inlines)
             2 -> html.h2(attrs, inlines)
+            3 -> html.h3(attrs, inlines)
             4 -> html.h4(attrs, inlines)
             5 -> html.h5(attrs, inlines)
             6 -> html.h6(attrs, inlines)

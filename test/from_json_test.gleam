@@ -4,20 +4,20 @@ import gleeunit/should
 import pandi
 import simplifile
 
-type TestResource {
-  TestResource(markdown: String, json: String)
+type Resource {
+  Resource(markdown: String, json: String)
 }
 
-fn read_resource(name: String) -> TestResource {
+fn read_resource(name: String) -> Resource {
   let assert Ok(markdown) =
     simplifile.read("test/resources/md/" <> name <> ".md")
   let assert Ok(json) =
     simplifile.read("test/resources/json/" <> name <> ".json")
-  TestResource(markdown, json)
+  Resource(markdown, json)
 }
 
 fn snapshot(resource_name: String) {
-  let TestResource(_, json) = read_resource(resource_name)
+  let Resource(_, json) = read_resource(resource_name)
   pandi.from_json(json)
   |> should.be_ok
   |> string.inspect
