@@ -1,0 +1,5 @@
+---
+version: 2.0.0
+title: Decode div
+---
+Document([Div(Attributes("myid", ["mydiv"], [#("color", "blue")]), [Para([Str("Hello"), Space, Str("world")])])], [])

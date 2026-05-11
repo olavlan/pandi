@@ -1,5 +1,5 @@
 ---
 version: 2.0.0
-title: Decode span:\nHello [world]{#myid .highlight color=blue}
+title: [from_json] span
 ---
 Document([Para([Str("Hello"), Space, Span(Attributes("myid", ["highlight"], [#("color", "blue")]), [Str("world")])])], [])

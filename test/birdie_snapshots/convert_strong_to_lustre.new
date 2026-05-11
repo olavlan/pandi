@@ -1,0 +1,10 @@
+---
+version: 2.0.0
+title: Convert strong to Lustre
+---
+<p>
+  <strong>
+    strong text
+  </strong>
+</p>
+

@@ -1,5 +1,5 @@
 ---
 version: 2.0.0
-title: Decode link:\n[Click here](https://example.com "My Title")
+title: [from_json] link
 ---
 Document([Para([Link(Attributes("", [], []), [Str("Click"), Space, Str("here")], Target("https://example.com", "My Title"))])], [])

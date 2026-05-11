@@ -105,7 +105,7 @@ fn block_to_lustre_with(
         pd.Plain(content) -> {
           let inlines =
             list.map(content, inline_to_lustre_with(_, inline_renderer, meta))
-          html.span([], inlines)
+          element.fragment(inlines)
         }
         pd.Div(attrs, content) -> {
           let blocks =
@@ -163,7 +163,7 @@ fn inline_to_lustre_with(
         pd.Strikeout(content) -> {
           let inlines =
             list.map(content, inline_to_lustre_with(_, inline_renderer, meta))
-          html.s([], inlines)
+          html.del([], inlines)
         }
         pd.Code(attrs, text) -> {
           let attributes = attributes_to_lustre(attrs)

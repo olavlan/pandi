@@ -1,0 +1,5 @@
+---
+version: 2.0.0
+title: Decode emph
+---
+Document([Para([Emph([Str("emphasized"), Space, Str("text")])])], [])

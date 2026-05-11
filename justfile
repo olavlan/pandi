@@ -14,10 +14,13 @@ md-to-pandoc content:
 generate-document:
     gleam run -m sample 2>/dev/null | pandoc --from json --to markdown
 
-# Convert all .md files in test/resources/ to pandoc JSON AST
+# Convert all .md files in test/resources/ to pandoc JSON AST and HTML
 convert-test-resources:
     #!/usr/bin/env bash
-    for file in test/resources/*.md; do pandoc --from markdown --to json "$file" > "${file%.md}.json"; done
+    for file in test/resources/*.md; do
+        pandoc --from markdown --to json "$file" > "${file%.md}.json"
+        pandoc --from markdown --to html "$file" > "${file%.md}.html"
+    done
 
 # review snapshots
 birdie:

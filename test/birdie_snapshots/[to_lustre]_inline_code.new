@@ -1,0 +1,11 @@
+---
+version: 2.0.0
+title: [to_lustre] inline_code
+---
+<p>
+  some 
+  <code>
+    inline code
+  </code>
+</p>
+

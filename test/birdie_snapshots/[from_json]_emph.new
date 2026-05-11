@@ -1,5 +1,5 @@
 ---
 version: 2.0.0
-title: Decode emph:\n*emphasized text*
+title: [from_json] emph
 ---
 Document([Para([Emph([Str("emphasized"), Space, Str("text")])])], [])

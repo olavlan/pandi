@@ -1,25 +1,27 @@
 import birdie
-import gleam/string
-import gleeunit/should
+import lustre/element
 import pandi
+import pandi/lustre.{to_lustre}
 import simplifile
 
 type TestResource {
-  TestResource(markdown: String, json: String)
+  TestResource(pandoc_html: String, pandoc_json: String)
 }
 
 fn read_resource(name: String) -> TestResource {
-  let assert Ok(markdown) = simplifile.read("test/resources/" <> name <> ".md")
-  let assert Ok(json) = simplifile.read("test/resources/" <> name <> ".json")
-  TestResource(markdown, json)
+  let assert Ok(pandoc_html) =
+    simplifile.read("test/resources/" <> name <> ".html")
+  let assert Ok(pandoc_json) =
+    simplifile.read("test/resources/" <> name <> ".json")
+  TestResource(pandoc_html, pandoc_json)
 }
 
 fn snapshot(resource_name: String) {
-  let TestResource(_, json) = read_resource(resource_name)
-  pandi.from_json(json)
-  |> should.be_ok
-  |> string.inspect
-  |> birdie.snap(title: "[from_json] " <> resource_name)
+  let TestResource(_, pandoc_json) = read_resource(resource_name)
+  let assert Ok(document) = pandi.from_json(pandoc_json)
+  to_lustre(document)
+  |> element.to_readable_string()
+  |> birdie.snap(title: "[to_lustre] " <> resource_name)
 }
 
 pub fn paragraph_test() {

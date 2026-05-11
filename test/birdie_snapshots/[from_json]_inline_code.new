@@ -1,5 +1,5 @@
 ---
 version: 2.0.0
-title: Decode inline_code:\nsome `inline code`
+title: [from_json] inline_code
 ---
 Document([Para([Str("some"), Space, Code(Attributes("", [], []), "inline code")])], [])

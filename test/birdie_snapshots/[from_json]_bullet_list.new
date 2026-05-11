@@ -1,5 +1,5 @@
 ---
 version: 2.0.0
-title: Decode bullet_list:\n- Item 1\n- Item 2\n- Item 3
+title: [from_json] bullet_list
 ---
 Document([BulletList([[Plain([Str("Item"), Space, Str("1")])], [Plain([Str("Item"), Space, Str("2")])], [Plain([Str("Item"), Space, Str("3")])]])], [])

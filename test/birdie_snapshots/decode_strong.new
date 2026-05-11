@@ -1,5 +1,5 @@
 ---
 version: 2.0.0
-title: Decode strong:\n**strong text**
+title: Decode strong
 ---
 Document([Para([Strong([Str("strong"), Space, Str("text")])])], [])
