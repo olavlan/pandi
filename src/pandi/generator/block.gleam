@@ -1,5 +1,5 @@
 import pandi/generator/inline.{inlines_generator}
-import pandi/generator/shared.{attributes_generator, tiny_string_generator}
+import pandi/generator/shared.{attributes_generator, word_generator}
 import pandi/pandoc as pd
 import qcheck
 
@@ -15,50 +15,58 @@ pub fn block_generator() -> qcheck.Generator(pd.Block) {
 }
 
 fn plain_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map(inlines_generator(), pd.Plain)
+  use content <- qcheck.map(inlines_generator())
+  pd.Plain(content)
 }
 
 fn para_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map(inlines_generator(), pd.Para)
+  use content <- qcheck.map(inlines_generator())
+  pd.Para(content)
 }
 
 fn header_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map3(
+  use level, attributes, content <- qcheck.map3(
     qcheck.bounded_int(1, 6),
     attributes_generator(),
     inlines_generator(),
-    pd.Header,
   )
+  pd.Header(level, attributes, content)
 }
 
 fn code_block_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map2(attributes_generator(), tiny_string_generator(), pd.CodeBlock)
+  use attributes, text <- qcheck.map2(attributes_generator(), word_generator())
+  pd.CodeBlock(attributes, text)
 }
 
 fn div_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map2(attributes_generator(), leaf_blocks_generator(), pd.Div)
+  use attributes, content <- qcheck.map2(
+    attributes_generator(),
+    leafs_generator(),
+  )
+  pd.Div(attributes, content)
 }
 
 fn bullet_list_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map(
-    qcheck.generic_list(leaf_blocks_generator(), qcheck.bounded_int(2, 5)),
-    pd.BulletList,
-  )
+  use items <- qcheck.map(qcheck.generic_list(
+    leafs_generator(),
+    qcheck.bounded_int(2, 5),
+  ))
+  pd.BulletList(items)
 }
 
 fn ordered_list_generator() -> qcheck.Generator(pd.Block) {
-  qcheck.map2(
+  use attributes, items <- qcheck.map2(
     list_attributes_generator(),
-    qcheck.generic_list(leaf_blocks_generator(), qcheck.bounded_int(2, 5)),
-    pd.OrderedList,
+    qcheck.generic_list(leafs_generator(), qcheck.bounded_int(2, 5)),
   )
+  pd.OrderedList(attributes, items)
 }
 
-fn leaf_blocks_generator() -> qcheck.Generator(List(pd.Block)) {
-  qcheck.generic_list(leaf_block_generator(), qcheck.bounded_int(1, 3))
+fn leafs_generator() -> qcheck.Generator(List(pd.Block)) {
+  qcheck.generic_list(leaf_generator(), qcheck.bounded_int(1, 3))
 }
 
-fn leaf_block_generator() -> qcheck.Generator(pd.Block) {
+fn leaf_generator() -> qcheck.Generator(pd.Block) {
   qcheck.from_generators(para_generator(), [
     plain_generator(),
     header_generator(),
@@ -67,12 +75,12 @@ fn leaf_block_generator() -> qcheck.Generator(pd.Block) {
 }
 
 fn list_attributes_generator() -> qcheck.Generator(pd.ListAttributes) {
-  qcheck.map3(
-    qcheck.bounded_int(1, 3),
+  use start, style, delimiter <- qcheck.map3(
+    qcheck.return(1),
     list_number_style_generator(),
     list_number_delimiter_generator(),
-    pd.ListAttributes,
   )
+  pd.ListAttributes(start, style, delimiter)
 }
 
 fn list_number_style_generator() -> qcheck.Generator(pd.ListNumberStyle) {

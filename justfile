@@ -10,9 +10,9 @@ check:
 md-to-pandoc content:
     echo "{{ content }}" | pandoc --from markdown --to json
 
-# Generate a random document sample and convert to the given format (e.g. markdown, html)
-generate-document format:
-    gleam run -m sample | pandoc --from json --to {{ format }}
+# Generate a random document 
+generate-document:
+    gleam run -m sample 2>/dev/null | pandoc --from json --to markdown
 
 # Convert all .md files in test/resources/ to pandoc JSON AST
 convert-test-resources:
