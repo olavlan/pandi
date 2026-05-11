@@ -9,8 +9,10 @@ type TestResource {
 }
 
 fn read_resource(name: String) -> TestResource {
-  let assert Ok(markdown) = simplifile.read("test/resources/" <> name <> ".md")
-  let assert Ok(json) = simplifile.read("test/resources/" <> name <> ".json")
+  let assert Ok(markdown) =
+    simplifile.read("test/resources/md/" <> name <> ".md")
+  let assert Ok(json) =
+    simplifile.read("test/resources/json/" <> name <> ".json")
   TestResource(markdown, json)
 }
 

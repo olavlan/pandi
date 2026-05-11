@@ -1,5 +1,0 @@
----
-version: 2.0.0
-title: Decode ordered_list
----
-Document([OrderedList(ListAttributes(1, Decimal, Period), [[Plain([Str("First")])], [Plain([Str("Second")])], [Plain([Str("Third")])]])], [])

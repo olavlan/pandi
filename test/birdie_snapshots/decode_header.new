@@ -1,5 +1,0 @@
----
-version: 2.0.0
-title: Decode header
----
-Document([Header(1, Attributes("hello-world", [], []), [Str("Hello"), Space, Str("world")])], [])
