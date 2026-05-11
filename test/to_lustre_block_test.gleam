@@ -1,5 +1,4 @@
 import birdie
-import gleam/int
 import lustre/element.{to_readable_string}
 import pandi/lustre.{block_to_lustre}
 import pandi/pandoc as pd
