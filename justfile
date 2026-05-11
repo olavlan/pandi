@@ -18,3 +18,7 @@ generate-document:
 convert-test-resources:
     #!/usr/bin/env bash
     for file in test/resources/*.md; do pandoc --from markdown --to json "$file" > "${file%.md}.json"; done
+
+# review snapshots
+birdie:
+  gleam run -m birdie

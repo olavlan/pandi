@@ -4,7 +4,7 @@
 
 This project is a Gleam implementation of pandocfilters with support for converting to Lustre html.
 
-This segment from the Python version gives a reference to what we need to implement:
+This segment from the Python version  of pandocfilters gives a reference to what we need to implement:
 
 ```py
 def elt(eltType, numargs):
@@ -62,15 +62,13 @@ SoftBreak = elt('SoftBreak', 0)
 Span = elt('Span', 2)
 ```
 
-However, we want more useful types and constructors than this.
+However, we want more useful typed constructors.
 
-The best reference for the pandoc AST format is to run `just md-to-pandoc` with some minimal markdown using the block or inline type.
-For a reference on how to use markdown features, use <https://pandoc.org/MANUAL.html#pandocs-markdown>.
-Another reference for the pandoc AST types is the Lua implementation: <https://pandoc.org/lua-filters.html#pandoc-functions>
-
-Note that for every new pandoc AST type we support, we want a minimal markdown example file in ./test/resources and then use `just convert-test-resources` to convert it to pandoc AST JSON files. The JSON files are then imported in the test suite for unit testing.
+The best reference for the raw, JSON-serialized pandoc AST format is to run `just md-to-pandoc` with a minimal markdown example.
+For a reference on how to create a markdown example, use <https://pandoc.org/MANUAL.html#pandocs-markdown>.
+A good reference for the AST types we want is the Lua implementation: <https://pandoc.org/lua-filters.html#pandoc-functions>
 
 ## Coding style
 
 * Always prefer readability and explicitness over abstraction.
-* Use few and repeated patterns in each module. Code blocks that look similar improves readability.
+* Use few and repeated patterns in each module. Functions that look similar improves readability.
