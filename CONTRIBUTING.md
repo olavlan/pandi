@@ -67,7 +67,7 @@ However, we want more useful constructors similar to the [Lua implementation](ht
 
 We want to parse the JSON-serialized document AST.
 While there is no official schema, we can understand the structure of the different element types by running `just md-to-pandoc` with a minimal markdown example.
-Markdown examples should follow the [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) variant.
+Markdown examples should follow the [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) flavor.
 The Lua implementation above should elso be used for a reference to the possible values of fields.
 
 ## Checklist for adding support for an element type
