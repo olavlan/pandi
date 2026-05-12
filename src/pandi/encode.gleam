@@ -60,6 +60,11 @@ fn encode_block(block: pd.Block) -> json.Json {
         #("t", json.string("OrderedList")),
         #("c", encode_ordered_list_content(attrs, items)),
       ])
+    pd.BlockQuote(content) ->
+      json.object([
+        #("t", json.string("BlockQuote")),
+        #("c", json.array(content, encode_block)),
+      ])
   }
 }
 

@@ -4,7 +4,7 @@ default:
 
 # run all checks 
 check:
-    gleam check && gleam fix && gleam test && gleam format
+    gleam check && gleam fix && gleam format && gleam test 
 
 # run tests with updates resources
 test:

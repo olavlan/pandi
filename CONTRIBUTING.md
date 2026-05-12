@@ -79,6 +79,7 @@ Code:
 * Encoder
 * Handling of the element type in the filter (if it has nested elements)
 * Handling of the element in the Lustre conversion
+  * Here we should use Pandoc's html output as a reference
 * A generator to be used by the document generator
   * Note: we want to ensure the document generator generates readable document samples
 
@@ -86,3 +87,5 @@ Tests:
 
 * A minimal `from_json` snapshot test (follow existing examples)
 * A minimal `to_lustre` snapshot test (follow existing examples)
+
+Note that all snapshot tests must be reviewed manually (by a human)

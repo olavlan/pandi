@@ -134,6 +134,16 @@ fn block_to_lustre_with(
           let attributes = list_attributes_to_lustre(attrs)
           html.ol(attributes, list_items)
         }
+        pd.BlockQuote(content) -> {
+          let blocks =
+            list.map(content, block_to_lustre_with(
+              _,
+              block_renderer,
+              inline_renderer,
+              meta,
+            ))
+          html.blockquote([], blocks)
+        }
       }
   }
 }

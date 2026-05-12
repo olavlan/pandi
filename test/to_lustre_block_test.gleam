@@ -71,3 +71,10 @@ fn list_item() -> List(pd.Block) {
 fn empty_attributes() -> pd.Attributes {
   pd.Attributes("", [], [])
 }
+
+pub fn block_quote_test() {
+  pd.BlockQuote([
+    pd.Para([pd.Str("Quote")]),
+  ])
+  |> snapshot("block quote with one paragraph")
+}

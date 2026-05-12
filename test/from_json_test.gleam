@@ -79,3 +79,7 @@ pub fn strikeout_test() {
 pub fn strong_test() {
   snapshot("strong")
 }
+
+pub fn block_quote_test() {
+  snapshot("block_quote")
+}

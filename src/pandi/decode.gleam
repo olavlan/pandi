@@ -31,6 +31,7 @@ fn block_decoder() -> decode.Decoder(pd.Block) {
     "Div" -> div_decoder()
     "BulletList" -> bullet_list_decoder()
     "OrderedList" -> ordered_list_decoder()
+    "BlockQuote" -> block_quote_decoder()
     _ -> decode.failure(pd.Para([]), "Block")
   }
 }
@@ -79,6 +80,11 @@ fn ordered_list_decoder() -> decode.Decoder(pd.Block) {
     decode.list(decode.list(decode.recursive(block_decoder))),
   )
   decode.success(pd.OrderedList(attrs, items))
+}
+
+fn block_quote_decoder() -> decode.Decoder(pd.Block) {
+  use content <- decode.field("c", decode.list(decode.recursive(block_decoder)))
+  decode.success(pd.BlockQuote(content))
 }
 
 fn list_attributes_decoder() -> decode.Decoder(pd.ListAttributes) {

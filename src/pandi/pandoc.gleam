@@ -39,6 +39,7 @@ pub type Block {
   Div(attributes: Attributes, content: List(Block))
   BulletList(items: List(List(Block)))
   OrderedList(attributes: ListAttributes, items: List(List(Block)))
+  BlockQuote(content: List(Block))
 }
 
 pub type Inline {

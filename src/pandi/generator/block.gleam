@@ -11,6 +11,7 @@ pub fn block_generator() -> qcheck.Generator(pd.Block) {
     div_generator(),
     bullet_list_generator(),
     ordered_list_generator(),
+    block_quote_generator(),
   ])
 }
 
@@ -60,6 +61,11 @@ fn ordered_list_generator() -> qcheck.Generator(pd.Block) {
     qcheck.generic_list(leafs_generator(), qcheck.bounded_int(2, 5)),
   )
   pd.OrderedList(attributes, items)
+}
+
+fn block_quote_generator() -> qcheck.Generator(pd.Block) {
+  use content <- qcheck.map(leafs_generator())
+  pd.BlockQuote(content)
 }
 
 fn leafs_generator() -> qcheck.Generator(List(pd.Block)) {

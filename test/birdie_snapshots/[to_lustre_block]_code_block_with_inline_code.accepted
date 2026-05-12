@@ -1,0 +1,9 @@
+---
+version: 2.0.0
+title: [to_lustre_block] code block with inline code
+---
+<pre>
+  <code>
+    let x = 1
+  </code>
+</pre>
