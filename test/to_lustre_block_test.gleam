@@ -59,6 +59,11 @@ fn header(level: Int) -> pd.Block {
   pd.Header(level, empty_attributes(), [pd.Str("Header")])
 }
 
+pub fn code_block_test() {
+  pd.CodeBlock(empty_attributes(), "let x = 1")
+  |> snapshot("code block with inline code")
+}
+
 fn list_item() -> List(pd.Block) {
   [pd.Plain([pd.Str("Item")])]
 }
