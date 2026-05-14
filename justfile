@@ -38,7 +38,6 @@ readme:
     cd pandi && {{ render_readme }}
     cd ../pandoc_lustre_converter && {{ render_readme }}
     cd ../qcheck_pandoc && {{ render_readme }}
-    cd .. && {{ render_readme }}
 
 
 
