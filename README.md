@@ -9,3 +9,5 @@ Tasks
 * Update contribution guide after switching to monorepo
 * Filter and custom rendering tests
 * Proper qcheck-pandoc examples
+* Good printing of pandoc types for easier snapshot review
+* Simpler snapshot tests with better descriptions
