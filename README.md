@@ -6,6 +6,6 @@ Gleam packages for working with Pandoc documents:
 
 Tasks
 
-* [] Update contribution guide after switching to monorepo
-* [] Filter and custom rendering tests
-* [] Proper qcheck-pandoc examples
+* Update contribution guide after switching to monorepo
+* Filter and custom rendering tests
+* Proper qcheck-pandoc examples
