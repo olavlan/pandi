@@ -1,4 +1,4 @@
-name = "pandi"
+name = "simple_document"
 version = "1.0.0"
 
 # Fill out these fields if you intend to generate HTML documentation or publish
@@ -13,12 +13,10 @@ version = "1.0.0"
 # https://gleam.run/writing-gleam/gleam-toml/.
 
 [dependencies]
-gleam_stdlib = ">= 0.44.0 and < 2.0.0"
-gleam_json = ">= 3.0.0 and < 4.0.0"
+gleam_stdlib = ">= 1.0.0 and < 2.0.0"
+pandoc_generator = { path = "../../../pandoc_generator" }
+qcheck = ">= 1.0.4 and < 2.0.0"
+pandi = { path = "../../../pandi" }
 
 [dev_dependencies]
-pandoc_generator = { path = "../pandoc_generator" }
 gleeunit = ">= 1.0.0 and < 2.0.0"
-qcheck_gleeunit_utils = ">= 1.0.0 and < 2.0.0"
-simplifile = ">= 2.4.0 and < 3.0.0"
-birdie = ">= 2.0.0 and < 3.0.0"

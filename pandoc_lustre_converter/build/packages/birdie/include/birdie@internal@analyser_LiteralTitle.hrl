@@ -1,1 +1,0 @@
--record(literal_title, {title :: binary()}).

@@ -1,1 +1,0 @@
--record(module, {path :: gleam@uri:uri(), source :: binary()}).

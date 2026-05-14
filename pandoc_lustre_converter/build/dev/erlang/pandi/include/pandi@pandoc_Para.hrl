@@ -1,1 +1,0 @@
--record(para, {content :: list(pandi@pandoc:inline())}).

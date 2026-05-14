@@ -1,1 +1,0 @@
--record(bullet_list, {items :: list(list(pandi@pandoc:block()))}).

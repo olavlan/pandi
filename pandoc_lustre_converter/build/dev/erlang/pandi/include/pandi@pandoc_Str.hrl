@@ -1,1 +1,0 @@
--record(str, {content :: binary()}).

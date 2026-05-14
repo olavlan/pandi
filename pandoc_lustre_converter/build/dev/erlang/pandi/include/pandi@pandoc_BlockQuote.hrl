@@ -1,1 +1,0 @@
--record(block_quote, {content :: list(pandi@pandoc:block())}).

@@ -1,1 +1,0 @@
--record(strikeout, {content :: list(pandi@pandoc:inline())}).

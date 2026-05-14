@@ -1,1 +1,0 @@
--record(seed, {seed :: prng@random:seed()}).
