@@ -66,7 +66,7 @@ Here we see the number of argument for each type in the document AST.
 However, we want more useful constructors similar to the [Lua implementation](https://pandoc.org/lua-filters.html#pandoc-functions).
 
 We want to parse the JSON-serialized document AST.
-While there is no official schema, we can understand the structure of the different element types by running `just md-to-pandoc` with a minimal markdown example.
+While there is no official schema, we can understand the structure of the different element types by running `echo "markdown text" | pandoc --from markdown --to json` with a minimal markdown example.
 Markdown examples should follow the [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) flavor.
 The Lua implementation above should elso be used for a reference to the possible values of fields.
 

@@ -1,0 +1,15 @@
+---
+version: 2.0.0
+title: [convert_blocks] ordered list with upper alpha
+---
+<ol start="1" type="A">
+  <li>
+    First
+
+  </li>
+  <li>
+    Second
+
+  </li>
+</ol>
+

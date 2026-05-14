@@ -1,0 +1,10 @@
+---
+version: 2.0.0
+title: [convert_blocks] div with id, classes, and keyvalue attributes
+---
+<div class="class1 class2" data-foo="bar" id="my-id">
+  <p>
+    Attributed div
+  </p>
+</div>
+

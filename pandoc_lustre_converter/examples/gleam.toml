@@ -13,5 +13,8 @@ version = "1.0.0"
 # https://gleam.run/writing-gleam/gleam-toml/.
 
 [dependencies]
+pandi = { path = "../../pandi" }
 pandoc_lustre_converter = { path = ".." }
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
+shellout = ">= 1.8.0 and < 2.0.0"
+lustre = ">= 5.7.0 and < 6.0.0"

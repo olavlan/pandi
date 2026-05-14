@@ -1,0 +1,8 @@
+---
+version: 2.0.0
+title: [convert_inlines] span without attributes
+---
+<span>
+  Span content
+</span>
+

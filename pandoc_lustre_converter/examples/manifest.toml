@@ -11,8 +11,12 @@ packages = [
   { name = "lustre", version = "5.7.0", build_tools = ["gleam"], requirements = ["gleam_erlang", "gleam_json", "gleam_otp", "gleam_stdlib", "houdini"], otp_app = "lustre", source = "hex", outer_checksum = "38C6FCBD7B7BACE994D5BF643202BB69B02576D44250B4C5DCE738387C0E8F87" },
   { name = "pandi", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_json", "gleam_stdlib", "gleeunit"], source = "local", path = "../../pandi" },
   { name = "pandoc_lustre_converter", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "lustre", "pandi"], source = "local", path = ".." },
+  { name = "shellout", version = "1.8.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "shellout", source = "hex", outer_checksum = "C416356D45151F298108C9DB9CD1EDE0313F620B5EDBB5766CD7237659D87841" },
 ]
 
 [requirements]
 gleam_stdlib = { version = ">= 1.0.0 and < 2.0.0" }
+lustre = { version = ">= 5.7.0 and < 6.0.0" }
+pandi = { path = "../../pandi" }
 pandoc_lustre_converter = { path = ".." }
+shellout = { version = ">= 1.8.0 and < 2.0.0" }

@@ -1,8 +1,0 @@
----
-version: 2.0.0
-title: [render_inline] link with id, classes, and keyvalue attributes
----
-<a class="external" data-track="true" href="https://example.com" id="link-1" title="Example">
-  Attributed link
-</a>
-

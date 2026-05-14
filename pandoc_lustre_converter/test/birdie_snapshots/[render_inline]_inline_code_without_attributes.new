@@ -1,8 +1,0 @@
----
-version: 2.0.0
-title: [render_inline] inline code without attributes
----
-<code>
-  let x = 1
-</code>
-

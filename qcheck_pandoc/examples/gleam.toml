@@ -14,5 +14,6 @@ version = "1.0.0"
 
 [dependencies]
 qcheck_pandoc = { path = ".." }
+pandi = { path = "../../pandi" }
+qcheck = ">= 1.0.4 and < 2.0.0"
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
-shellout = ">= 1.8.0 and < 2.0.0"

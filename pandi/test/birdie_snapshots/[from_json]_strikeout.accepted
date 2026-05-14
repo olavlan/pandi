@@ -1,0 +1,5 @@
+---
+version: 2.0.0
+title: [from_json] strikeout
+---
+Document([Para([Strikeout([Str("strikeout"), Space, Str("text")])])], [])

@@ -1,8 +1,0 @@
----
-version: 2.0.0
-title: [render_block] header level 1
----
-<h1>
-  Header
-</h1>
-

@@ -1,0 +1,10 @@
+---
+version: 2.0.0
+title: [convert_blocks] code block with id, class, and keyvalue attributes
+---
+<pre class="language-gleam" data-executable="true" id="code-1">
+  <code>
+    fn hello() { &quot;Hello&quot; }
+  </code>
+</pre>
+

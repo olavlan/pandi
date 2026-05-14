@@ -1,4 +1,4 @@
-import pandi.{type Document, from_json, to_json}
+import pandi.{type Document, from_json}
 import shellout
 
 pub fn parse(raw_document: String, format: String) -> Document {

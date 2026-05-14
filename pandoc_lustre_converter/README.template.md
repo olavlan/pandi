@@ -13,7 +13,7 @@ This package's goal is to:
 Example:
 
 ```gleam
-{{examples/src/examples/increase_header_level.gleam}}
+{{examples/src/examples/convert_header.gleam}}
 ```
 
 Note that the package only works with Pandoc's JSON output, so your application will need to call `pandoc`  in order to work with specific document formats:

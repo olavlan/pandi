@@ -1,0 +1,15 @@
+---
+version: 2.0.0
+title: [convert_blocks] ordered list with two items (start=1, decimal, period)
+---
+<ol start="1" type="1">
+  <li>
+    Item
+
+  </li>
+  <li>
+    Item
+
+  </li>
+</ol>
+

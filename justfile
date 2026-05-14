@@ -1,43 +1,66 @@
-# list available commands
 default:
     @just --list
 
-# run all checks 
+packages := "pandi pandoc_lustre_converter qcheck_pandoc"
+published := "pandi pandoc_lustre_converter"
+
+pre-commit:
+    @just check
+    @just generate-resources
+    @just test
+    @just generate-readme
+
 check:
-    gleam check && gleam fix && gleam format && gleam test 
+    #!/usr/bin/env sh
+    for pkg in {{ packages }}; do
+        (
+            cd "$pkg"
+            gleam check
+            gleam fix
+            gleam format
+        )
+    done
 
-# run tests with updates resources
 test:
-    @just resources && gleam test
+    #!/usr/bin/env sh
+    for pkg in {{ packages }}; do
+        (
+            cd "$pkg"
+            gleam test
+            cd examples
+            gleam run
+        )
+    done
 
-# review snapshots
 snapshots:
-  gleam run -m birdie
+    #!/usr/bin/env sh
+    for pkg in {{ published }}; do
+        (
+            cd "$pkg"
+            gleam run -m birdie
+        )
+    done
 
-# generate test resources
-resources:
-    #!/usr/bin/env bash
+generate-resources:
+    #!/usr/bin/env sh
+    cd pandi
     for file in test/resources/md/*.md; do
         base="$(basename "$file" .md)"
         pandoc --from markdown --to json "$file" > "test/resources/json/${base}.json"
     done
 
-# test document generator
-generator:
-    gleam run -m sample 2>/dev/null | pandoc --from json --to markdown
+generate-markdown:
+    #!/usr/bin/env sh
+    cd qcheck_pandoc
+    gleam run -m qcheck_pandoc/generate_markdown 2>/dev/null | pandoc --from json --to markdown
 
-# convert markdown string to pandoc
-md-to-pandoc content:
-    echo "{{ content }}" | pandoc --from markdown --to json
-
-# generate README from template
 render_readme := "sed -E 's/\\{\\{([^}]+)\\}\\}/cat \\1/e' README.template.md > README.md"
 
-readme:
-    #!/usr/bin/env bash
-    cd pandi && {{ render_readme }}
-    cd ../pandoc_lustre_converter && {{ render_readme }}
-    cd ../qcheck_pandoc && {{ render_readme }}
-
-
-
+generate-readme:
+    #!/usr/bin/env sh
+    for pkg in {{ packages }}; do
+        (
+            cd "$pkg"
+            {{ render_readme }}
+        )
+    done

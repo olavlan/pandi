@@ -8,7 +8,7 @@ Pandoc allows you to work with documents in a format-independent way.
 This package's goal is to generate random Pandoc documents, which can be converted to any format and used  for property testing:
 
 ```gleam
-{{examples/src/examples/generate_markdown.gleam}}
+{{examples/src/examples/generate_document.gleam}}
 ```
 
 Note that the package only works with Pandoc's JSON output, so your application will need to call `pandoc` in order to work with specific document formats:

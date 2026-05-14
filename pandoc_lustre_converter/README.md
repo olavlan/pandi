@@ -14,32 +14,23 @@ Example:
 
 ```gleam
 import examples/pandoc.{parse}
-import gleam/option.{None, Some}
-import pandoc_lustre_converter
+import lustre/element.{to_readable_string}
+import pandoc_lustre_converter.{convert_document}
 
 pub fn main() {
-  let increase_header_level: pd.BlockFilter = fn(block, _meta) {
-    case block {
-      pd.Header(level, attrs, content) ->
-        Some([pd.Header(level + 1, attrs, content)])
-      _ -> None
-    }
-  }
-
-  let html =
-    "# Hello world"
+  let header =
+    "# Header"
     |> parse("markdown")
-    |> pd.filter_blocks(increase_header_level)
-    |> render("html")
-
-  assert html == "<h2 id=\"hello-world\">Hello world</h2>\n"
+    |> convert_document
+    |> to_readable_string
+  assert header == "<h1 id=\"header\">\n  Header\n</h1>\n"
 }
 ```
 
 Note that the package only works with Pandoc's JSON output, so your application will need to call `pandoc`  in order to work with specific document formats:
 
 ```gleam
-import pandi.{type Document, from_json, to_json}
+import pandi.{type Document, from_json}
 import shellout
 
 pub fn parse(raw_document: String, format: String) -> Document {
