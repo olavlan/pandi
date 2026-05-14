@@ -1,5 +1,0 @@
-default:
-	just readme
-
-readme:
-	sed -E 's/\{\{([^}]+)\}\}/cat \1/e' README.md.template > README.md

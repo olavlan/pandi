@@ -30,5 +30,13 @@ generator:
 md-to-pandoc content:
     echo "{{ content }}" | pandoc --from markdown --to json
 
+# generate README from template
+render_readme := "sed -E 's/\\{\\{([^}]+)\\}\\}/cat \\1/e' README.template.md > README.md"
+
+readme:
+    #!/usr/bin/env bash
+    cd pandi && {{ render_readme }}
+    cd .. && {{ render_readme }}
+
 
 
