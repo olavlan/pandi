@@ -1,0 +1,27 @@
+# pandi
+
+[![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
+
+[Pandoc filters](https://pandoc.org/filters.html) in Gleam.
+
+If your application needs to process documents in various markup formats, then using Pandoc's abstract document representation allows you to work with document elements in a format-independent way.
+
+This package's goal is to make it easy to work with Pandoc documents in Gleam:
+
+```gleam
+{{examples/src/examples/increase_header_level.gleam}}
+```
+
+Note that it's necessary to create your own wrappers to the `pandoc` executable, since the package itself only works with JSON-serialized Pandoc documents:
+
+```gleam
+{{examples/src/examples/pandoc.gleam}}
+```
+
+## Development
+
+```sh
+gleam run   # Run the project
+gleam test  # Run the tests
+```

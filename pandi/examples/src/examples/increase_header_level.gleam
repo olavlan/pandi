@@ -1,6 +1,5 @@
-import gleam/io
+import examples/pandoc.{parse, render}
 import gleam/option.{None, Some}
-import in
 import pandi as pd
 
 pub fn main() {
@@ -12,10 +11,11 @@ pub fn main() {
     }
   }
 
-  let assert Ok(json_input) = in.read_chars(1_000_000)
-  let assert Ok(document) = pd.from_json(json_input)
-  document
-  |> pd.filter_blocks(increase_header_level)
-  |> pd.to_json
-  |> io.println
+  let html =
+    "# Hello world"
+    |> parse("markdown")
+    |> pd.filter_blocks(increase_header_level)
+    |> render("html")
+
+  assert html == "<h2 id=\"hello-world\">Hello world</h2>\n"
 }

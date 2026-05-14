@@ -15,8 +15,4 @@ version = "1.0.0"
 [dependencies]
 pandi = { path = ".." }
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
-in = ">= 1.1.0 and < 2.0.0"
-
-[dev_dependencies]
-gleeunit = ">= 1.0.0 and < 2.0.0"
 shellout = ">= 1.8.0 and < 2.0.0"
