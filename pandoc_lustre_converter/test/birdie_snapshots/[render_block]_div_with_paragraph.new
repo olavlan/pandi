@@ -1,0 +1,10 @@
+---
+version: 2.0.0
+title: [render_block] div with paragraph
+---
+<div>
+  <p>
+    Inside div
+  </p>
+</div>
+

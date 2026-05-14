@@ -1,5 +1,0 @@
----
-version: 2.0.0
-title: [from_json] div
----
-Document([Div(Attributes("myid", ["mydiv"], [#("color", "blue")]), [Para([Str("Hello"), Space, Str("world")])])], [])

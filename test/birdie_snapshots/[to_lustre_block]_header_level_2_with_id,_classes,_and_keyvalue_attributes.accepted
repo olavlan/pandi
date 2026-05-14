@@ -1,7 +1,0 @@
----
-version: 2.0.0
-title: [to_lustre_block] header level 2 with id, classes, and keyvalue attributes
----
-<h2 class="heading main" data-level="top" id="section-title">
-  Attributed Header
-</h2>

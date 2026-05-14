@@ -1,0 +1,1 @@
+-record(code, {attributes :: pandi@pandoc:attributes(), text :: binary()}).

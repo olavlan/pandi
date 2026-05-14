@@ -1,0 +1,1 @@
+-record(emph, {content :: list(pandi@pandoc:inline())}).

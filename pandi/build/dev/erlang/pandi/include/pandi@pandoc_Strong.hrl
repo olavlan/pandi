@@ -1,0 +1,1 @@
+-record(strong, {content :: list(pandi@pandoc:inline())}).

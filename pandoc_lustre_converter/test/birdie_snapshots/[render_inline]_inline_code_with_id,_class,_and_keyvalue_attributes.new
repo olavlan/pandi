@@ -1,0 +1,8 @@
+---
+version: 2.0.0
+title: [render_inline] inline code with id, class, and keyvalue attributes
+---
+<code class="language-gleam" data-executable="true" id="code-1">
+  fn hello() { &quot;Hello&quot; }
+</code>
+

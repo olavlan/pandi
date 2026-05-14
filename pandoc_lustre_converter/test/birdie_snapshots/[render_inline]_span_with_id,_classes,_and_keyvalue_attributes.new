@@ -1,0 +1,8 @@
+---
+version: 2.0.0
+title: [render_inline] span with id, classes, and keyvalue attributes
+---
+<span class="highlight" data-role="note" id="my-span">
+  Styled span
+</span>
+

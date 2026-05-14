@@ -1,0 +1,207 @@
+-module(qcheck@random).
+-compile([no_auto_import, nowarn_unused_vars, nowarn_unused_function, nowarn_nomatch, inline]).
+-define(FILEPATH, "src/qcheck/random.gleam").
+-export([seed/1, int/2, random_seed/0, step/2, float/2, float_weighted/2, weighted/2, uniform/2, choose/2, bind/2, then/2, map/2, to_yielder/2, to_random_yielder/1, sample/2, random_sample/1, constant/1]).
+-export_type([seed/0, generator/1]).
+
+-if(?OTP_RELEASE >= 27).
+-define(MODULEDOC(Str), -moduledoc(Str)).
+-define(DOC(Str), -doc(Str)).
+-else.
+-define(MODULEDOC(Str), -compile([])).
+-define(DOC(Str), -compile([])).
+-endif.
+
+?MODULEDOC(
+    " Random\n"
+    "\n"
+    " The random module provides basic random value generators that can be used\n"
+    " to define Generators.\n"
+    "\n"
+    " They are mostly inteded for internal use or \"advanced\" manual construction\n"
+    " of generators.  In typical usage, you will probably not need to interact\n"
+    " with these functions much, if at all.  As such, they are currently mostly\n"
+    " undocumented.\n"
+    "\n"
+).
+
+-opaque seed() :: {seed, prng@random:seed()}.
+
+-opaque generator(ABNC) :: {generator, prng@random:generator(ABNC)}.
+
+-file("src/qcheck/random.gleam", 39).
+?DOC(
+    " `seed(n) creates a new seed from the given integer, `n`.\n"
+    "\n"
+    " ### Example\n"
+    "\n"
+    " Use a specific seed for the `Config`.\n"
+    "\n"
+    " ```\n"
+    " let config =\n"
+    "   qcheck.default_config()\n"
+    "   |> qcheck.with_seed(qcheck.seed(124))\n"
+    " ```\n"
+).
+-spec seed(integer()) -> seed().
+seed(N) ->
+    _pipe = prng_ffi:new_seed(N),
+    {seed, _pipe}.
+
+-file("src/qcheck/random.gleam", 77).
+-spec int(integer(), integer()) -> generator(integer()).
+int(From, To) ->
+    _pipe = prng@random:int(From, To),
+    {generator, _pipe}.
+
+-file("src/qcheck/random.gleam", 56).
+?DOC(
+    " `random_seed()` creates a new randomly-generated seed.  You can use it when\n"
+    " you don't care about having specifically reproducible results.\n"
+    "\n"
+    " ### Example\n"
+    "\n"
+    " Use a random seed for the `Config`.\n"
+    "\n"
+    " ```\n"
+    " let config =\n"
+    "   qcheck.default_config()\n"
+    "   |> qcheck.with_seed(qcheck.random_seed())\n"
+    " ```\n"
+).
+-spec random_seed() -> seed().
+random_seed() ->
+    _pipe = gleam@int:random(4294967296),
+    _pipe@1 = prng_ffi:new_seed(_pipe),
+    {seed, _pipe@1}.
+
+-file("src/qcheck/random.gleam", 72).
+-spec step(generator(ABND), seed()) -> {ABND, seed()}.
+step(Generator, Seed) ->
+    {A, Seed@1} = prng@random:step(
+        erlang:element(2, Generator),
+        erlang:element(2, Seed)
+    ),
+    {A, {seed, Seed@1}}.
+
+-file("src/qcheck/random.gleam", 81).
+-spec float(float(), float()) -> generator(float()).
+float(From, To) ->
+    _pipe = prng@random:float(From, To),
+    {generator, _pipe}.
+
+-file("src/qcheck/random.gleam", 89).
+?DOC(
+    " Like `weighted` but uses `Floats` to specify the weights.\n"
+    "\n"
+    " Generally you should prefer `weighted` as it is faster.\n"
+).
+-spec float_weighted({float(), ABNH}, list({float(), ABNH})) -> generator(ABNH).
+float_weighted(First, Others) ->
+    _pipe = prng@random:weighted(First, Others),
+    {generator, _pipe}.
+
+-file("src/qcheck/random.gleam", 112).
+-spec get_by_weight({integer(), ABNS}, list({integer(), ABNS}), integer()) -> ABNS.
+get_by_weight(First, Others, Countdown) ->
+    {Weight, Value} = First,
+    case Others of
+        [] ->
+            Value;
+
+        [Second | Rest] ->
+            Positive_weight = gleam@int:absolute_value(Weight),
+            case gleam@int:compare(Countdown, Positive_weight) of
+                lt ->
+                    Value;
+
+                gt ->
+                    get_by_weight(Second, Rest, Countdown - Positive_weight);
+
+                eq ->
+                    get_by_weight(Second, Rest, Countdown - Positive_weight)
+            end
+    end.
+
+-file("src/qcheck/random.gleam", 96).
+-spec weighted({integer(), ABNK}, list({integer(), ABNK})) -> generator(ABNK).
+weighted(First, Others) ->
+    Normalise = fun(Pair) ->
+        gleam@int:absolute_value(gleam@pair:first(Pair))
+    end,
+    Total = Normalise(First) + gleam@int:sum(gleam@list:map(Others, Normalise)),
+    _pipe = prng@random:map(
+        prng@random:int(0, Total - 1),
+        fun(_capture) -> get_by_weight(First, Others, _capture) end
+    ),
+    {generator, _pipe}.
+
+-file("src/qcheck/random.gleam", 104).
+-spec uniform(ABNN, list(ABNN)) -> generator(ABNN).
+uniform(First, Others) ->
+    weighted(
+        {1, First},
+        gleam@list:map(Others, fun(_capture) -> gleam@pair:new(1, _capture) end)
+    ).
+
+-file("src/qcheck/random.gleam", 108).
+-spec choose(ABNQ, ABNQ) -> generator(ABNQ).
+choose(One, Other) ->
+    uniform(One, [Other]).
+
+-file("src/qcheck/random.gleam", 126).
+-spec bind(generator(ABNU), fun((ABNU) -> generator(ABNW))) -> generator(ABNW).
+bind(Generator, F) ->
+    _pipe = prng@random:then(
+        erlang:element(2, Generator),
+        fun(A) ->
+            Generator@1 = F(A),
+            erlang:element(2, Generator@1)
+        end
+    ),
+    {generator, _pipe}.
+
+-file("src/qcheck/random.gleam", 138).
+?DOC(" `then` is an alias for `bind`.\n").
+-spec then(generator(ABNZ), fun((ABNZ) -> generator(ABOB))) -> generator(ABOB).
+then(Generator, F) ->
+    bind(Generator, F).
+
+-file("src/qcheck/random.gleam", 142).
+-spec map(generator(ABOE), fun((ABOE) -> ABOG)) -> generator(ABOG).
+map(Generator, Fun) ->
+    _pipe = prng@random:map(erlang:element(2, Generator), Fun),
+    {generator, _pipe}.
+
+-file("src/qcheck/random.gleam", 150).
+-spec to_yielder(generator(ABOL), seed()) -> gleam@yielder:yielder(ABOL).
+to_yielder(Generator, Seed) ->
+    gleam@yielder:unfold(
+        Seed,
+        fun(Current_seed) ->
+            {Value, Next_seed} = step(Generator, Current_seed),
+            {next, Value, Next_seed}
+        end
+    ).
+
+-file("src/qcheck/random.gleam", 146).
+-spec to_random_yielder(generator(ABOI)) -> gleam@yielder:yielder(ABOI).
+to_random_yielder(Generator) ->
+    to_yielder(Generator, random_seed()).
+
+-file("src/qcheck/random.gleam", 161).
+-spec sample(generator(ABOQ), seed()) -> ABOQ.
+sample(Generator, Seed) ->
+    {Value, _} = step(Generator, Seed),
+    Value.
+
+-file("src/qcheck/random.gleam", 157).
+-spec random_sample(generator(ABOO)) -> ABOO.
+random_sample(Generator) ->
+    sample(Generator, random_seed()).
+
+-file("src/qcheck/random.gleam", 166).
+-spec constant(ABOS) -> generator(ABOS).
+constant(Value) ->
+    _pipe = prng@random:constant(Value),
+    {generator, _pipe}.

@@ -1,0 +1,1 @@
+-module(javascript_dom_parser@deno_polyfill).

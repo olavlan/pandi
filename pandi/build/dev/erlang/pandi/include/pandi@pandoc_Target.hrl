@@ -1,0 +1,1 @@
+-record(target, {url :: binary(), title :: binary()}).

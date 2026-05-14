@@ -1,0 +1,1 @@
+-record(str, {content :: binary()}).

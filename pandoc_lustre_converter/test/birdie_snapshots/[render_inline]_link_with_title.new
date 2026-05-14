@@ -1,0 +1,8 @@
+---
+version: 2.0.0
+title: [render_inline] link with title
+---
+<a href="https://example.com" title="Example Site">
+  Click here
+</a>
+

@@ -1,0 +1,11 @@
+{application, qcheck_gleeunit_utils, [
+    {vsn, "1.0.0"},
+    {applications, [gleam_stdlib,
+                    gleeunit]},
+    {description, "Utility functions for working with Gleam's gleeunit test framework"},
+    {modules, [qcheck_gleeunit_utils@@main,
+               qcheck_gleeunit_utils@run,
+               qcheck_gleeunit_utils@test_spec,
+               qcheck_gleeunit_utils_ffi]},
+    {registered, []}
+]}.

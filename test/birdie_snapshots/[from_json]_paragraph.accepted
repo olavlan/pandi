@@ -1,5 +1,0 @@
----
-version: 2.0.0
-title: [from_json] paragraph
----
-Document([Para([Str("Hello"), Space, Str("world")])], [])

@@ -1,9 +1,0 @@
----
-version: 2.0.0
-title: [to_lustre_block] block quote with one paragraph
----
-<blockquote>
-  <p>
-    Quote
-  </p>
-</blockquote>
