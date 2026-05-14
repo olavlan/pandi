@@ -5,7 +5,7 @@ import gleam/string
 import lustre/attribute
 import lustre/element.{type Element}
 import lustre/element/html
-import pandi/pandoc as pd
+import pandi as pd
 
 pub type BlockRenderer(msg) =
   fn(pd.Block, pd.Meta) -> Option(Element(msg))

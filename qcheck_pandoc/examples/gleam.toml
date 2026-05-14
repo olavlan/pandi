@@ -13,7 +13,6 @@ version = "1.0.0"
 # https://gleam.run/writing-gleam/gleam-toml/.
 
 [dependencies]
-pandi = { path = ".." }
+qcheck_pandoc = { path = ".." }
 gleam_stdlib = ">= 1.0.0 and < 2.0.0"
 shellout = ">= 1.8.0 and < 2.0.0"
-qcheck = ">= 1.0.4 and < 2.0.0"
