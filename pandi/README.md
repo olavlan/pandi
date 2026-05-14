@@ -6,7 +6,7 @@
 [Pandoc filters](https://pandoc.org/filters.html) in Gleam.
 
 Pandoc's abstract document representation allows you to work with documents in a format-independent way. 
-.
+
 This package's goal is to make it easy to work with an abstract Pandoc document:
 
 ```gleam
