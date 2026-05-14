@@ -5,7 +5,7 @@
 
 [Pandoc filters](https://pandoc.org/filters.html) in Gleam.
 
-Pandoc allows you to work with documents in a format-independent way. 
+Pandoc allows you to work with documents in a format-independent way.
 
 This package's goal is to make it easy to work with Pandoc documents:
 
@@ -13,9 +13,8 @@ This package's goal is to make it easy to work with Pandoc documents:
 {{examples/src/examples/increase_header_level.gleam}}
 ```
 
-Note that the package only works with Pandoc's JSON output, so your application will need to call ´pandoc´ in order to work with various document formats:
+Note that the package only works with Pandoc's JSON output, so your application will need to call `pandoc`  in order to work with specific document formats:
 
 ```gleam
 {{examples/src/examples/pandoc.gleam}}
 ```
-

@@ -36,6 +36,8 @@ render_readme := "sed -E 's/\\{\\{([^}]+)\\}\\}/cat \\1/e' README.template.md > 
 readme:
     #!/usr/bin/env bash
     cd pandi && {{ render_readme }}
+    cd ../pandoc_lustre_converter && {{ render_readme }}
+    cd ../qcheck_pandoc && {{ render_readme }}
     cd .. && {{ render_readme }}
 
 

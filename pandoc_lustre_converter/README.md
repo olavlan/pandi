@@ -1,18 +1,21 @@
-# pandi
+# pandoc-lustre-converter
 
 [![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
 
-[Pandoc filters](https://pandoc.org/filters.html) in Gleam.
-
 Pandoc allows you to work with documents in a format-independent way.
 
-This package's goal is to make it easy to work with Pandoc documents:
+This package's goal is to:
+
+* Convert Pandoc documents to Lustre html
+* Allow custom rendering by pattern matching on document elements
+
+Example:
 
 ```gleam
-import examples/pandoc.{parse, render}
+import examples/pandoc.{parse}
 import gleam/option.{None, Some}
-import pandi as pd
+import pandoc_lustre_converter
 
 pub fn main() {
   let increase_header_level: pd.BlockFilter = fn(block, _meta) {
@@ -45,13 +48,5 @@ pub fn parse(raw_document: String, format: String) -> Document {
     shellout.command(run: "sh", with: ["-c", cmd], in: ".", opt: [])
   let assert Ok(document) = from_json(result)
   document
-}
-
-pub fn render(document: Document, format: String) -> String {
-  let json = to_json(document)
-  let cmd = "echo '" <> json <> "' | pandoc -f json -t " <> format
-  let assert Ok(html) =
-    shellout.command(run: "sh", with: ["-c", cmd], in: ".", opt: [])
-  html
 }
 ```
