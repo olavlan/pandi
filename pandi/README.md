@@ -5,9 +5,9 @@
 
 [Pandoc filters](https://pandoc.org/filters.html) in Gleam.
 
-If your application needs to process documents in various markup formats, then using Pandoc's abstract document representation allows you to work with document elements in a format-independent way.
-
-This package's goal is to make it easy to work with Pandoc documents in Gleam:
+Pandoc's abstract document representation allows you to work with documents in a format-independent way. 
+.
+This package's goal is to make it easy to work with an abstract Pandoc document:
 
 ```gleam
 import examples/pandoc.{parse, render}
@@ -33,7 +33,7 @@ pub fn main() {
 }
 ```
 
-Note that it's necessary to create your own wrappers to the `pandoc` executable, since the package itself only works with JSON-serialized Pandoc documents:
+Note that it's necessary to create your own wrappers to the `pandoc` executable, since the package itself only works with JSON-serialized Pandoc documents: 
 
 ```gleam
 import pandi.{type Document, from_json, to_json}
