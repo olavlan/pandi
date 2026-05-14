@@ -1,0 +1,14 @@
+---
+version: 2.0.0
+title: [to_lustre_block] ordered list with upper alpha and two parens delimiter
+---
+<ol start="1" type="A">
+  <li>
+    First
+
+  </li>
+  <li>
+    Second
+
+  </li>
+</ol>
