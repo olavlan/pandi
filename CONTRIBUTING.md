@@ -1,6 +1,10 @@
 # Contributing
 
-This project is a Gleam implementation of [Pandoc filters](https://pandoc.org/filters.html) with support for converting to a [Lustre html tree](https://hexdocs.pm/lustre/lustre/element/html.html).
+This project consists of several Gleam packages for working with Pandoc documents.
+
+* [pandi](/pandi/README.md): Core and Pandoc filters.
+* [pandoc-lustre-converter](/pandoc_lustre_converter/README.md): Pandoc to Lustre converter, with rendering hooks.
+* [qcheck-pandoc](/qcheck_pandoc/README.md): Pandoc random document generator.
 
 ## Pandoc document AST
 
@@ -68,25 +72,28 @@ However, we want more useful constructors similar to the [Lua implementation](ht
 We want to parse the JSON-serialized document AST.
 While there is no official schema, we can understand the structure of the different element types by running `echo "markdown text" | pandoc --from markdown --to json` with a minimal markdown example.
 Markdown examples should follow the [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) flavor.
-The Lua implementation above should elso be used for a reference to the possible values of fields.
+The Lua implementation above should also be used for a reference to the possible values of fields.
 
-## Checklist for adding support for an element type
+## Checklist when adding support for a new element type
 
-Code:
+Note that all snapshot tests must be reviewed manually (by a human)
+
+[pandi](./pandi/src/pandi.gleam):
 
 * Type constructor
 * Decoder
 * Encoder
 * Handling of the element type in the filter (if it has nested elements)
+* A minimal `from_json` snapshot test (follow existing examples)
+  * Note: Example is written as a markdown file and converted to JSON using `just generate-resources`
+
+[pandoc-lustre-converter](./pandoc_lustre_converter/src/pandoc_lustre_converter.gleam):
+
 * Handling of the element in the Lustre conversion
   * Note: we should use Pandoc's html output as a reference
+* A minimal `convert` snapshot test (follow existing examples)
+
+[qcheck-pandoc](./qcheck_pandoc/src/qcheck_pandoc.gleam):
+
 * A generator to be used by the document generator
-  * Note: we want to ensure the document generator generates readable document samples
-
-Tests:
-
-* A minimal `from_json` snapshot test (follow existing examples)
-  * Note: Example is written as a markdown file and converted to JSON using `just resources`
-* A minimal `to_lustre` snapshot test (follow existing examples)
-
-Note that all snapshot tests must be reviewed manually (by a human)
+* Note: we want to ensure the document generator generates readable document samples
