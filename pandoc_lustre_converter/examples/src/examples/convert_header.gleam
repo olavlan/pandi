@@ -8,5 +8,5 @@ pub fn main() {
     |> parse("markdown")
     |> convert_document
     |> to_readable_string
-  assert header == "<h1 id=\"header\">\n  Header\n</h1>\n"
+  assert header == "<h2 id=\"header\">\n  Header\n</h1>\n"
 }

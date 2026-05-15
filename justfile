@@ -6,9 +6,8 @@ published := "pandi pandoc_lustre_converter"
 
 # installs the pre-commit hook 
 install-hook:
-    @printf '#!/usr/bin/env sh\nset -e\njust pre-commit\ngit add -A\n' > .git/hooks/pre-commit
-    @chmod +x .git/hooks/pre-commit
-    @echo "pre-commit hook installed"
+    printf '#!/usr/bin/env sh\nset -e\njust pre-commit\ngit add -A\n' > .git/hooks/pre-commit
+    chmod +x .git/hooks/pre-commit
 
 pre-commit:
     @just check
