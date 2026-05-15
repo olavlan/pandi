@@ -18,6 +18,7 @@ pre-commit:
 # run checks across all packages 
 check:
     #!/usr/bin/env sh
+    set -e
     for pkg in {{ packages }}; do
         (
             cd "$pkg"
@@ -30,6 +31,7 @@ check:
 # run tests across all packages
 test:
     #!/usr/bin/env sh
+    set -e
     for pkg in {{ packages }}; do
         (
             cd "$pkg"
