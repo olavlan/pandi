@@ -19,9 +19,3 @@ pub fn main() {
   doc |> pandi.to_json
 }
 ```
-
-Note that the package only works with Pandoc's JSON output, so your application will need to call `pandoc` in order to work with specific document formats:
-
-```gleam
-
-```

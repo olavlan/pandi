@@ -10,9 +10,3 @@ This package's goal is to generate random Pandoc documents, which can be convert
 ```gleam
 {{examples/src/examples/generate_document.gleam}}
 ```
-
-Note that the package only works with Pandoc's JSON output, so your application will need to call `pandoc` in order to work with specific document formats:
-
-```gleam
-{{examples/src/examples/pandoc.gleam}}
-```
