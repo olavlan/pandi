@@ -1,0 +1,15 @@
+[ BlockQuote
+    [ Para
+        [ Str "This"
+        , Space
+        , Str "is"
+        , Space
+        , Str "a"
+        , Space
+        , Str "block"
+        , Space
+        , Str "quote."
+        ]
+    , Para [ Str "Second" , Space , Str "paragraph." ]
+    ]
+]

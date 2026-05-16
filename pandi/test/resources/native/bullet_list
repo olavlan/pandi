@@ -1,0 +1,6 @@
+[ BulletList
+    [ [ Plain [ Str "Item" , Space , Str "1" ] ]
+    , [ Plain [ Str "Item" , Space , Str "2" ] ]
+    , [ Plain [ Str "Item" , Space , Str "3" ] ]
+    ]
+]

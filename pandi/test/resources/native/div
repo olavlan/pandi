@@ -1,0 +1,4 @@
+[ Div
+    ( "myid" , [ "mydiv" ] , [ ( "color" , "blue" ) ] )
+    [ Para [ Str "Hello" , Space , Str "world" ] ]
+]

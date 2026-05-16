@@ -1,0 +1,8 @@
+[ Para
+    [ Str "Hello"
+    , Space
+    , Span
+        ( "myid" , [ "highlight" ] , [ ( "color" , "blue" ) ] )
+        [ Str "world" ]
+    ]
+]

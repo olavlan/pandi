@@ -58,6 +58,7 @@ generate-resources:
     for file in test/resources/md/*.md; do
         base="$(basename "$file" .md)"
         pandoc --from markdown --to json "$file" > "test/resources/json/${base}.json"
+        pandoc --from markdown --to native "$file" > "test/resources/native/${base}"
     done
 
 # generate random markdown document

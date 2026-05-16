@@ -1,3 +1,4 @@
+import glam/doc as glam
 import gleam/dict
 import gleam/dynamic/decode
 import gleam/json
@@ -625,4 +626,67 @@ fn walk_inlines(
       }
     }
   })
+}
+
+pub fn to_readable_string(document: Document) -> String {
+  pretty_blocks(document.blocks)
+  |> glam.to_string(10)
+}
+
+fn pretty_blocks(blocks: List(Block)) -> glam.Document {
+  list.map(blocks, pretty_block)
+  |> pretty_list
+}
+
+fn pretty_inlines(inlines: List(Inline)) -> glam.Document {
+  list.map(inlines, pretty_inline)
+  |> pretty_list
+}
+
+fn pretty_list(list: List(glam.Document)) -> glam.Document {
+  let comma = glam.concat([glam.from_string(" ,"), glam.space])
+  let open_square = glam.concat([glam.from_string("["), glam.space])
+  let trailing_comma = glam.break(" ", " ,")
+  let close_square = glam.concat([trailing_comma, glam.from_string("]")])
+
+  list
+  |> glam.join(with: comma)
+  |> glam.prepend(open_square)
+  |> glam.nest(by: 2)
+  |> glam.append(close_square)
+  |> glam.group
+}
+
+fn pretty_block(block: Block) -> glam.Document {
+  case block {
+    Para(content) ->
+      pretty_inlines(content)
+      |> glam.prepend(open_element("Para"))
+      |> glam.nest(by: 2)
+      |> glam.group
+    Header(level, attrs, content) ->
+      glam.concat([
+        glam.from_string("1"),
+        glam.space,
+        pretty_attributes(attrs),
+        glam.space,
+        pretty_inlines(content),
+      ])
+      |> glam.prepend(open_element("Header"))
+      |> glam.nest(by: 2)
+      |> glam.group
+    _ -> glam.from_string("block")
+  }
+}
+
+fn pretty_inline(inline: Inline) -> glam.Document {
+  glam.from_string("inline")
+}
+
+fn pretty_attributes(attrs: Attributes) -> glam.Document {
+  glam.from_string("(attributes)")
+}
+
+fn open_element(name: String) -> glam.Document {
+  glam.concat([glam.from_string(name), glam.space])
 }

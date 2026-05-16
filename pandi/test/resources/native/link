@@ -1,0 +1,7 @@
+[ Para
+    [ Link
+        ( "" , [] , [] )
+        [ Str "Click" , Space , Str "here" ]
+        ( "https://example.com" , "My Title" )
+    ]
+]
