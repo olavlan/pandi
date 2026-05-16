@@ -672,9 +672,9 @@ fn pretty_attributes(attrs: Attributes) -> glam.Document {
   |> pretty_tuple
 }
 
-fn pretty_element(content: List(glam.Document), name: String) -> glam.Document {
+fn pretty_element(parts: List(glam.Document), name: String) -> glam.Document {
   let open_element = [glam.from_string(name), glam.space] |> glam.concat
-  content
+  parts
   |> glam.concat
   |> glam.prepend(open_element)
   |> glam.nest(by: 2)
