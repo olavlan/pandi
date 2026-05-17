@@ -74,7 +74,7 @@ While there is no official schema, we can understand the structure of the differ
 Markdown examples should follow the [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) flavor.
 The Lua implementation above should also be used for a reference to the possible values of fields.
 
-## Checklist when adding support for a new element type
+## Checklist when adding or changing an element type
 
 Note that all snapshot tests must be reviewed manually (by a human)
 
@@ -84,16 +84,23 @@ Note that all snapshot tests must be reviewed manually (by a human)
 * Decoder
 * Encoder
 * Handling of the element type in the filter (if it has nested elements)
+* Handling
+
+[tests](./pandi/test/):
+
 * A minimal `from_json` snapshot test (follow existing examples)
   * Note: Example is written as a markdown file and converted to JSON using `just generate-resources`
 
 [pandoc-lustre-converter](./pandoc_lustre_converter/src/pandoc_lustre_converter.gleam):
 
 * Handling of the element in the Lustre conversion
-  * Note: we should use Pandoc's html output as a reference
-* A minimal `convert` snapshot test (follow existing examples)
+  * Note: we use Pandoc's html output as a guideline
+
+[tests](./pandoc_lustre_converter/test/)
+
+* A minimal `convert_inlines` or `convert_blocks` snapshot test (follow existing examples)
 
 [qcheck-pandoc](./qcheck_pandoc/src/qcheck_pandoc.gleam):
 
-* A generator to be used by the document generator
-* Note: we want to ensure the document generator generates readable document samples
+* A generator for the type (to be used by the document generator)
+  * Note: we want to ensure the document generator produces readable document samples
