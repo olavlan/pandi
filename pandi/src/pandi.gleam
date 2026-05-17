@@ -631,7 +631,7 @@ fn walk_inlines(
 
 pub fn to_string(document: Document) -> String {
   pretty_blocks(document.blocks)
-  |> glam.to_string(50)
+  |> glam.to_string(60)
 }
 
 fn pretty_blocks(blocks: List(Block)) -> glam.Document {
@@ -646,30 +646,87 @@ fn pretty_inlines(inlines: List(Inline)) -> glam.Document {
 
 fn pretty_block(block: Block) -> glam.Document {
   case block {
-    Para(content) ->
-      [pretty_inlines(content)]
-      |> pretty_element("Para")
     Header(level, attrs, content) ->
       [
-        glam.from_string(int.to_string(level)),
+        pretty_number(level),
         glam.space,
         pretty_attributes(attrs),
         glam.space,
         pretty_inlines(content),
       ]
       |> pretty_element("Header")
+    Para(content) ->
+      [pretty_inlines(content)]
+      |> pretty_element("Para")
+    Plain(content) ->
+      [pretty_inlines(content)]
+      |> pretty_element("Plain")
+    CodeBlock(attrs, text) ->
+      [pretty_attributes(attrs), glam.space, pretty_value(text)]
+      |> pretty_element("CodeBlock")
+    OrderedList(attrs, items) ->
+      [
+        pretty_list_attributes(attrs),
+        glam.space,
+        pretty_list(list.map(items, pretty_blocks)),
+      ]
+      |> pretty_element("OrderedList")
     _ -> glam.from_string("block")
   }
 }
 
 fn pretty_inline(inline: Inline) -> glam.Document {
-  glam.from_string("inline")
+  case inline {
+    Str(text) -> [pretty_value(text)] |> pretty_element("Str")
+    Space -> pretty_void_element("Space")
+    Link(attrs, content, target) ->
+      [
+        pretty_attributes(attrs),
+        glam.space,
+        pretty_inlines(content),
+        glam.space,
+        pretty_link_target(target),
+      ]
+      |> pretty_element("Link")
+    _ -> glam.from_string("inline")
+  }
 }
 
 fn pretty_attributes(attrs: Attributes) -> glam.Document {
   let pretty_classes = list.map(attrs.classes, pretty_value) |> pretty_list
-  [pretty_value(attrs.id), pretty_classes]
+  let pretty_keyvalues =
+    list.map(attrs.keyvalues, pretty_keyvalue) |> pretty_list
+  [pretty_value(attrs.id), pretty_classes, pretty_keyvalues]
   |> pretty_tuple
+}
+
+fn pretty_keyvalue(keyvalue: #(String, String)) -> glam.Document {
+  [keyvalue.0, keyvalue.1] |> list.map(pretty_value) |> pretty_tuple
+}
+
+fn pretty_list_attributes(attrs: ListAttributes) -> glam.Document {
+  let pretty_number_style = case attrs.style {
+    Decimal -> glam.from_string("Decimal")
+    LowerAlpha -> glam.from_string("LowerAlpha")
+    UpperAlpha -> glam.from_string("UpperAlpha")
+    LowerRoman -> glam.from_string("LowerRoman")
+    UpperRoman -> glam.from_string("UpperRoman")
+  }
+  let pretty_delimiter = case attrs.delimiter {
+    Period -> glam.from_string("Period")
+    OneParen -> glam.from_string("OneParen")
+    TwoParens -> glam.from_string("TwoParens")
+  }
+  [pretty_number(attrs.start), pretty_number_style, pretty_delimiter]
+  |> pretty_tuple
+}
+
+fn pretty_link_target(target: Target) -> glam.Document {
+  [pretty_value(target.url), pretty_value(target.title)] |> pretty_tuple
+}
+
+fn pretty_void_element(name: String) -> glam.Document {
+  glam.from_string(name) |> glam.group
 }
 
 fn pretty_element(parts: List(glam.Document), name: String) -> glam.Document {
@@ -683,6 +740,10 @@ fn pretty_element(parts: List(glam.Document), name: String) -> glam.Document {
 
 fn pretty_value(value: String) -> glam.Document {
   glam.from_string("\"" <> value <> "\"")
+}
+
+fn pretty_number(number: Int) -> glam.Document {
+  glam.from_string(int.to_string(number))
 }
 
 fn pretty_list(docs: List(glam.Document)) -> glam.Document {

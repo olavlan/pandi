@@ -1,18 +1,13 @@
 import birdie
 import pandi as pd
 
-fn snapshot(blocks: List(pd.Block), title: String) {
-  pd.Document(blocks, [])
+fn snapshot_block(block: pd.Block, title: String) {
+  pd.Document([block], [])
   |> pd.to_string
   |> birdie.snap(title: "[to_string] " <> title)
 }
 
 pub fn paragraph_test() {
-  [
-    pd.Header(1, pd.Attributes("test", ["class1", "class2"], []), []),
-    pd.Para([]),
-    pd.Para([]),
-    pd.Para([]),
-  ]
-  |> snapshot("paragraph")
+  pd.Para([pd.Str("Paragraph")])
+  |> snapshot_block("paragraph with one string element")
 }
