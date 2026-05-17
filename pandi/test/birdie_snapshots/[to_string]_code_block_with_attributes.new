@@ -1,9 +1,0 @@
----
-version: 2.0.0
-title: [to_string] code block with attributes
----
-[
-  CodeBlock
-    ( "my-id" , [ "class1" ] , [ ( "key" , "value" ) ] )
-    "let x = 1" ,
-]

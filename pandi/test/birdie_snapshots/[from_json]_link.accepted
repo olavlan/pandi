@@ -1,0 +1,13 @@
+---
+version: 2.0.0
+title: [from_json] link
+---
+[
+  Para
+    [
+      Link
+        ( "" , [  ] , [  ] )
+        [ Str "Click" , Space , Str "here" ]
+        ( "https://example.com" , "My Title" ) ,
+    ] ,
+]

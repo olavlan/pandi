@@ -1,0 +1,16 @@
+---
+version: 2.0.0
+title: [from_json] line_break
+---
+[
+  Para
+    [
+      Str "line" ,
+      Space ,
+      Str "one" ,
+      LineBreak ,
+      Str "line" ,
+      Space ,
+      Str "two" ,
+    ] ,
+]

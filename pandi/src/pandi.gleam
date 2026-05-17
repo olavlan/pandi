@@ -631,7 +631,7 @@ fn walk_inlines(
 
 pub fn to_string(document: Document) -> String {
   pretty_blocks(document.blocks)
-  |> glam.to_string(60)
+  |> glam.to_string(80)
 }
 
 fn pretty_blocks(blocks: List(Block)) -> glam.Document {
@@ -696,7 +696,23 @@ fn pretty_inline(inline: Inline) -> glam.Document {
         pretty_link_target(target),
       ]
       |> pretty_element("Link")
-    _ -> glam.from_string("inline")
+    LineBreak -> pretty_void_element("LineBreak")
+    SoftBreak -> pretty_void_element("SoftBreak")
+    Emph(content) ->
+      [pretty_inlines(content)]
+      |> pretty_element("Emph")
+    Strong(content) ->
+      [pretty_inlines(content)]
+      |> pretty_element("Strong")
+    Strikeout(content) ->
+      [pretty_inlines(content)]
+      |> pretty_element("Strikeout")
+    Code(attrs, text) ->
+      [pretty_attributes(attrs), glam.space, pretty_string(text)]
+      |> pretty_element("Code")
+    Span(attrs, content) ->
+      [pretty_attributes(attrs), glam.space, pretty_inlines(content)]
+      |> pretty_element("Span")
   }
 }
 

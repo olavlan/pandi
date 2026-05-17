@@ -1,0 +1,22 @@
+---
+version: 2.0.0
+title: [from_json] block_quote
+---
+[
+  BlockQuote
+    [
+      Para
+        [
+          Str "This" ,
+          Space ,
+          Str "is" ,
+          Space ,
+          Str "a" ,
+          Space ,
+          Str "block" ,
+          Space ,
+          Str "quote." ,
+        ] ,
+      Para [ Str "Second" , Space , Str "paragraph." ] ,
+    ] ,
+]

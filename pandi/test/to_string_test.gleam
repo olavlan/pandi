@@ -13,11 +13,9 @@ pub fn paragraph_test() {
 }
 
 pub fn header_test() {
-  pd.Header(
-    1,
-    pd.Attributes("my-id", ["class1"], [#("key", "value")]),
-    [pd.Str("Header text")],
-  )
+  pd.Header(1, pd.Attributes("my-id", ["class1"], [#("key", "value")]), [
+    pd.Str("Header text"),
+  ])
   |> snapshot_block("level 1 header")
 }
 
@@ -35,10 +33,9 @@ pub fn code_block_test() {
 }
 
 pub fn div_test() {
-  pd.Div(
-    pd.Attributes("my-id", ["class1"], [#("key", "value")]),
-    [pd.Para([pd.Str("Inside div")])],
-  )
+  pd.Div(pd.Attributes("my-id", ["class1"], [#("key", "value")]), [
+    pd.Para([pd.Str("Inside div")]),
+  ])
   |> snapshot_block("div with paragraph")
 }
 
@@ -51,13 +48,10 @@ pub fn bullet_list_test() {
 }
 
 pub fn ordered_list_test() {
-  pd.OrderedList(
-    pd.ListAttributes(1, pd.Decimal, pd.Period),
-    [
-      [pd.Para([pd.Str("First")])],
-      [pd.Para([pd.Str("Second")])],
-    ],
-  )
+  pd.OrderedList(pd.ListAttributes(1, pd.Decimal, pd.Period), [
+    [pd.Para([pd.Str("First")])],
+    [pd.Para([pd.Str("Second")])],
+  ])
   |> snapshot_block("ordered list starting at 1")
 }
 
