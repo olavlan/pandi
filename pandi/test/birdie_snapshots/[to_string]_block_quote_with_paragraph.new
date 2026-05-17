@@ -1,0 +1,5 @@
+---
+version: 2.0.0
+title: [to_string] block quote with paragraph
+---
+[ BlockQuote [ Para [ Str "Quoted text" ] ] ]

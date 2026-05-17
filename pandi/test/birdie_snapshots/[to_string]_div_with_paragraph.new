@@ -1,0 +1,9 @@
+---
+version: 2.0.0
+title: [to_string] div with paragraph
+---
+[
+  Div
+    ( "my-id" , [ "class1" ] , [ ( "key" , "value" ) ] )
+    [ Para [ Str "Inside div" ] ] ,
+]

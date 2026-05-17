@@ -1,0 +1,5 @@
+---
+version: 2.0.0
+title: [to_string] plain block
+---
+[ Plain [ Str "Plain text" ] ]

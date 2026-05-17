@@ -1,0 +1,9 @@
+---
+version: 2.0.0
+title: [to_string] ordered list starting at 1
+---
+[
+  OrderedList
+    ( 1 , Decimal , Period )
+    [ [ Para [ Str "First" ] ] , [ Para [ Str "Second" ] ] ] ,
+]

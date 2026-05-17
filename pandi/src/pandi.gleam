@@ -671,7 +671,15 @@ fn pretty_block(block: Block) -> glam.Document {
         pretty_list(list.map(items, pretty_blocks)),
       ]
       |> pretty_element("OrderedList")
-    _ -> glam.from_string("block")
+    Div(attrs, content) ->
+      [pretty_attributes(attrs), glam.space, pretty_blocks(content)]
+      |> pretty_element("Div")
+    BulletList(items) ->
+      [pretty_list(list.map(items, pretty_blocks))]
+      |> pretty_element("BulletList")
+    BlockQuote(content) ->
+      [pretty_blocks(content)]
+      |> pretty_element("BlockQuote")
   }
 }
 
