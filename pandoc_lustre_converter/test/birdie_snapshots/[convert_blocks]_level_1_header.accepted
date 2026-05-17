@@ -1,0 +1,8 @@
+---
+version: 2.0.0
+title: [convert_blocks] level 1 header
+---
+<h1 class="class1" id="my-id" key="value">
+  Header text
+</h1>
+

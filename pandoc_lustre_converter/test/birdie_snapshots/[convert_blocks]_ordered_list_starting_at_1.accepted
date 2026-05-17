@@ -1,0 +1,17 @@
+---
+version: 2.0.0
+title: [convert_blocks] ordered list starting at 1
+---
+<ol start="1" type="1">
+  <li>
+    <p>
+      First
+    </p>
+  </li>
+  <li>
+    <p>
+      Second
+    </p>
+  </li>
+</ol>
+

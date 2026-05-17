@@ -1,0 +1,10 @@
+---
+version: 2.0.0
+title: [convert_blocks] block quote with paragraph
+---
+<blockquote>
+  <p>
+    Quoted text
+  </p>
+</blockquote>
+

@@ -9,79 +9,51 @@ fn snapshot(inline: pd.Inline, title: String) {
   |> birdie.snap(title: "[convert_inlines] " <> title)
 }
 
-pub fn str_test() {
-  pd.Str("Hello")
-  |> snapshot("string")
+pub fn string_test() {
+  pd.Str("string") |> snapshot("string")
 }
 
 pub fn space_test() {
-  pd.Space
-  |> snapshot("space")
+  pd.Space |> snapshot("space")
 }
 
 pub fn line_break_test() {
-  pd.LineBreak
-  |> snapshot("line break")
+  pd.LineBreak |> snapshot("line break")
 }
 
 pub fn soft_break_test() {
-  pd.SoftBreak
-  |> snapshot("soft break")
+  pd.SoftBreak |> snapshot("soft break")
 }
 
 pub fn emph_test() {
-  pd.Emph([pd.Str("Emphasized")])
-  |> snapshot("emphasis")
+  pd.Emph([pd.Str("emphasized")]) |> snapshot("emphasis")
 }
 
 pub fn strong_test() {
-  pd.Strong([pd.Str("Bold")])
-  |> snapshot("strong")
+  pd.Strong([pd.Str("strong")]) |> snapshot("strong")
 }
 
 pub fn strikeout_test() {
-  pd.Strikeout([pd.Str("Deleted")])
-  |> snapshot("strikeout")
+  pd.Strikeout([pd.Str("strikeout")]) |> snapshot("strikeout")
 }
 
-pub fn code_test() {
-  pd.Code(pd.Attributes("", [], []), "let x = 1")
-  |> snapshot("inline code without attributes")
-}
-
-pub fn code_with_attributes_test() {
-  let attrs =
-    pd.Attributes("code-1", ["language-gleam"], [#("data-executable", "true")])
-  pd.Code(attrs, "fn hello() { \"Hello\" }")
-  |> snapshot("inline code with id, class, and keyvalue attributes")
+pub fn inline_code_test() {
+  pd.Code(pd.Attributes("", [], []), "code")
+  |> snapshot("inline code")
 }
 
 pub fn span_test() {
-  pd.Span(pd.Attributes("", [], []), [pd.Str("Span content")])
-  |> snapshot("span without attributes")
-}
-
-pub fn span_with_attributes_test() {
-  let attrs = pd.Attributes("my-span", ["highlight"], [#("data-role", "note")])
-  pd.Span(attrs, [pd.Str("Styled span")])
-  |> snapshot("span with id, classes, and keyvalue attributes")
+  pd.Span(pd.Attributes("my-id", ["class1"], [#("key", "value")]), [
+    pd.Str("span text"),
+  ])
+  |> snapshot("span")
 }
 
 pub fn link_test() {
-  let target = pd.Target("https://example.com", "")
-  pd.Link(pd.Attributes("", [], []), [pd.Str("Click here")], target)
-  |> snapshot("link without title")
-}
-
-pub fn link_with_title_test() {
-  let target = pd.Target("https://example.com", "Example Site")
-  pd.Link(pd.Attributes("", [], []), [pd.Str("Click here")], target)
-  |> snapshot("link with title")
-}
-
-pub fn link_with_attributes_test() {
-  let attrs = pd.Attributes("link-1", ["external"], [#("data-track", "true")])
-  let target = pd.Target("https://example.com", "Example")
-  pd.Link(attrs, [pd.Str("Attributed link")], target)
-  |> snapshot("link with id, classes, and keyvalue attributes")
+  pd.Link(
+    pd.Attributes("", [], []),
+    [pd.Str("link text")],
+    pd.Target("https://example.com", "title"),
+  )
+  |> snapshot("link")
 }

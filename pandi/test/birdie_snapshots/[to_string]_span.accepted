@@ -1,0 +1,12 @@
+---
+version: 2.0.0
+title: [to_string] span
+---
+[
+  Plain
+    [
+      Span
+        ( "my-id" , [ "class1" ] , [ ( "key" , "value" ) ] )
+        [ Str "span text" ] ,
+    ] ,
+]

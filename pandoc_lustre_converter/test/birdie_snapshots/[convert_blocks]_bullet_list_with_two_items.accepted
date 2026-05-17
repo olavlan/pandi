@@ -1,0 +1,17 @@
+---
+version: 2.0.0
+title: [convert_blocks] bullet list with two items
+---
+<ul>
+  <li>
+    <p>
+      Item 1
+    </p>
+  </li>
+  <li>
+    <p>
+      Item 2
+    </p>
+  </li>
+</ul>
+
