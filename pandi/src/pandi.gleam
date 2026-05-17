@@ -662,7 +662,7 @@ fn pretty_block(block: Block) -> glam.Document {
       [pretty_inlines(content)]
       |> pretty_element("Plain")
     CodeBlock(attrs, text) ->
-      [pretty_attributes(attrs), glam.space, pretty_value(text)]
+      [pretty_attributes(attrs), glam.space, pretty_string(text)]
       |> pretty_element("CodeBlock")
     OrderedList(attrs, items) ->
       [
@@ -685,7 +685,7 @@ fn pretty_block(block: Block) -> glam.Document {
 
 fn pretty_inline(inline: Inline) -> glam.Document {
   case inline {
-    Str(text) -> [pretty_value(text)] |> pretty_element("Str")
+    Str(text) -> [pretty_string(text)] |> pretty_element("Str")
     Space -> pretty_void_element("Space")
     Link(attrs, content, target) ->
       [
@@ -701,15 +701,15 @@ fn pretty_inline(inline: Inline) -> glam.Document {
 }
 
 fn pretty_attributes(attrs: Attributes) -> glam.Document {
-  let pretty_classes = list.map(attrs.classes, pretty_value) |> pretty_list
+  let pretty_classes = list.map(attrs.classes, pretty_string) |> pretty_list
   let pretty_keyvalues =
     list.map(attrs.keyvalues, pretty_keyvalue) |> pretty_list
-  [pretty_value(attrs.id), pretty_classes, pretty_keyvalues]
+  [pretty_string(attrs.id), pretty_classes, pretty_keyvalues]
   |> pretty_tuple
 }
 
 fn pretty_keyvalue(keyvalue: #(String, String)) -> glam.Document {
-  [keyvalue.0, keyvalue.1] |> list.map(pretty_value) |> pretty_tuple
+  [keyvalue.0, keyvalue.1] |> list.map(pretty_string) |> pretty_tuple
 }
 
 fn pretty_list_attributes(attrs: ListAttributes) -> glam.Document {
@@ -730,7 +730,7 @@ fn pretty_list_attributes(attrs: ListAttributes) -> glam.Document {
 }
 
 fn pretty_link_target(target: Target) -> glam.Document {
-  [pretty_value(target.url), pretty_value(target.title)] |> pretty_tuple
+  [pretty_string(target.url), pretty_string(target.title)] |> pretty_tuple
 }
 
 fn pretty_void_element(name: String) -> glam.Document {
@@ -746,7 +746,7 @@ fn pretty_element(parts: List(glam.Document), name: String) -> glam.Document {
   |> glam.group
 }
 
-fn pretty_value(value: String) -> glam.Document {
+fn pretty_string(value: String) -> glam.Document {
   glam.from_string("\"" <> value <> "\"")
 }
 
