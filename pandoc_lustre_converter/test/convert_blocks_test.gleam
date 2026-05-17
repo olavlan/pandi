@@ -58,7 +58,7 @@ pub fn ordered_list_test() {
     [pd.Plain([pd.Str("Item")])],
     [pd.Plain([pd.Str("Item")])],
   ])
-  |> snapshot("ordered list with two items (start=1, decimal, period)")
+  |> snapshot("ordered list with two items")
 }
 
 pub fn code_block_test() {

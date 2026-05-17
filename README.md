@@ -7,8 +7,6 @@ Gleam packages for working with Pandoc documents:
 Tasks
 
 * Add documentation
-* Update contribution guide after switching to monorepo
 * Filter and custom rendering tests
 * Proper qcheck-pandoc examples
-* Good printing of pandoc types for easier snapshot review
-* Simpler snapshot tests with better descriptions
+* Simpler snapshot tests in pandoc_lustre_converter, better titles and examples

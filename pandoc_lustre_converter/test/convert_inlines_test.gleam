@@ -11,7 +11,7 @@ fn snapshot(inline: pd.Inline, title: String) {
 
 pub fn str_test() {
   pd.Str("Hello")
-  |> snapshot("simple string")
+  |> snapshot("string")
 }
 
 pub fn space_test() {

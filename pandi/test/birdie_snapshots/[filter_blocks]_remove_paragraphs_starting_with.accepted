@@ -1,0 +1,5 @@
+---
+version: 2.0.0
+title: [filter_blocks] remove paragraphs starting with //
+---
+[ Para [ Str "Normal" , Space , Str "paragraph." ] ]

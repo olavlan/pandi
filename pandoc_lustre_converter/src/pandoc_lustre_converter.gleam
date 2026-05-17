@@ -7,10 +7,10 @@ import lustre/element.{type Element}
 import lustre/element/html
 import pandi as pd
 
-pub type BlockRenderer(msg) =
+pub type BlockFilter(msg) =
   fn(pd.Block, pd.Meta) -> Option(Element(msg))
 
-pub type InlineRenderer(msg) =
+pub type InlineFilter(msg) =
   fn(pd.Inline, pd.Meta) -> Option(Element(msg))
 
 pub fn convert_document(document: pd.Document) -> Element(msg) {
@@ -37,8 +37,8 @@ fn inline_to_lustre(inline: pd.Inline) -> Element(msg) {
 
 pub fn convert_document_with(
   document: pd.Document,
-  block_renderer: BlockRenderer(msg),
-  inline_renderer: InlineRenderer(msg),
+  block_renderer: BlockFilter(msg),
+  inline_renderer: InlineFilter(msg),
 ) -> Element(msg) {
   convert_blocks_with(
     document.blocks,
@@ -50,8 +50,8 @@ pub fn convert_document_with(
 
 pub fn convert_blocks_with(
   blocks: List(pd.Block),
-  block_renderer: BlockRenderer(msg),
-  inline_renderer: InlineRenderer(msg),
+  block_renderer: BlockFilter(msg),
+  inline_renderer: InlineFilter(msg),
   meta: pd.Meta,
 ) -> Element(msg) {
   let elements =
@@ -66,7 +66,7 @@ pub fn convert_blocks_with(
 
 pub fn convert_inlines_with(
   inlines: List(pd.Inline),
-  inline_remderer: InlineRenderer(msg),
+  inline_remderer: InlineFilter(msg),
   meta: pd.Meta,
 ) -> Element(msg) {
   let elements =
@@ -76,8 +76,8 @@ pub fn convert_inlines_with(
 
 fn convert_block_with(
   block: pd.Block,
-  block_renderer: BlockRenderer(msg),
-  inline_renderer: InlineRenderer(msg),
+  block_renderer: BlockFilter(msg),
+  inline_renderer: InlineFilter(msg),
   meta: pd.Meta,
 ) -> Element(msg) {
   case block_renderer(block, meta) {
@@ -150,7 +150,7 @@ fn convert_block_with(
 
 fn convert_inline_with(
   inline: pd.Inline,
-  inline_renderer: InlineRenderer(msg),
+  inline_renderer: InlineFilter(msg),
   meta: pd.Meta,
 ) -> Element(msg) {
   case inline_renderer(inline, meta) {
@@ -231,8 +231,8 @@ fn convert_list_attributes(
 
 fn convert_list_items(
   items: List(List(pd.Block)),
-  block_renderer: BlockRenderer(msg),
-  inline_renderer: InlineRenderer(msg),
+  block_renderer: BlockFilter(msg),
+  inline_renderer: InlineFilter(msg),
   meta: pd.Meta,
 ) -> List(Element(msg)) {
   list.map(items, fn(item) {
