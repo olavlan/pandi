@@ -1,21 +1,20 @@
-import examples/pandoc.{parse, render}
-import gleam/option.{None, Some}
-import pandi as pd
+import examples/pandoc
+import pandi as doc
 
 pub fn main() {
-  let increase_header_level: pd.BlockFilter = fn(block, _meta) {
+  let increase_header_level: doc.BlockFilter = fn(block, _meta) {
     case block {
-      pd.Header(level, attrs, content) ->
-        Some([pd.Header(level + 1, attrs, content)])
-      _ -> None
+      doc.Header(level, attrs, content) ->
+        doc.Replace(doc.Header(level + 1, attrs, content))
+      _ -> doc.Keep
     }
   }
 
   let html =
     "# Hello world"
-    |> parse("markdown")
-    |> pd.filter_blocks(increase_header_level)
-    |> render("html")
+    |> pandoc.parse("markdown")
+    |> doc.filter_blocks(increase_header_level)
+    |> pandoc.render("html")
 
   assert html == "<h2 id=\"hello-world\">Hello world</h2>\n"
 }

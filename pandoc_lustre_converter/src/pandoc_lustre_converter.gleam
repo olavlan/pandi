@@ -1,37 +1,51 @@
 import gleam/int
 import gleam/list
-import gleam/option.{type Option, None, Some}
 import gleam/string
 import lustre/attribute
-import lustre/element.{type Element}
+import lustre/element as lustre
 import lustre/element/html
 import pandi as pd
 
-pub type BlockFilter(msg) =
-  fn(pd.Block, pd.Meta) -> Option(Element(msg))
+pub opaque type Document(msg) {
+  Document(
+    document: pd.Document,
+    block_converter: BlockConverter(msg),
+    inline_converter: InlineConverter(msg),
+  )
+}
 
-pub type InlineFilter(msg) =
-  fn(pd.Inline, pd.Meta) -> Option(Element(msg))
+pub type BlockConverter(msg) =
+  fn(pd.Block, pd.Meta) -> Element(msg)
 
-pub fn convert(document: pd.Document) -> Element(msg) {
+pub type InlineConverter(msg) =
+  fn(pd.Inline, pd.Meta) -> Element(msg)
+
+pub type Element(msg) {
+  Custom(element: lustre.Element(msg))
+  Default
+}
+
+pub fn document(pandoc_json:   )
+
+pub fn convert(document: pd.Document) -> lustre.Element(msg) {
   convert_blocks(document.blocks)
 }
 
-pub fn convert_blocks(blocks: List(pd.Block)) -> Element(msg) {
+pub fn convert_blocks(blocks: List(pd.Block)) -> lustre.Element(msg) {
   let elements = list.map(blocks, convert_block)
-  element.fragment(elements)
+  lustre.fragment(elements)
 }
 
-pub fn convert_inlines(inlines: List(pd.Inline)) -> Element(msg) {
+pub fn convert_inlines(inlines: List(pd.Inline)) -> lustre.Element(msg) {
   let elements = list.map(inlines, convert_inline)
-  element.fragment(elements)
+  lustre.fragment(elements)
 }
 
-fn convert_block(block: pd.Block) -> Element(msg) {
+fn convert_block(block: pd.Block) -> lustre.Element(msg) {
   convert_block_with_filter(block, fn(_, _) { None }, fn(_, _) { None }, [])
 }
 
-fn convert_inline(inline: pd.Inline) -> Element(msg) {
+fn convert_inline(inline: pd.Inline) -> lustre.Element(msg) {
   convert_inline_with_filter(inline, fn(_, _) { None }, [])
 }
 
@@ -53,7 +67,7 @@ pub fn convert_blocks_with_filter(
   block_filter: BlockFilter(msg),
   inline_filter: InlineFilter(msg),
   meta: pd.Meta,
-) -> Element(msg) {
+) -> lustre.Element(msg) {
   let elements =
     list.map(blocks, convert_block_with_filter(
       _,
@@ -61,17 +75,17 @@ pub fn convert_blocks_with_filter(
       inline_filter,
       meta,
     ))
-  element.fragment(elements)
+  lustre.fragment(elements)
 }
 
 pub fn convert_inlines_with_filter(
   inlines: List(pd.Inline),
   inline_filter: InlineFilter(msg),
   meta: pd.Meta,
-) -> Element(msg) {
+) -> lustre.Element(msg) {
   let elements =
     list.map(inlines, convert_inline_with_filter(_, inline_filter, meta))
-  element.fragment(elements)
+  lustre.fragment(elements)
 }
 
 fn convert_block_with_filter(
@@ -79,10 +93,11 @@ fn convert_block_with_filter(
   block_filter: BlockFilter(msg),
   inline_filter: InlineFilter(msg),
   meta: pd.Meta,
-) -> Element(msg) {
+) -> lustre.Element(msg) {
   case block_filter(block, meta) {
-    Some(el) -> el
-    None ->
+    Custom(el) -> el
+    None -> lustre.none()
+    Default ->
       case block {
         pd.Header(level, attrs, content) -> {
           let inlines =
@@ -106,7 +121,7 @@ fn convert_block_with_filter(
         pd.Plain(content) -> {
           let inlines =
             list.map(content, convert_inline_with_filter(_, inline_filter, meta))
-          element.fragment(inlines)
+          lustre.fragment(inlines)
         }
         pd.Div(attrs, content) -> {
           let blocks =
@@ -152,7 +167,7 @@ fn convert_inline_with_filter(
   inline: pd.Inline,
   inline_filter: InlineFilter(msg),
   meta: pd.Meta,
-) -> Element(msg) {
+) -> lustre.Element(msg) {
   case inline_filter(inline, meta) {
     Some(el) -> el
     None ->

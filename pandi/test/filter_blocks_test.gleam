@@ -1,5 +1,4 @@
 import birdie
-import gleam/option.{None, Some}
 import pandi as pd
 
 fn snapshot(blocks: List(pd.Block), filter: pd.BlockFilter, title: String) {
@@ -23,8 +22,8 @@ pub fn increase_header_level_test() {
   let filter: pd.BlockFilter = fn(block, _meta) {
     case block {
       pd.Header(level, attrs, content) ->
-        Some([pd.Header(level + 1, attrs, content)])
-      _ -> None
+        pd.Replace(pd.Header(level + 1, attrs, content))
+      _ -> pd.Keep
     }
   }
   snapshot(blocks, filter, "increase header level from 1 to 2")
@@ -50,8 +49,8 @@ pub fn remove_comment_paragraphs_test() {
   ]
   let filter: pd.BlockFilter = fn(block, _meta) {
     case block {
-      pd.Para([pd.Str("//"), ..]) -> Some([])
-      _ -> None
+      pd.Para([pd.Str("//"), ..]) -> pd.Remove
+      _ -> pd.Keep
     }
   }
   snapshot(blocks, filter, "remove paragraphs starting with //")
@@ -75,8 +74,8 @@ pub fn convert_ordered_list_to_bullet_list_test() {
   ]
   let filter: pd.BlockFilter = fn(block, _meta) {
     case block {
-      pd.OrderedList(_, items) -> Some([pd.BulletList(items)])
-      _ -> None
+      pd.OrderedList(_, items) -> pd.Replace(pd.BulletList(items))
+      _ -> pd.Keep
     }
   }
   snapshot(blocks, filter, "convert ordered list to bullet list")

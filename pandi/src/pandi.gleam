@@ -4,7 +4,6 @@ import gleam/dynamic/decode
 import gleam/int
 import gleam/json
 import gleam/list
-import gleam/option.{type Option, None, Some}
 
 pub type Document {
   Document(blocks: List(Block), meta: Meta)
@@ -537,11 +536,32 @@ fn encode_list_number_delimiter(delim: ListNumberDelimiter) -> json.Json {
   json.object([#("t", json.string(t))])
 }
 
+pub opaque type Change(kind) {
+  Replace(new_elements: List(kind))
+  Keep
+}
+
+pub fn replace(new_element: kind) -> Change(kind) {
+  Replace([new_element])
+}
+
+pub fn replace_with_multiple(new_elements: List(kind)) -> Change(kind) {
+  Replace(new_elements)
+}
+
+pub fn prepend(new_element: kind) -> Change(kind) {
+  todo
+}
+
+pub fn append(new_element: kind) -> Change(kind) {
+  todo
+}
+
 pub type BlockFilter =
-  fn(Block, Meta) -> Option(List(Block))
+  fn(Block, Meta) -> Change(Block)
 
 pub type InlineFilter =
-  fn(Inline, Meta) -> Option(List(Inline))
+  fn(Inline, Meta) -> Change(Inline)
 
 pub fn filter_blocks(document: Document, filter: BlockFilter) -> Document {
   let new_blocks = walk_blocks(document.blocks, document.meta, filter)
@@ -561,8 +581,8 @@ fn walk_blocks(
 ) -> List(Block) {
   list.flat_map(blocks, fn(block) {
     case filter(block, meta) {
-      Some(new_blocks) -> new_blocks
-      None -> {
+      Replace(new_blocks) -> new_blocks
+      Keep -> {
         case block {
           Div(attrs, content) -> [
             Div(attrs, walk_blocks(content, meta, filter)),
@@ -604,8 +624,8 @@ fn walk_inlines(
 ) -> List(Inline) {
   list.flat_map(inlines, fn(inline) {
     case filter(inline, meta) {
-      Some(new_inlines) -> new_inlines
-      None -> {
+      Replace(new_inlines) -> new_inlines
+      Keep -> {
         case inline {
           Emph(content) -> [
             Emph(walk_inlines(content, meta, filter)),
