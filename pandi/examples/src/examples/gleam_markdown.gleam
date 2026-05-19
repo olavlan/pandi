@@ -10,17 +10,17 @@ pub fn main() {
       // append a gleam playground link to each code block:
       doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) ->
         doc.keep |> doc.append(element.gleam_playground_link(code))
-      // keep all other inlines (children are still subject to filter)
+      // keep all other inlines (children are still subject to filter):
       _ -> doc.keep
     }
   }
 
   let inline_filter: doc.InlineFilter = fn(inline, _meta) {
     case inline {
-      // replace all occurrences of "hex:[package_name] with a link to the Hex docs:"
+      // replace all occurrences of "hex:[package_name]" with a link to the Hex docs:
       doc.Str("hex:" <> package_name) ->
         doc.remove |> doc.append(element.hex_link(package_name))
-      // keep all other inlines
+      // keep all other inlines (children are still subject to filter):
       _ -> doc.keep
     }
   }
