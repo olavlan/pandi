@@ -5,8 +5,8 @@ pub fn main() {
   let increase_header_level: doc.BlockFilter = fn(block, _meta) {
     case block {
       doc.Header(level, attrs, content) ->
-        doc.Replace(doc.Header(level + 1, attrs, content))
-      _ -> doc.Keep
+        doc.remove() |> doc.append(doc.Header(level + 1, attrs, content))
+      _ -> doc.keep()
     }
   }
 

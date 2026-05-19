@@ -4,6 +4,7 @@ import gleam/dynamic/decode
 import gleam/int
 import gleam/json
 import gleam/list
+import gleam/option
 
 pub type Document {
   Document(blocks: List(Block), meta: Meta)
@@ -536,32 +537,44 @@ fn encode_list_number_delimiter(delim: ListNumberDelimiter) -> json.Json {
   json.object([#("t", json.string(t))])
 }
 
-pub opaque type Change(kind) {
-  Replace(new_elements: List(kind))
-  Keep
-}
-
-pub fn replace(new_element: kind) -> Change(kind) {
-  Replace([new_element])
-}
-
-pub fn replace_with_multiple(new_elements: List(kind)) -> Change(kind) {
-  Replace(new_elements)
-}
-
-pub fn prepend(new_element: kind) -> Change(kind) {
-  todo
-}
-
-pub fn append(new_element: kind) -> Change(kind) {
-  todo
-}
-
 pub type BlockFilter =
-  fn(Block, Meta) -> Change(Block)
+  fn(Block, Meta) -> FilterAction(Block)
 
 pub type InlineFilter =
-  fn(Inline, Meta) -> Change(Inline)
+  fn(Inline, Meta) -> FilterAction(Inline)
+
+pub opaque type FilterAction(element) {
+  FilterAction(
+    prepend: List(element),
+    replace: option.Option(List(element)),
+    append: List(element),
+  )
+}
+
+pub fn keep() -> FilterAction(element) {
+  FilterAction([], option.None, [])
+}
+
+pub fn remove() -> FilterAction(element) {
+  FilterAction([], option.Some([]), [])
+}
+
+pub fn prepend(
+  previous_action: FilterAction(element),
+  prepend: element,
+) -> FilterAction(element) {
+  FilterAction(..previous_action, prepend: [prepend, ..previous_action.prepend])
+}
+
+pub fn append(
+  previous_action: FilterAction(element),
+  append: element,
+) -> FilterAction(element) {
+  FilterAction(
+    ..previous_action,
+    append: list.append(previous_action.append, [append]),
+  )
+}
 
 pub fn filter_blocks(document: Document, filter: BlockFilter) -> Document {
   let new_blocks = walk_blocks(document.blocks, document.meta, filter)
@@ -579,22 +592,34 @@ fn walk_blocks(
   meta: Meta,
   filter: BlockFilter,
 ) -> List(Block) {
-  list.flat_map(blocks, fn(block) {
-    case filter(block, meta) {
-      Replace(new_blocks) -> new_blocks
-      Keep -> {
-        case block {
-          Div(attrs, content) -> [
-            Div(attrs, walk_blocks(content, meta, filter)),
-          ]
-          BulletList(items) -> [
-            BulletList(list.map(items, walk_blocks(_, meta, filter))),
-          ]
-          _ -> [block]
-        }
+  list.flat_map(blocks, walk_block(_, meta, filter))
+}
+
+fn walk_block(block: Block, meta: Meta, filter: BlockFilter) -> List(Block) {
+  case filter(block, meta) {
+    FilterAction(prepend, option.Some(replace), append) ->
+      [
+        prepend,
+        replace,
+        append,
+      ]
+      |> list.flatten
+
+    FilterAction(prepend, option.None, append) -> {
+      let block_with_filtered_children: Block = case block {
+        Div(attrs, content) -> Div(attrs, walk_blocks(content, meta, filter))
+        BulletList(items) ->
+          BulletList(list.map(items, walk_blocks(_, meta, filter)))
+        OrderedList(list_attributes, items) ->
+          OrderedList(
+            list_attributes,
+            list.map(items, walk_blocks(_, meta, filter)),
+          )
+        _ -> block
       }
+      [prepend, [block_with_filtered_children], append] |> list.flatten
     }
-  })
+  }
 }
 
 fn walk_inlines_in_block(
@@ -613,6 +638,11 @@ fn walk_inlines_in_block(
       BulletList(
         list.map(items, list.map(_, walk_inlines_in_block(_, meta, filter))),
       )
+    OrderedList(list_attributes, items) ->
+      OrderedList(
+        list_attributes,
+        list.map(items, list.map(_, walk_inlines_in_block(_, meta, filter))),
+      )
     _ -> block
   }
 }
@@ -622,31 +652,38 @@ fn walk_inlines(
   meta: Meta,
   filter: InlineFilter,
 ) -> List(Inline) {
-  list.flat_map(inlines, fn(inline) {
-    case filter(inline, meta) {
-      Replace(new_inlines) -> new_inlines
-      Keep -> {
-        case inline {
-          Emph(content) -> [
-            Emph(walk_inlines(content, meta, filter)),
-          ]
-          Strong(content) -> [
-            Strong(walk_inlines(content, meta, filter)),
-          ]
-          Strikeout(content) -> [
-            Strikeout(walk_inlines(content, meta, filter)),
-          ]
-          Span(attrs, content) -> [
-            Span(attrs, walk_inlines(content, meta, filter)),
-          ]
-          Link(attrs, content, target) -> [
-            Link(attrs, walk_inlines(content, meta, filter), target),
-          ]
-          _ -> [inline]
-        }
+  list.flat_map(inlines, walk_inline(_, meta, filter))
+}
+
+pub fn walk_inline(
+  inline: Inline,
+  meta: Meta,
+  filter: InlineFilter,
+) -> List(Inline) {
+  case filter(inline, meta) {
+    FilterAction(prepend, option.Some(replace), append) ->
+      [
+        prepend,
+        replace,
+        append,
+      ]
+      |> list.flatten
+    FilterAction(prepend, option.None, append) -> {
+      let inline_with_filtered_children: Inline = case inline {
+        Emph(content) -> Emph(walk_inlines(content, meta, filter))
+
+        Strong(content) -> Strong(walk_inlines(content, meta, filter))
+
+        Strikeout(content) -> Strikeout(walk_inlines(content, meta, filter))
+
+        Span(attrs, content) -> Span(attrs, walk_inlines(content, meta, filter))
+        Link(attrs, content, target) ->
+          Link(attrs, walk_inlines(content, meta, filter), target)
+        _ -> inline
       }
+      [prepend, [inline_with_filtered_children], append] |> list.flatten
     }
-  })
+  }
 }
 
 pub fn to_string(document: Document) -> String {
