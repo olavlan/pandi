@@ -9,6 +9,8 @@ Pandoc allows you to process documents in a format-independent way.
 
 This package's goal is to make it easy to process Pandoc-compatible documents.
 
+## Motivating example
+
 As an example, consider the following Markdown document:
 
 ````md
@@ -69,8 +71,7 @@ pub fn main() {
 
 The produced html will render (more or less) like this:
 
----
-
+<iframe>
 <h1 id="gleam-is-cool">Gleam is cool</h1>
 <p>Here is a <em>Hello world</em> example:</p>
 <div class="sourceCode" id="cb1"><pre
@@ -85,7 +86,110 @@ title="Gleam playground">Open code in Gleam playground</a></p>
 <p>Go to <a href="https://hexdocs.pm/gleam_stdlib/index.html"
 title="gleam_stdlib at Hex Docs">gleam_stdlib</a> to learn more about
 <code>io</code> and the rest of the standard library.</p>
+</iframe>
 
----
+## What you need to implement yourself
 
-In this example we have hidden away some details.
+### `pandoc` wrapper
+
+This library deliberately does not call `pandoc`, but works with its json output format. That means:
+
+* To parse any document format, you need to call `pandoc` to convert to json first.
+* To render to any document format, you need to call `pandoc` to convert from json.
+
+The above example uses the following `pandoc` wrapper:
+
+```gleam
+import pandi.{type Document, from_json, to_json}
+import shellout
+import simplifile
+
+pub fn parse_raw(raw_document: String, format: String) -> Document {
+  let cmd = "echo '" <> raw_document <> "' | pandoc -f " <> format <> " -t json"
+  let assert Ok(result) =
+    shellout.command(run: "sh", with: ["-c", cmd], in: ".", opt: [])
+  let assert Ok(document) = from_json(result)
+  document
+}
+
+pub fn render_raw(document: Document, format: String) -> String {
+  let json = to_json(document)
+  let cmd = "echo '" <> json <> "' | pandoc -f json -t " <> format
+  let assert Ok(html) =
+    shellout.command(run: "sh", with: ["-c", cmd], in: ".", opt: [])
+  html
+}
+
+pub fn parse(input_path: String) -> Document {
+  let assert Ok(result) =
+    shellout.command(
+      run: "pandoc",
+      with: ["-t", "json", input_path],
+      in: ".",
+      opt: [shellout.LetBeStderr],
+    )
+  let assert Ok(document) = from_json(result)
+  document
+}
+
+pub fn render(document: Document, output_path: String) -> String {
+  let json = to_json(document)
+  let json_file_path = "./" <> output_path <> ".json"
+  let assert Ok(_) = simplifile.write(to: json_file_path, contents: json)
+  let assert Ok(result) =
+    shellout.command(
+      run: "pandoc",
+      with: ["-f", "json", "-o", output_path, json_file_path],
+      in: ".",
+      opt: [],
+    )
+  result
+}
+```
+
+This can be used as a starting point for creating a wrapper with appropriate file and error handling.
+
+### Constructing elements
+
+This library deliberately does not expose convenience functions for constructing elements.
+The type constructors are meant to be fully usable for both pattern matching and element construction.
+
+The above example uses the following helpers to construct the links:
+
+```gleam
+import pandi as doc
+
+pub fn hex_link(package_name: String) -> doc.Inline {
+  let url = "https://hexdocs.pm/" <> package_name <> "/index.html"
+  let title = package_name <> " at Hex Docs"
+  basic_link(url: url, title: title, text: package_name)
+}
+
+pub fn gleam_playground_link(gleam_code: String) -> doc.Block {
+  let compressed_code = make_v1_hash(gleam_code)
+  echo compressed_code
+  let url = "https://playground.gleam.run/#" <> compressed_code
+  doc.Para(content: [
+    basic_link(
+      url: url,
+      title: "Gleam playground",
+      text: "Open code in Gleam playground",
+    ),
+  ])
+}
+
+fn basic_link(
+  url url: String,
+  title title: String,
+  text text: String,
+) -> doc.Inline {
+  doc.Link(
+    attributes: doc.Attributes(id: "", classes: [], keyvalues: []),
+    target: doc.Target(url: url, title: title),
+    content: [doc.Str(text)],
+  )
+}
+
+@external(javascript, "./lz_ffi.mjs", "makeV1Hash")
+fn make_v1_hash(code: String) -> String
+```
