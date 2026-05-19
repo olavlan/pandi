@@ -73,14 +73,13 @@ render_readme := "sed -E 's/\\{\\{([^}]+)\\}\\}/cat \\1/e' README.template.md > 
 docs:
     #!/usr/bin/env sh
     set -e
+    for pkg in {{ packages }}; do
+        (cd "$pkg" && gleam docs build)
+    done
     rm -rf docs
     for pkg in {{ packages }}; do
-        (
-            cd "$pkg"
-            gleam docs build
-            mkdir -p "../../docs/$pkg"
-            cp -r "build/dev/docs/$pkg/." "../../docs/$pkg/"
-        )
+        mkdir -p "docs/$pkg"
+        cp -r "$pkg/build/dev/docs/$pkg/." "docs/$pkg/"
     done
 
 # generate README-files from templates across all packages
