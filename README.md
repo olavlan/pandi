@@ -4,12 +4,22 @@ Gleam packages for working with Pandoc documents:
 * [pandoc-lustre-converter](/pandoc_lustre_converter): Pandoc to Lustre converter, with rendering hooks.
 * [qcheck-pandoc](/qcheck_pandoc): Pandoc random document generator.
 
-Tasks
+Tasks, pandi:
+
+* Resources folder
+* Tidy API and add short docs
+* Ask Discord for feedback
+* Add proper documentation
+
+Tasks, pandoc-lustre-converter:
 
 * Improve api
+* Readme and short docs
+* Ask Discord for feedback
+* Add proper documentation
+
+Tasks, other:
+
 * Adhere to Gleam conventions
-* Add documentation
 * Test both targets in justfile
-* Custom rendering tests
-* Proper qcheck-pandoc examples
-* Simpler snapshot tests in pandoc_lustre_converter, better titles and examples
+* support all element types
