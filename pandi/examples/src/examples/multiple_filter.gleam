@@ -1,4 +1,3 @@
-import examples/lz
 import examples/pandoc
 import pandi as doc
 
@@ -6,8 +5,8 @@ pub fn main() {
   let block_filter: doc.BlockFilter = fn(block, _meta) {
     case block {
       doc.Para([doc.Str("//" <> _), ..]) -> doc.remove
-      doc.CodeBlock(doc.Attributes(_, ["gleam"], _), raw_code) ->
-        doc.keep |> doc.append(gleam_playground_link(raw_code))
+      doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) ->
+        doc.keep |> doc.append(gleam_playground_link(code))
       _ -> doc.keep
     }
   }
@@ -20,15 +19,12 @@ pub fn main() {
     }
   }
 
-  let html =
-    ""
-    |> pandoc.parse("markdown")
-    |> doc.filter_blocks(block_filter)
-    |> doc.filter_inlines(inline_filter)
-    |> pandoc.render("markdown")
-    |> echo
-
-  assert html == "<h2 id=\"hello-world\">Hello world</h2>\n"
+  "```gleam\nimport gleam/io\n\npub fn main() {\nio.println(\"Hello, World!\")\n}\n```"
+  |> pandoc.parse_raw("markdown")
+  |> doc.filter_blocks(block_filter)
+  |> doc.filter_inlines(inline_filter)
+  |> pandoc.render_raw("markdown")
+  |> echo
 }
 
 fn hex_link(package_name: String) -> doc.Inline {
@@ -37,9 +33,10 @@ fn hex_link(package_name: String) -> doc.Inline {
   basic_link(url: url, title: title, text: package_name)
 }
 
-fn gleam_playground_link(raw_code: String) -> doc.Block {
-  let encoded_raw_code = todo
-  let url = "https://playground.gleam.run/" <> encoded_raw_code
+fn gleam_playground_link(gleam_code: String) -> doc.Block {
+  let compressed_code = make_v1_hash(gleam_code)
+  echo compressed_code
+  let url = "https://playground.gleam.run/#" <> compressed_code
   doc.Para(content: [
     basic_link(
       url: url,
@@ -60,3 +57,6 @@ fn basic_link(
     content: [doc.Str(text)],
   )
 }
+
+@external(javascript, "./lz_ffi.mjs", "makeV1Hash")
+fn make_v1_hash(code: String) -> String

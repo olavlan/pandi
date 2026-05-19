@@ -12,9 +12,9 @@ pub fn main() {
 
   let html =
     "# Hello world"
-    |> pandoc.parse("markdown")
+    |> pandoc.parse_raw("markdown")
     |> doc.filter_blocks(increase_header_level)
-    |> pandoc.render("html")
+    |> pandoc.render_raw("html")
 
   assert html == "<h2 id=\"hello-world\">Hello world</h2>\n"
 }
