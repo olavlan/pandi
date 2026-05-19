@@ -9,6 +9,7 @@ Tasks
 * Improve api
 * Adhere to Gleam conventions
 * Add documentation
-* Filter and custom rendering tests
+* Test both targets in justfile
+* Custom rendering tests
 * Proper qcheck-pandoc examples
 * Simpler snapshot tests in pandoc_lustre_converter, better titles and examples
