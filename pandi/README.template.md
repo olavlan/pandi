@@ -9,31 +9,25 @@ Pandoc allows you to process documents in a format-independent way.
 
 This package's goal is to make it easy to process Pandoc-compatible documents.
 
-## Motivating example
-
 As an example, consider the following Markdown document:
 
 ````md
-{{./examples/src/examples/gleam_markdown/example.md}}
+{{./examples/src/examples/resources/example.md}}
 ````
 
-A document processor for Gleam articles could do the following:
-
-1. Remove lines starting with *//*
-2. Add a link "Open in Gleam playground" in a new paragraph after each Gleam code block.
-3. Replace words *hex:[package_name]* with a link pointing to the Hex Docs of the package.
-
-For the first two actions we need a *block filter*, and for the last actions we need an *inline filter*:
+We can now create the following processor:
 
 ```gleam
 {{./examples/src/examples/gleam_markdown.gleam}}
 ```
 
-The produced html will render (more or less) like this:
+The produced html will render like this:
 
-<iframe>
-{{./examples/src/examples/gleam_markdown/example.html}}
-</iframe>
+---
+
+{{./examples/src/examples/resources/example.html}}
+
+---
 
 ## What you need to implement yourself
 
@@ -42,7 +36,7 @@ The produced html will render (more or less) like this:
 This library deliberately does not call `pandoc`, but works with its json output format. That means:
 
 * To parse any document format, you need to call `pandoc` to convert to json first.
-* To render to any document format, you need to call `pandoc` to convert from json.
+* To render to any document format, you need to call `pandoc` to convert from json to the desired format.
 
 The above example uses the following `pandoc` wrapper:
 

@@ -1,4 +1,5 @@
-# Gleam is cool
+
+Gleam is cool!
 
 //TODO write some cool stuff about Gleam here
 
@@ -12,4 +13,4 @@ pub fn main() {
 }
 ```
 
-Go to hex:gleam_stdlib to learn more about `io` and the rest of the standard library.
+Go to hex:gleam_stdlib to learn more about the standard library.

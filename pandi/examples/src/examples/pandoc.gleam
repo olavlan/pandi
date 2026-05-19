@@ -1,45 +1,46 @@
-import pandi.{type Document, from_json, to_json}
+import pandi as doc
 import shellout
 import simplifile
 
-pub fn parse_raw(raw_document: String, format: String) -> Document {
-  let cmd = "echo '" <> raw_document <> "' | pandoc -f " <> format <> " -t json"
-  let assert Ok(result) =
-    shellout.command(run: "sh", with: ["-c", cmd], in: ".", opt: [])
-  let assert Ok(document) = from_json(result)
-  document
-}
+const document_folder = "src/examples/resources/"
 
-pub fn render_raw(document: Document, format: String) -> String {
-  let json = to_json(document)
-  let cmd = "echo '" <> json <> "' | pandoc -f json -t " <> format
-  let assert Ok(html) =
-    shellout.command(run: "sh", with: ["-c", cmd], in: ".", opt: [])
-  html
-}
-
-pub fn parse(input_path: String) -> Document {
+pub fn parse(
+  from_file filename: String,
+  from_format from_format: String,
+) -> doc.Document {
   let assert Ok(result) =
     shellout.command(
       run: "pandoc",
-      with: ["-t", "json", input_path],
+      with: ["-f", from_format, "-t", "json", document_folder <> filename],
       in: ".",
       opt: [shellout.LetBeStderr],
     )
-  let assert Ok(document) = from_json(result)
+  let assert Ok(document) = doc.from_json(result)
   document
 }
 
-pub fn render(document: Document, output_path: String) -> String {
-  let json = to_json(document)
-  let json_file_path = "./" <> output_path <> ".json"
-  let assert Ok(_) = simplifile.write(to: json_file_path, contents: json)
-  let assert Ok(result) =
+pub fn render(
+  document: doc.Document,
+  to_file filename: String,
+  to_format to_format,
+) {
+  let json_file = document_folder <> filename <> ".json"
+  let assert Ok(_) =
+    simplifile.write(to: json_file, contents: doc.to_json(document))
+  let assert Ok(_) =
     shellout.command(
       run: "pandoc",
-      with: ["-f", "json", "-o", output_path, json_file_path],
+      with: [
+        "-f",
+        "json",
+        "-t",
+        to_format,
+        "-o",
+        document_folder <> filename,
+        json_file,
+      ],
       in: ".",
       opt: [],
     )
-  result
+  let assert Ok(_) = simplifile.delete(json_file)
 }

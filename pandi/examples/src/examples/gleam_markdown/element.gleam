@@ -8,7 +8,6 @@ pub fn hex_link(package_name: String) -> doc.Inline {
 
 pub fn gleam_playground_link(gleam_code: String) -> doc.Block {
   let compressed_code = make_v1_hash(gleam_code)
-  echo compressed_code
   let url = "https://playground.gleam.run/#" <> compressed_code
   doc.Para(content: [
     basic_link(

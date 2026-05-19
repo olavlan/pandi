@@ -9,12 +9,11 @@ Pandoc allows you to process documents in a format-independent way.
 
 This package's goal is to make it easy to process Pandoc-compatible documents.
 
-## Motivating example
-
 As an example, consider the following Markdown document:
 
 ````md
-# Gleam is cool
+
+Gleam is cool!
 
 //TODO write some cool stuff about Gleam here
 
@@ -28,16 +27,10 @@ pub fn main() {
 }
 ```
 
-Go to hex:gleam_stdlib to learn more about `io` and the rest of the standard library.
+Go to hex:gleam_stdlib to learn more about the standard library.
 ````
 
-A document processor for Gleam articles could do the following:
-
-1. Remove lines starting with *//*
-2. Add a link "Open in Gleam playground" in a new paragraph after each Gleam code block.
-3. Replace words *hex:[package_name]* with a link pointing to the Hex Docs of the package.
-
-For the first two actions we need a *block filter*, and for the last actions we need an *inline filter*:
+We can now create the following processor:
 
 ```gleam
 import examples/gleam_markdown/element
@@ -47,7 +40,9 @@ import pandi as doc
 pub fn main() {
   let block_filter: doc.BlockFilter = fn(block, _meta) {
     case block {
+      // remove "comment" lines:
       doc.Para([doc.Str("//" <> _), ..]) -> doc.remove
+      // append a gleam playground link to each code block:
       doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) ->
         doc.keep |> doc.append(element.gleam_playground_link(code))
       _ -> doc.keep
@@ -56,23 +51,25 @@ pub fn main() {
 
   let inline_filter: doc.InlineFilter = fn(inline, _meta) {
     case inline {
+      // replace all occurrences of "hex:[package_name] with a link to the Hex docs:"
       doc.Str("hex:" <> package_name) ->
         doc.remove |> doc.append(element.hex_link(package_name))
       _ -> doc.keep
     }
   }
 
-  pandoc.parse("./src/examples/gleam_markdown/example.md")
+  pandoc.parse(from_file: "example.md", from_format: "markdown")
   |> doc.filter_blocks(block_filter)
   |> doc.filter_inlines(inline_filter)
-  |> pandoc.render("./src/examples/gleam_markdown/example.html")
+  |> pandoc.render(to_file: "example.html", to_format: "html")
 }
 ```
 
-The produced html will render (more or less) like this:
+The produced html will render like this:
 
-<iframe>
-<h1 id="gleam-is-cool">Gleam is cool</h1>
+---
+
+<p>Gleam is cool!</p>
 <p>Here is a <em>Hello world</em> example:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
@@ -85,8 +82,9 @@ href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT
 title="Gleam playground">Open code in Gleam playground</a></p>
 <p>Go to <a href="https://hexdocs.pm/gleam_stdlib/index.html"
 title="gleam_stdlib at Hex Docs">gleam_stdlib</a> to learn more about
-<code>io</code> and the rest of the standard library.</p>
-</iframe>
+the standard library.</p>
+
+---
 
 ## What you need to implement yourself
 
@@ -95,55 +93,56 @@ title="gleam_stdlib at Hex Docs">gleam_stdlib</a> to learn more about
 This library deliberately does not call `pandoc`, but works with its json output format. That means:
 
 * To parse any document format, you need to call `pandoc` to convert to json first.
-* To render to any document format, you need to call `pandoc` to convert from json.
+* To render to any document format, you need to call `pandoc` to convert from json to the desired format.
 
 The above example uses the following `pandoc` wrapper:
 
 ```gleam
-import pandi.{type Document, from_json, to_json}
+import pandi as doc
 import shellout
 import simplifile
 
-pub fn parse_raw(raw_document: String, format: String) -> Document {
-  let cmd = "echo '" <> raw_document <> "' | pandoc -f " <> format <> " -t json"
-  let assert Ok(result) =
-    shellout.command(run: "sh", with: ["-c", cmd], in: ".", opt: [])
-  let assert Ok(document) = from_json(result)
-  document
-}
+const document_folder = "src/examples/resources/"
 
-pub fn render_raw(document: Document, format: String) -> String {
-  let json = to_json(document)
-  let cmd = "echo '" <> json <> "' | pandoc -f json -t " <> format
-  let assert Ok(html) =
-    shellout.command(run: "sh", with: ["-c", cmd], in: ".", opt: [])
-  html
-}
-
-pub fn parse(input_path: String) -> Document {
+pub fn parse(
+  from_file filename: String,
+  from_format from_format: String,
+) -> doc.Document {
   let assert Ok(result) =
     shellout.command(
       run: "pandoc",
-      with: ["-t", "json", input_path],
+      with: ["-f", from_format, "-t", "json", document_folder <> filename],
       in: ".",
       opt: [shellout.LetBeStderr],
     )
-  let assert Ok(document) = from_json(result)
+  let assert Ok(document) = doc.from_json(result)
   document
 }
 
-pub fn render(document: Document, output_path: String) -> String {
-  let json = to_json(document)
-  let json_file_path = "./" <> output_path <> ".json"
-  let assert Ok(_) = simplifile.write(to: json_file_path, contents: json)
-  let assert Ok(result) =
+pub fn render(
+  document: doc.Document,
+  to_file filename: String,
+  to_format to_format,
+) {
+  let json_file = document_folder <> filename <> ".json"
+  let assert Ok(_) =
+    simplifile.write(to: json_file, contents: doc.to_json(document))
+  let assert Ok(_) =
     shellout.command(
       run: "pandoc",
-      with: ["-f", "json", "-o", output_path, json_file_path],
+      with: [
+        "-f",
+        "json",
+        "-t",
+        to_format,
+        "-o",
+        document_folder <> filename,
+        json_file,
+      ],
       in: ".",
       opt: [],
     )
-  result
+  let assert Ok(_) = simplifile.delete(json_file)
 }
 ```
 
@@ -167,7 +166,6 @@ pub fn hex_link(package_name: String) -> doc.Inline {
 
 pub fn gleam_playground_link(gleam_code: String) -> doc.Block {
   let compressed_code = make_v1_hash(gleam_code)
-  echo compressed_code
   let url = "https://playground.gleam.run/#" <> compressed_code
   doc.Para(content: [
     basic_link(
