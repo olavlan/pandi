@@ -244,7 +244,7 @@ pub fn main() {
 }
 ```
 
-Go to hex:gleam_stdlib to learn more about the standard library.
+Go to `hex:gleam_stdlib` to learn more about the standard library.
 </code></pre>
 <p>We can now create the following processor:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
@@ -266,8 +266,8 @@ pub fn main() {
 
   let inline_filter: doc.InlineFilter = fn(inline, _meta) {
     case inline {
-      // replace all occurrences of "hex:[package_name]" with a link to the Hex docs:
-      doc.Str("hex:" &lt;&gt; package_name) -&gt;
+      // replace all occurrences of `hex:[package_name]` with a link to the Hex docs:
+      doc.Code(_, "hex:" &lt;&gt; package_name) -&gt;
         doc.remove |&gt; doc.append(element.hex_link(package_name))
       // keep all other inlines (children are still subject to filter):
       _ -&gt; doc.keep
@@ -472,9 +472,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779218896"></script>
+    <script src="./js/index.js?v=1779219733"></script>
     <script>
-      fetch("./search-data.json?v=1779218896")
+      fetch("./search-data.json?v=1779219733")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

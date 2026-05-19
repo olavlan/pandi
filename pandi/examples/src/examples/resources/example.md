@@ -13,4 +13,4 @@ pub fn main() {
 }
 ```
 
-Go to hex:gleam_stdlib to learn more about the standard library.
+Go to `hex:gleam_stdlib` to learn more about the standard library.

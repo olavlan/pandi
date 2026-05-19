@@ -27,7 +27,7 @@ pub fn main() {
 }
 ```
 
-Go to hex:gleam_stdlib to learn more about the standard library.
+Go to `hex:gleam_stdlib` to learn more about the standard library.
 ````
 
 We can now create the following processor:
@@ -52,8 +52,8 @@ pub fn main() {
 
   let inline_filter: doc.InlineFilter = fn(inline, _meta) {
     case inline {
-      // replace all occurrences of "hex:[package_name]" with a link to the Hex docs:
-      doc.Str("hex:" <> package_name) ->
+      // replace all occurrences of `hex:[package_name]` with a link to the Hex docs:
+      doc.Code(_, "hex:" <> package_name) ->
         doc.remove |> doc.append(element.hex_link(package_name))
       // keep all other inlines (children are still subject to filter):
       _ -> doc.keep
