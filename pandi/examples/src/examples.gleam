@@ -1,5 +1,5 @@
-import examples/increase_header_level
+import examples/gleam_markdown
 
 pub fn main() {
-  increase_header_level.main()
+  gleam_markdown.main()
 }

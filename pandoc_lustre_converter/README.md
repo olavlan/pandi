@@ -13,16 +13,16 @@ This package's goal is to:
 Example:
 
 ```gleam
-import examples/pandoc.{parse}
-import lustre/element.{to_readable_string}
-import pandoc_lustre_converter.{convert_document}
+import examples/pandoc
+import lustre/element
+import pandoc_lustre_converter as pandoc_lustre
 
 pub fn main() {
   let header =
     "# Header"
-    |> parse("markdown")
-    |> convert_document
-    |> to_readable_string
+    |> pandoc.parse("markdown")
+    |> pandoc_lustre.convert
+    |> element.to_readable_string
   assert header == "<h1 id=\"header\">\n  Header\n</h1>\n"
 }
 ```
@@ -30,14 +30,14 @@ pub fn main() {
 Note that the package only works with Pandoc's JSON output, so your application will need to call `pandoc`  in order to work with specific document formats:
 
 ```gleam
-import pandi.{type Document, from_json}
+import pandi as pd
 import shellout
 
-pub fn parse(raw_document: String, format: String) -> Document {
+pub fn parse(raw_document: String, format: String) -> pd.Document {
   let cmd = "echo '" <> raw_document <> "' | pandoc -f " <> format <> " -t json"
   let assert Ok(result) =
     shellout.command(run: "sh", with: ["-c", cmd], in: ".", opt: [])
-  let assert Ok(document) = from_json(result)
+  let assert Ok(document) = pd.from_json(result)
   document
 }
 ```

@@ -7,86 +7,86 @@ import lustre/element.{type Element}
 import lustre/element/html
 import pandi as pd
 
-pub type BlockFilter(msg) =
+pub type BlockRenderer(msg) =
   fn(pd.Block, pd.Meta) -> Option(Element(msg))
 
-pub type InlineFilter(msg) =
+pub type InlineRenderer(msg) =
   fn(pd.Inline, pd.Meta) -> Option(Element(msg))
 
-pub fn convert(document: pd.Document) -> Element(msg) {
+pub fn convert_document(document: pd.Document) -> Element(msg) {
   convert_blocks(document.blocks)
 }
 
 pub fn convert_blocks(blocks: List(pd.Block)) -> Element(msg) {
-  let elements = list.map(blocks, convert_block)
+  let elements = list.map(blocks, block_to_lustre)
   element.fragment(elements)
+}
+
+fn block_to_lustre(block: pd.Block) -> Element(msg) {
+  convert_block_with(block, fn(_, _) { None }, fn(_, _) { None }, [])
 }
 
 pub fn convert_inlines(inlines: List(pd.Inline)) -> Element(msg) {
-  let elements = list.map(inlines, convert_inline)
+  let elements = list.map(inlines, inline_to_lustre)
   element.fragment(elements)
 }
 
-fn convert_block(block: pd.Block) -> Element(msg) {
-  convert_block_with_filter(block, fn(_, _) { None }, fn(_, _) { None }, [])
+fn inline_to_lustre(inline: pd.Inline) -> Element(msg) {
+  convert_inline_with(inline, fn(_, _) { None }, [])
 }
 
-fn convert_inline(inline: pd.Inline) -> Element(msg) {
-  convert_inline_with_filter(inline, fn(_, _) { None }, [])
-}
-
-pub fn convert_with_filter(
+pub fn convert_document_with(
   document: pd.Document,
-  block_filter: BlockFilter(msg),
-  inline_filter: InlineFilter(msg),
+  block_renderer: BlockRenderer(msg),
+  inline_renderer: InlineRenderer(msg),
 ) -> Element(msg) {
-  convert_blocks_with_filter(
+  convert_blocks_with(
     document.blocks,
-    block_filter,
-    inline_filter,
+    block_renderer,
+    inline_renderer,
     document.meta,
   )
 }
 
-pub fn convert_blocks_with_filter(
+pub fn convert_blocks_with(
   blocks: List(pd.Block),
-  block_filter: BlockFilter(msg),
-  inline_filter: InlineFilter(msg),
+  block_renderer: BlockRenderer(msg),
+  inline_renderer: InlineRenderer(msg),
   meta: pd.Meta,
 ) -> Element(msg) {
   let elements =
-    list.map(blocks, convert_block_with_filter(
+    list.map(blocks, convert_block_with(
       _,
-      block_filter,
-      inline_filter,
+      block_renderer,
+      inline_renderer,
       meta,
     ))
   element.fragment(elements)
 }
 
-pub fn convert_inlines_with_filter(
+pub fn convert_inlines_with(
   inlines: List(pd.Inline),
-  inline_filter: InlineFilter(msg),
+  inline_remderer: InlineRenderer(msg),
   meta: pd.Meta,
 ) -> Element(msg) {
   let elements =
-    list.map(inlines, convert_inline_with_filter(_, inline_filter, meta))
+    list.map(inlines, convert_inline_with(_, inline_remderer, meta))
   element.fragment(elements)
 }
 
-fn convert_block_with_filter(
+fn convert_block_with(
   block: pd.Block,
-  block_filter: BlockFilter(msg),
-  inline_filter: InlineFilter(msg),
+  block_renderer: BlockRenderer(msg),
+  inline_renderer: InlineRenderer(msg),
   meta: pd.Meta,
 ) -> Element(msg) {
-  case block_filter(block, meta) {
+  case block_renderer(block, meta) {
     Some(el) -> el
     None ->
       case block {
         pd.Header(level, attrs, content) -> {
           let inlines =
-            list.map(content, convert_inline_with_filter(_, inline_filter, meta))
+            list.map(content, convert_inline_with(_, inline_renderer, meta))
           let attrs = convert_attributes(attrs)
           case level {
             1 -> html.h1(attrs, inlines)
@@ -100,20 +100,20 @@ fn convert_block_with_filter(
         }
         pd.Para(content) -> {
           let inlines =
-            list.map(content, convert_inline_with_filter(_, inline_filter, meta))
+            list.map(content, convert_inline_with(_, inline_renderer, meta))
           html.p([], inlines)
         }
         pd.Plain(content) -> {
           let inlines =
-            list.map(content, convert_inline_with_filter(_, inline_filter, meta))
+            list.map(content, convert_inline_with(_, inline_renderer, meta))
           element.fragment(inlines)
         }
         pd.Div(attrs, content) -> {
           let blocks =
-            list.map(content, convert_block_with_filter(
+            list.map(content, convert_block_with(
               _,
-              block_filter,
-              inline_filter,
+              block_renderer,
+              inline_renderer,
               meta,
             ))
           let attributes = convert_attributes(attrs)
@@ -121,7 +121,7 @@ fn convert_block_with_filter(
         }
         pd.BulletList(items) -> {
           let list_items =
-            convert_list_items(items, block_filter, inline_filter, meta)
+            convert_list_items(items, block_renderer, inline_renderer, meta)
           html.ul([], list_items)
         }
         pd.CodeBlock(attrs, text) -> {
@@ -130,16 +130,16 @@ fn convert_block_with_filter(
         }
         pd.OrderedList(attrs, items) -> {
           let list_items =
-            convert_list_items(items, block_filter, inline_filter, meta)
+            convert_list_items(items, block_renderer, inline_renderer, meta)
           let attributes = convert_list_attributes(attrs)
           html.ol(attributes, list_items)
         }
         pd.BlockQuote(content) -> {
           let blocks =
-            list.map(content, convert_block_with_filter(
+            list.map(content, convert_block_with(
               _,
-              block_filter,
-              inline_filter,
+              block_renderer,
+              inline_renderer,
               meta,
             ))
           html.blockquote([], blocks)
@@ -148,12 +148,12 @@ fn convert_block_with_filter(
   }
 }
 
-fn convert_inline_with_filter(
+fn convert_inline_with(
   inline: pd.Inline,
-  inline_filter: InlineFilter(msg),
+  inline_renderer: InlineRenderer(msg),
   meta: pd.Meta,
 ) -> Element(msg) {
-  case inline_filter(inline, meta) {
+  case inline_renderer(inline, meta) {
     Some(el) -> el
     None ->
       case inline {
@@ -163,17 +163,17 @@ fn convert_inline_with_filter(
         pd.SoftBreak -> html.text(" ")
         pd.Emph(content) -> {
           let inlines =
-            list.map(content, convert_inline_with_filter(_, inline_filter, meta))
+            list.map(content, convert_inline_with(_, inline_renderer, meta))
           html.em([], inlines)
         }
         pd.Strong(content) -> {
           let inlines =
-            list.map(content, convert_inline_with_filter(_, inline_filter, meta))
+            list.map(content, convert_inline_with(_, inline_renderer, meta))
           html.strong([], inlines)
         }
         pd.Strikeout(content) -> {
           let inlines =
-            list.map(content, convert_inline_with_filter(_, inline_filter, meta))
+            list.map(content, convert_inline_with(_, inline_renderer, meta))
           html.del([], inlines)
         }
         pd.Code(attrs, text) -> {
@@ -182,13 +182,13 @@ fn convert_inline_with_filter(
         }
         pd.Span(attrs, content) -> {
           let inlines =
-            list.map(content, convert_inline_with_filter(_, inline_filter, meta))
+            list.map(content, convert_inline_with(_, inline_renderer, meta))
           let attributes = convert_attributes(attrs)
           html.span(attributes, inlines)
         }
         pd.Link(attrs, content, target) -> {
           let inlines =
-            list.map(content, convert_inline_with_filter(_, inline_filter, meta))
+            list.map(content, convert_inline_with(_, inline_renderer, meta))
           let attributes = convert_attributes(attrs)
           let href = attribute.href(target.url)
           let title = case target.title {
@@ -231,16 +231,16 @@ fn convert_list_attributes(
 
 fn convert_list_items(
   items: List(List(pd.Block)),
-  block_filter: BlockFilter(msg),
-  inline_filter: InlineFilter(msg),
+  block_renderer: BlockRenderer(msg),
+  inline_renderer: InlineRenderer(msg),
   meta: pd.Meta,
 ) -> List(Element(msg)) {
   list.map(items, fn(item) {
     let blocks =
-      list.map(item, convert_block_with_filter(
+      list.map(item, convert_block_with(
         _,
-        block_filter,
-        inline_filter,
+        block_renderer,
+        inline_renderer,
         meta,
       ))
     html.li([], blocks)
