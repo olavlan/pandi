@@ -6,6 +6,8 @@ Gleam packages for working with Pandoc documents:
 
 Tasks
 
+* Improve api
+* Adhere to Gleam conventions
 * Add documentation
 * Filter and custom rendering tests
 * Proper qcheck-pandoc examples
