@@ -17,26 +17,21 @@ As an example, consider the following Markdown document:
 
 A document processor for Gleam articles could do the following:
 
-* Removes lines starting with *//*
-* Adds a link "Open in Gleam playground" after each Gleam code block.
-* Replaces words *hex:[package_name]* with a link pointing to the Hex Docs of the package.
+1. Remove lines starting with *//*
+2. Add a link "Open in Gleam playground" in a new paragraph after each Gleam code block.
+3. Replace words *hex:[package_name]* with a link pointing to the Hex Docs of the package.
+
+For the first two actions we need a *block filter*, and for the last actions we need an *inline filter*:
 
 ```gleam
 {{./examples/src/examples/gleam_markdown.gleam}}
 ```
 
-When running this code, we get the following Markdown document:
-
-````md
-{{./examples/src/examples/gleam_markdown/example_processed.md}}
-````
-
-Since we are backed by `pandoc` we can convert to and from most document formats.
-For intance, the html output would render (more or less) like this:
+The produced html will render (more or less) like this:
 
 ---
 
-{{./examples/src/examples/gleam_markdown/example_processed.md}}
+{{./examples/src/examples/gleam_markdown/example.html}}
 
 ---
 

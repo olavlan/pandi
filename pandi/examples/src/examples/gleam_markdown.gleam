@@ -23,5 +23,5 @@ pub fn main() {
   pandoc.parse("./src/examples/gleam_markdown/example.md")
   |> doc.filter_blocks(block_filter)
   |> doc.filter_inlines(inline_filter)
-  |> pandoc.render("./src/examples/gleam_markdown/example_processed.md")
+  |> pandoc.render("./src/examples/gleam_markdown/example.html")
 }
