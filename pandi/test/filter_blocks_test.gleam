@@ -1,29 +1,29 @@
 import birdie
-import pandi as pd
+import pandi as doc
 
-fn snapshot(blocks: List(pd.Block), filter: pd.BlockFilter, title: String) {
-  pd.Document(blocks, [])
-  |> pd.filter_blocks(filter)
-  |> pd.to_string
+fn snapshot(blocks: List(doc.Block), filter: doc.BlockFilter, title: String) {
+  doc.Document(blocks, [])
+  |> doc.filter_blocks(filter)
+  |> doc.to_string
   |> birdie.snap(title: "[filter_blocks] " <> title)
 }
 
 pub fn increase_header_level_test() {
   let blocks = [
-    pd.Header(1, pd.Attributes("", [], []), [pd.Str("Header")]),
-    pd.Para([
-      pd.Str("Paragraph"),
-      pd.Space,
-      pd.Str("below"),
-      pd.Space,
-      pd.Str("header."),
+    doc.Header(1, doc.Attributes("", [], []), [doc.Str("Header")]),
+    doc.Para([
+      doc.Str("Paragraph"),
+      doc.Space,
+      doc.Str("below"),
+      doc.Space,
+      doc.Str("header."),
     ]),
   ]
-  let filter: pd.BlockFilter = fn(block, _meta) {
+  let filter: doc.BlockFilter = fn(block, _meta) {
     case block {
-      pd.Header(level, attrs, content) ->
-        pd.Replace(pd.Header(level + 1, attrs, content))
-      _ -> pd.Keep
+      doc.Header(level, attrs, content) ->
+        doc.remove |> doc.append(doc.Header(level + 1, attrs, content))
+      _ -> doc.keep
     }
   }
   snapshot(blocks, filter, "increase header level from 1 to 2")
@@ -31,51 +31,52 @@ pub fn increase_header_level_test() {
 
 pub fn remove_comment_paragraphs_test() {
   let blocks = [
-    pd.Para([
-      pd.Str("//"),
-      pd.Space,
-      pd.Str("This is a comment"),
+    doc.Para([
+      doc.Str("//"),
+      doc.Space,
+      doc.Str("This is a comment"),
     ]),
-    pd.Para([
-      pd.Str("Normal"),
-      pd.Space,
-      pd.Str("paragraph."),
+    doc.Para([
+      doc.Str("Normal"),
+      doc.Space,
+      doc.Str("paragraph."),
     ]),
-    pd.Para([
-      pd.Str("//"),
-      pd.Space,
-      pd.Str("Another comment"),
+    doc.Para([
+      doc.Str("//"),
+      doc.Space,
+      doc.Str("Another comment"),
     ]),
   ]
-  let filter: pd.BlockFilter = fn(block, _meta) {
+  let filter: doc.BlockFilter = fn(block, _meta) {
     case block {
-      pd.Para([pd.Str("//"), ..]) -> pd.Remove
-      _ -> pd.Keep
+      doc.Para([doc.Str("//"), ..]) -> doc.remove
+      _ -> doc.keep
     }
   }
   snapshot(blocks, filter, "remove paragraphs starting with //")
 }
 
 pub fn convert_ordered_list_to_bullet_list_test() {
-  let list_attrs = pd.ListAttributes(1, pd.Decimal, pd.Period)
+  let list_attrs = doc.ListAttributes(1, doc.Decimal, doc.Period)
   let blocks = [
-    pd.OrderedList(list_attrs, [
-      [pd.Para([pd.Str("First")])],
-      [pd.Para([pd.Str("Second")])],
-      [pd.Para([pd.Str("Third")])],
+    doc.OrderedList(list_attrs, [
+      [doc.Para([doc.Str("First")])],
+      [doc.Para([doc.Str("Second")])],
+      [doc.Para([doc.Str("Third")])],
     ]),
-    pd.Para([
-      pd.Str("After"),
-      pd.Space,
-      pd.Str("the"),
-      pd.Space,
-      pd.Str("list."),
+    doc.Para([
+      doc.Str("After"),
+      doc.Space,
+      doc.Str("the"),
+      doc.Space,
+      doc.Str("list."),
     ]),
   ]
-  let filter: pd.BlockFilter = fn(block, _meta) {
+  let filter: doc.BlockFilter = fn(block, _meta) {
     case block {
-      pd.OrderedList(_, items) -> pd.Replace(pd.BulletList(items))
-      _ -> pd.Keep
+      doc.OrderedList(_, items) ->
+        doc.remove |> doc.append(doc.BulletList(items))
+      _ -> doc.keep
     }
   }
   snapshot(blocks, filter, "convert ordered list to bullet list")

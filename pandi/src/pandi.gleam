@@ -4,7 +4,6 @@ import gleam/dynamic/decode
 import gleam/int
 import gleam/json
 import gleam/list
-import gleam/option
 
 pub type Document {
   Document(blocks: List(Block), meta: Meta)
@@ -546,18 +545,19 @@ pub type InlineFilter =
 pub opaque type FilterAction(element) {
   FilterAction(
     prepend: List(element),
-    replace: option.Option(List(element)),
+    original: OriginalElementAction,
     append: List(element),
   )
 }
 
-pub fn keep() -> FilterAction(element) {
-  FilterAction([], option.None, [])
+type OriginalElementAction {
+  KeepOriginal
+  RemoveOriginal
 }
 
-pub fn remove() -> FilterAction(element) {
-  FilterAction([], option.Some([]), [])
-}
+pub const keep: FilterAction(element) = FilterAction([], KeepOriginal, [])
+
+pub const remove: FilterAction(element) = FilterAction([], RemoveOriginal, [])
 
 pub fn prepend(
   previous_action: FilterAction(element),
@@ -597,16 +597,12 @@ fn walk_blocks(
 
 fn walk_block(block: Block, meta: Meta, filter: BlockFilter) -> List(Block) {
   case filter(block, meta) {
-    FilterAction(prepend, option.Some(replace), append) ->
-      [
-        prepend,
-        replace,
-        append,
-      ]
+    FilterAction(prepend, RemoveOriginal, append) ->
+      [prepend, append]
       |> list.flatten
 
-    FilterAction(prepend, option.None, append) -> {
-      let block_with_filtered_children: Block = case block {
+    FilterAction(prepend, KeepOriginal, append) -> {
+      let original_block_with_filtered_children: Block = case block {
         Div(attrs, content) -> Div(attrs, walk_blocks(content, meta, filter))
         BulletList(items) ->
           BulletList(list.map(items, walk_blocks(_, meta, filter)))
@@ -617,7 +613,7 @@ fn walk_block(block: Block, meta: Meta, filter: BlockFilter) -> List(Block) {
           )
         _ -> block
       }
-      [prepend, [block_with_filtered_children], append] |> list.flatten
+      [prepend, [original_block_with_filtered_children], append] |> list.flatten
     }
   }
 }
@@ -661,27 +657,21 @@ pub fn walk_inline(
   filter: InlineFilter,
 ) -> List(Inline) {
   case filter(inline, meta) {
-    FilterAction(prepend, option.Some(replace), append) ->
-      [
-        prepend,
-        replace,
-        append,
-      ]
+    FilterAction(prepend, RemoveOriginal, append) ->
+      [prepend, append]
       |> list.flatten
-    FilterAction(prepend, option.None, append) -> {
-      let inline_with_filtered_children: Inline = case inline {
+    FilterAction(prepend, KeepOriginal, append) -> {
+      let original_inline_with_filtered_children: Inline = case inline {
         Emph(content) -> Emph(walk_inlines(content, meta, filter))
-
         Strong(content) -> Strong(walk_inlines(content, meta, filter))
-
         Strikeout(content) -> Strikeout(walk_inlines(content, meta, filter))
-
         Span(attrs, content) -> Span(attrs, walk_inlines(content, meta, filter))
         Link(attrs, content, target) ->
           Link(attrs, walk_inlines(content, meta, filter), target)
         _ -> inline
       }
-      [prepend, [inline_with_filtered_children], append] |> list.flatten
+      [prepend, [original_inline_with_filtered_children], append]
+      |> list.flatten
     }
   }
 }
