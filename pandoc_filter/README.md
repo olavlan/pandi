@@ -15,6 +15,8 @@ As an example, consider the following Markdown document:
 
 *Gleam* is **cool**!
 
+//TODO write some cool stuff about Gleam here
+
 Here is a *Hello world* example:
 
 ```gleam
@@ -24,6 +26,8 @@ pub fn main() {
   io.println("Hello, world!")
 }
 ```
+
+Go to `hex:gleam_stdlib` to learn more about the standard library.
 ````
 
 We can now create the following processor:
@@ -31,28 +35,35 @@ We can now create the following processor:
 ```gleam
 import examples/gleam_markdown/element
 import examples/pandoc
-import gleam/list
 import pandi as doc
 
 pub fn main() {
-  pandoc.parse(from_file: "example.md", from_format: "markdown")
-  |> filter_top_level_blocks
-  |> pandoc.render(to_file: "example.html", to_format: "html")
-}
-
-fn filter_top_level_blocks(document: doc.Document) -> doc.Document {
-  let new_blocks = list.flat_map(document.blocks, filter_block)
-  doc.Document(..document, blocks: new_blocks)
-}
-
-fn filter_block(block: doc.Block) -> List(doc.Block) {
-  case block {
-    doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -> [
-      block,
-      element.gleam_playground_link(code),
-    ]
-    _ -> [block]
+  let block_filter: doc.BlockFilter = fn(block, _meta) {
+    case block {
+      // remove "comment" lines:
+      doc.Para([doc.Str("//" <> _), ..]) -> doc.remove
+      // append a gleam playground link to each code block:
+      doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) ->
+        doc.keep |> doc.append(element.gleam_playground_link(code))
+      // keep all other inlines (children are still subject to filter):
+      _ -> doc.keep
+    }
   }
+
+  let inline_filter: doc.InlineFilter = fn(inline, _meta) {
+    case inline {
+      // replace all occurrences of `hex:[package_name]` with a link to the Hex docs:
+      doc.Code(_, "hex:" <> package_name) ->
+        doc.remove |> doc.append(element.hex_link(package_name))
+      // keep all other inlines (children are still subject to filter):
+      _ -> doc.keep
+    }
+  }
+
+  pandoc.parse(from_file: "example.md", from_format: "markdown")
+  |> doc.filter_blocks(block_filter)
+  |> doc.filter_inlines(inline_filter)
+  |> pandoc.render(to_file: "example.html", to_format: "html")
 }
 ```
 
@@ -71,6 +82,9 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 <p><a
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
 title="Gleam playground">Open code in Gleam playground</a></p>
+<p>Go to <a href="https://hexdocs.pm/gleam_stdlib/index.html"
+title="gleam_stdlib at Hex Docs">gleam_stdlib</a> to learn more about
+the standard library.</p>
 
 ---
 

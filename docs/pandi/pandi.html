@@ -226,15 +226,9 @@
   
   <li><a href="#Block">Block</a></li>
   
-  <li><a href="#BlockFilter">BlockFilter</a></li>
-  
   <li><a href="#Document">Document</a></li>
   
-  <li><a href="#FilterAction">FilterAction</a></li>
-  
   <li><a href="#Inline">Inline</a></li>
-  
-  <li><a href="#InlineFilter">InlineFilter</a></li>
   
   <li><a href="#ListAttributes">ListAttributes</a></li>
   
@@ -253,29 +247,15 @@
 <h2>Values</h2>
 <ul>
   
-  <li><a href="#append">append</a></li>
-  
   <li><a href="#document_decoder">document_decoder</a></li>
   
   <li><a href="#encode_document">encode_document</a></li>
   
-  <li><a href="#filter_blocks">filter_blocks</a></li>
-  
-  <li><a href="#filter_inlines">filter_inlines</a></li>
-  
   <li><a href="#from_json">from_json</a></li>
-  
-  <li><a href="#keep">keep</a></li>
-  
-  <li><a href="#prepend">prepend</a></li>
-  
-  <li><a href="#remove">remove</a></li>
   
   <li><a href="#to_json">to_json</a></li>
   
   <li><a href="#to_string">to_string</a></li>
-  
-  <li><a href="#walk_inline">walk_inline</a></li>
   
 </ul>
 
@@ -491,24 +471,6 @@
   
   <div class="member">
     <div class="member-name">
-      <h2 id="BlockFilter">
-        <a href="#BlockFilter">
-          BlockFilter
-        </a>
-      </h2>
-      
-    </div>
-    
-    <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
-      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockFilter</span> =
-  <span class="hljs-keyword">fn</span>(<a href="#Block"><span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(<a href="#Block"><span class="hljs-title">Block</span></a>)</code></pre>
-      
-    </div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
       <h2 id="Document">
         <a href="#Document">
           Document
@@ -542,23 +504,6 @@
         </li>
         
       </ul>
-      
-    </div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="FilterAction">
-        <a href="#FilterAction">
-          FilterAction
-        </a>
-      </h2> <span class="visibility-tag">opaque</span> 
-      
-    </div>
-    
-    <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
-      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub opaque type </span><span class="hljs-title">FilterAction</span>(<span class="hljs-variable">element</span>)</code></pre>
       
     </div>
   </div>
@@ -732,24 +677,6 @@
         </li>
         
       </ul>
-      
-    </div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="InlineFilter">
-        <a href="#InlineFilter">
-          InlineFilter
-        </a>
-      </h2>
-      
-    </div>
-    
-    <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
-      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineFilter</span> =
-  <span class="hljs-keyword">fn</span>(<a href="#Inline"><span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(<a href="#Inline"><span class="hljs-title">Inline</span></a>)</code></pre>
       
     </div>
   </div>
@@ -1032,24 +959,6 @@
   
   <div class="member">
     <div class="member-name">
-      <h2 id="append">
-        <a href="#append">
-          append
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">append</span>(
-  <span class="hljs-variable">previous_action</span>: <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(<span class="hljs-variable">element</span>),
-  <span class="hljs-variable">append</span>: <span class="hljs-variable">element</span>,
-) -> <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(<span class="hljs-variable">element</span>)</code></pre>
-    
-    <div class="rendered-markdown"></div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
       <h2 id="document_decoder">
         <a href="#document_decoder">
           document_decoder
@@ -1080,46 +989,6 @@
   
   <div class="member">
     <div class="member-name">
-      <h2 id="filter_blocks">
-        <a href="#filter_blocks">
-          filter_blocks
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">filter_blocks</span>(
-  <span class="hljs-variable">document</span>: <a href="#Document"><span class="hljs-title">Document</span></a>,
-  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="#Block"><span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(
-    <a href="#Block"><span class="hljs-title">Block</span></a>,
-  ),
-) -> <a href="#Document"><span class="hljs-title">Document</span></a></code></pre>
-    
-    <div class="rendered-markdown"></div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="filter_inlines">
-        <a href="#filter_inlines">
-          filter_inlines
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">filter_inlines</span>(
-  <span class="hljs-variable">document</span>: <a href="#Document"><span class="hljs-title">Document</span></a>,
-  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="#Inline"><span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(
-    <a href="#Inline"><span class="hljs-title">Inline</span></a>,
-  ),
-) -> <a href="#Document"><span class="hljs-title">Document</span></a></code></pre>
-    
-    <div class="rendered-markdown"></div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
       <h2 id="from_json">
         <a href="#from_json">
           from_json
@@ -1131,54 +1000,6 @@
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">from_json</span>(
   <span class="hljs-variable">json_string</span>: <span class="hljs-title">String</span>,
 ) -> <span class="hljs-title">Result</span>(<a href="#Document"><span class="hljs-title">Document</span></a>, <a href="https://hexdocs.pm/gleam_json/3.1.0/gleam/json.html#DecodeError" title="gleam/json.{type DecodeError}"><span class="hljs-variable">json</span>.<span class="hljs-title">DecodeError</span></a>)</code></pre>
-    
-    <div class="rendered-markdown"></div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="keep">
-        <a href="#keep">
-          keep
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">keep</span>: <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(<span class="hljs-variable">element</span>)</code></pre>
-    
-    <div class="rendered-markdown"></div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="prepend">
-        <a href="#prepend">
-          prepend
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">prepend</span>(
-  <span class="hljs-variable">previous_action</span>: <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(<span class="hljs-variable">element</span>),
-  <span class="hljs-variable">prepend</span>: <span class="hljs-variable">element</span>,
-) -> <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(<span class="hljs-variable">element</span>)</code></pre>
-    
-    <div class="rendered-markdown"></div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="remove">
-        <a href="#remove">
-          remove
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">remove</span>: <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
@@ -1209,27 +1030,6 @@
     </div>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">to_string</span>(<span class="hljs-variable">document</span>: <a href="#Document"><span class="hljs-title">Document</span></a>) -> <span class="hljs-title">String</span></code></pre>
-    
-    <div class="rendered-markdown"></div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="walk_inline">
-        <a href="#walk_inline">
-          walk_inline
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">walk_inline</span>(
-  <span class="hljs-variable">inline</span>: <a href="#Inline"><span class="hljs-title">Inline</span></a>,
-  <span class="hljs-variable">meta</span>: <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>)),
-  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="#Inline"><span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#FilterAction"><span class="hljs-title">FilterAction</span></a>(
-    <a href="#Inline"><span class="hljs-title">Inline</span></a>,
-  ),
-) -> <span class="hljs-title">List</span>(<a href="#Inline"><span class="hljs-title">Inline</span></a>)</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
@@ -1315,9 +1115,9 @@
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779220153"></script>
+    <script src="./js/index.js?v=1779388202"></script>
     <script>
-      fetch("./search-data.json?v=1779220153")
+      fetch("./search-data.json?v=1779388202")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

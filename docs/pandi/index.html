@@ -232,8 +232,6 @@
 <pre><code class="language-md">
 *Gleam* is **cool**!
 
-//TODO write some cool stuff about Gleam here
-
 Here is a *Hello world* example:
 
 ```gleam
@@ -243,41 +241,32 @@ pub fn main() {
   io.println("Hello, world!")
 }
 ```
-
-Go to `hex:gleam_stdlib` to learn more about the standard library.
 </code></pre>
 <p>We can now create the following processor:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
+import gleam/list
 import pandi as doc
 
 pub fn main() {
-  let block_filter: doc.BlockFilter = fn(block, _meta) {
-    case block {
-      // remove "comment" lines:
-      doc.Para([doc.Str("//" &lt;&gt; _), ..]) -&gt; doc.remove
-      // append a gleam playground link to each code block:
-      doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -&gt;
-        doc.keep |&gt; doc.append(element.gleam_playground_link(code))
-      // keep all other inlines (children are still subject to filter):
-      _ -&gt; doc.keep
-    }
-  }
-
-  let inline_filter: doc.InlineFilter = fn(inline, _meta) {
-    case inline {
-      // replace all occurrences of `hex:[package_name]` with a link to the Hex docs:
-      doc.Code(_, "hex:" &lt;&gt; package_name) -&gt;
-        doc.remove |&gt; doc.append(element.hex_link(package_name))
-      // keep all other inlines (children are still subject to filter):
-      _ -&gt; doc.keep
-    }
-  }
-
   pandoc.parse(from_file: "example.md", from_format: "markdown")
-  |&gt; doc.filter_blocks(block_filter)
-  |&gt; doc.filter_inlines(inline_filter)
+  |&gt; filter_top_level_blocks
   |&gt; pandoc.render(to_file: "example.html", to_format: "html")
+}
+
+fn filter_top_level_blocks(document: doc.Document) -&gt; doc.Document {
+  let new_blocks = list.flat_map(document.blocks, filter_block)
+  doc.Document(..document, blocks: new_blocks)
+}
+
+fn filter_block(block: doc.Block) -&gt; List(doc.Block) {
+  case block {
+    doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -&gt; [
+      block,
+      element.gleam_playground_link(code),
+    ]
+    _ -&gt; [block]
+  }
 }
 </code></pre>
 <p>The produced html will render like this:</p>
@@ -293,9 +282,6 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 <p><a
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
 title="Gleam playground">Open code in Gleam playground</a></p>
-<p>Go to <a href="https://hexdocs.pm/gleam_stdlib/index.html"
-title="gleam_stdlib at Hex Docs">gleam_stdlib</a> to learn more about
-the standard library.</p>
 <hr />
 <h2>What you need to implement yourself</h2>
 <h3><code>pandoc</code> wrapper</h3>
@@ -472,9 +458,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779220153"></script>
+    <script src="./js/index.js?v=1779388202"></script>
     <script>
-      fetch("./search-data.json?v=1779220153")
+      fetch("./search-data.json?v=1779388202")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

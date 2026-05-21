@@ -1,9 +1,14 @@
 import birdie
 import pandi as doc
+import pandoc_filter as filter
 
-fn snapshot(blocks: List(doc.Block), filter: doc.BlockFilter, title: String) {
+fn snapshot(
+  blocks: List(doc.Block),
+  block_filter: filter.BlockFilter,
+  title: String,
+) {
   doc.Document(blocks, [])
-  |> doc.filter_blocks(filter)
+  |> filter.filter_blocks(block_filter)
   |> doc.to_string
   |> birdie.snap(title: "[filter_blocks] " <> title)
 }
@@ -19,14 +24,14 @@ pub fn increase_header_level_test() {
       doc.Str("header."),
     ]),
   ]
-  let filter: doc.BlockFilter = fn(block, _meta) {
+  let block_filter: filter.BlockFilter = fn(block, _meta) {
     case block {
       doc.Header(level, attrs, content) ->
-        doc.remove |> doc.append(doc.Header(level + 1, attrs, content))
-      _ -> doc.keep
+        filter.remove |> filter.append(doc.Header(level + 1, attrs, content))
+      _ -> filter.keep
     }
   }
-  snapshot(blocks, filter, "increase header level from 1 to 2")
+  snapshot(blocks, block_filter, "increase header level from 1 to 2")
 }
 
 pub fn remove_comment_paragraphs_test() {
@@ -47,13 +52,13 @@ pub fn remove_comment_paragraphs_test() {
       doc.Str("Another comment"),
     ]),
   ]
-  let filter: doc.BlockFilter = fn(block, _meta) {
+  let block_filter: filter.BlockFilter = fn(block, _meta) {
     case block {
-      doc.Para([doc.Str("//"), ..]) -> doc.remove
-      _ -> doc.keep
+      doc.Para([doc.Str("//"), ..]) -> filter.remove
+      _ -> filter.keep
     }
   }
-  snapshot(blocks, filter, "remove paragraphs starting with //")
+  snapshot(blocks, block_filter, "remove paragraphs starting with //")
 }
 
 pub fn convert_ordered_list_to_bullet_list_test() {
@@ -72,11 +77,11 @@ pub fn convert_ordered_list_to_bullet_list_test() {
       doc.Str("list."),
     ]),
   ]
-  let filter: doc.BlockFilter = fn(block, _meta) {
+  let filter: filter.BlockFilter = fn(block, _meta) {
     case block {
       doc.OrderedList(_, items) ->
-        doc.remove |> doc.append(doc.BulletList(items))
-      _ -> doc.keep
+        filter.remove |> filter.append(doc.BulletList(items))
+      _ -> filter.keep
     }
   }
   snapshot(blocks, filter, "convert ordered list to bullet list")
