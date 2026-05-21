@@ -127,7 +127,7 @@ fn walk_inlines(
   list.flat_map(inlines, walk_inline(_, meta, filter))
 }
 
-pub fn walk_inline(
+fn walk_inline(
   inline: doc.Inline,
   meta: doc.Meta,
   filter: InlineFilter,
