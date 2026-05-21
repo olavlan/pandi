@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>qcheck_pandoc · v1.0.0</title>
+    <title>pandoc_filter · v1.0.0</title>
     <meta name="description" content=""/>
     <meta name="theme-color" content="#ffaff3" media="(prefers-color-scheme: light)"/>
     <meta name="theme-color" content="#33384d" media="(prefers-color-scheme: dark)"/>
@@ -143,7 +143,7 @@
       </button>
 
       <h2>
-        <a href="./">qcheck_pandoc</a>
+        <a href="./">pandoc_filter</a>
         <span id="project-version">
           <span> - v1.0.0 </span>
         </span>
@@ -181,7 +181,7 @@
       </h2>
       <div class="search">
         <div class="search-input-wrap">
-          <input type="text" id="search-input" class="search-input" tabindex="0" aria-label="Search qcheck_pandoc" autocomplete="off">
+          <input type="text" id="search-input" class="search-input" tabindex="0" aria-label="Search pandoc_filter" autocomplete="off">
           <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"><use xlink:href="#icon-svg-search"></use></svg></label>
         </div>
         <div id="search-results" class="search-results"></div>
@@ -213,7 +213,7 @@
         <h2>Modules</h2>
         <ul>
         
-          <li><a href="./qcheck_pandoc.html" class="module-link">qcheck_pandoc</a></li>
+          <li><a href="./pandoc_filter.html" class="module-link">pandoc_filter</a></li>
         
         </ul>
 
@@ -222,21 +222,176 @@
 
       <main class="content">
         
-<h1>qcheck_pandoc</h1>
+<h1>pandi</h1>
 <p><a href="https://hex.pm/packages/pandi"><img src="https://img.shields.io/hexpm/v/pandi" alt="Package Version" /></a>
 <a href="https://hexdocs.pm/pandi/"><img src="https://img.shields.io/badge/hex-docs-ffaff3" alt="Hex Docs" /></a></p>
-<p>Pandoc allows you to work with documents in a format-independent way.</p>
-<p>This package’s goal is to generate random Pandoc documents, which can be converted to any format and used  for property testing:</p>
-<pre><code class="language-gleam">import pandi
-import qcheck
-import qcheck_pandoc.{document_generator}
+<p><a href="https://pandoc.org/filters.html">Pandoc filters</a> in Gleam.</p>
+<p>Pandoc allows you to process documents in a format-independent way.</p>
+<p>This package’s goal is to make it easy to process Pandoc-compatible documents.</p>
+<p>As an example, consider the following Markdown document:</p>
+<pre><code class="language-md">
+*Gleam* is **cool**!
+
+//TODO write some cool stuff about Gleam here
+
+Here is a *Hello world* example:
+
+```gleam
+import gleam/io
 
 pub fn main() {
-  let seed = qcheck.random_seed()
-  let #(docs, _) = qcheck.generate(document_generator(), 1, seed)
-  let assert [doc] = docs
-  doc |&gt; pandi.to_json
+  io.println("Hello, world!")
 }
+```
+
+Go to `hex:gleam_stdlib` to learn more about the standard library.
+</code></pre>
+<p>We can now create the following processor:</p>
+<pre><code class="language-gleam">import examples/gleam_markdown/element
+import examples/pandoc
+import pandi as doc
+import pandoc_filter as filter
+
+pub fn main() {
+  let block_filter: filter.BlockFilter = fn(block, _meta) {
+    case block {
+      // remove "comment" lines:
+      doc.Para([doc.Str("//" &lt;&gt; _), ..]) -&gt; filter.remove
+      // append a gleam playground link to each code block:
+      doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -&gt;
+        filter.keep |&gt; filter.append(element.gleam_playground_link(code))
+      // keep all other inlines (children are still subject to filter):
+      _ -&gt; filter.keep
+    }
+  }
+
+  let inline_filter: filter.InlineFilter = fn(inline, _meta) {
+    case inline {
+      // replace all occurrences of `hex:[package_name]` with a link to the Hex docs:
+      doc.Code(_, "hex:" &lt;&gt; package_name) -&gt;
+        filter.remove |&gt; filter.append(element.hex_link(package_name))
+      // keep all other inlines (children are still subject to filter):
+      _ -&gt; filter.keep
+    }
+  }
+
+  pandoc.parse(from_file: "example.md", from_format: "markdown")
+  |&gt; filter.filter_blocks(block_filter)
+  |&gt; filter.filter_inlines(inline_filter)
+  |&gt; pandoc.render(to_file: "example.html", to_format: "html")
+}
+</code></pre>
+<p>The produced html will render like this:</p>
+<hr />
+<p><em>Gleam</em> is <strong>cool</strong>!</p>
+<p>Here is a <em>Hello world</em> example:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  io<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hello, world!&quot;</span><span class="op">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><a
+href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
+title="Gleam playground">Open code in Gleam playground</a></p>
+<p>Go to <a href="https://hexdocs.pm/gleam_stdlib/index.html"
+title="gleam_stdlib at Hex Docs">gleam_stdlib</a> to learn more about
+the standard library.</p>
+<hr />
+<h2>What you need to implement yourself</h2>
+<h3><code>pandoc</code> wrapper</h3>
+<p>This library deliberately does not call <code>pandoc</code>, but works with its json output format. That means:</p>
+<ul>
+<li>To parse any document format, you need to call <code>pandoc</code> to convert to json first.</li>
+<li>To render to any document format, you need to call <code>pandoc</code> to convert from json to the desired format.</li>
+</ul>
+<p>The above example uses the following <code>pandoc</code> wrapper:</p>
+<pre><code class="language-gleam">import pandi as doc
+import shellout
+import simplifile
+
+const document_folder = "src/examples/resources/"
+
+pub fn parse(
+  from_file filename: String,
+  from_format from_format: String,
+) -&gt; doc.Document {
+  let assert Ok(result) =
+    shellout.command(
+      run: "pandoc",
+      with: ["-f", from_format, "-t", "json", document_folder &lt;&gt; filename],
+      in: ".",
+      opt: [shellout.LetBeStderr],
+    )
+  let assert Ok(document) = doc.from_json(result)
+  document
+}
+
+pub fn render(
+  document: doc.Document,
+  to_file filename: String,
+  to_format to_format,
+) {
+  let json_file = document_folder &lt;&gt; filename &lt;&gt; ".json"
+  let assert Ok(_) =
+    simplifile.write(to: json_file, contents: doc.to_json(document))
+  let assert Ok(_) =
+    shellout.command(
+      run: "pandoc",
+      with: [
+        "-f",
+        "json",
+        "-t",
+        to_format,
+        "-o",
+        document_folder &lt;&gt; filename,
+        json_file,
+      ],
+      in: ".",
+      opt: [],
+    )
+  let assert Ok(_) = simplifile.delete(json_file)
+}
+</code></pre>
+<p>This can be used as a starting point for creating a wrapper with appropriate file and error handling.</p>
+<h3>Constructing elements</h3>
+<p>This library deliberately does not expose convenience functions for constructing elements.
+The type constructors are meant to be fully usable for both pattern matching and element construction.</p>
+<p>The above example uses the following helpers to construct the links:</p>
+<pre><code class="language-gleam">import pandi as doc
+
+pub fn hex_link(package_name: String) -&gt; doc.Inline {
+  let url = "https://hexdocs.pm/" &lt;&gt; package_name &lt;&gt; "/index.html"
+  let title = package_name &lt;&gt; " at Hex Docs"
+  basic_link(url: url, title: title, text: package_name)
+}
+
+pub fn gleam_playground_link(gleam_code: String) -&gt; doc.Block {
+  let compressed_code = make_v1_hash(gleam_code)
+  let url = "https://playground.gleam.run/#" &lt;&gt; compressed_code
+  doc.Para(content: [
+    basic_link(
+      url: url,
+      title: "Gleam playground",
+      text: "Open code in Gleam playground",
+    ),
+  ])
+}
+
+fn basic_link(
+  url url: String,
+  title title: String,
+  text text: String,
+) -&gt; doc.Inline {
+  doc.Link(
+    attributes: doc.Attributes(id: "", classes: [], keyvalues: []),
+    target: doc.Target(url: url, title: title),
+    content: [doc.Str(text)],
+  )
+}
+
+@external(javascript, "./lz_ffi.mjs", "makeV1Hash")
+fn make_v1_hash(code: String) -&gt; String
 </code></pre>
 
 
