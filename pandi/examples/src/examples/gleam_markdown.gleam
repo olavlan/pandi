@@ -4,9 +4,9 @@ import gleam/list
 import pandi as doc
 
 pub fn main() {
-  pandoc.parse(from_file: "example.md", from_format: "markdown")
+  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
   |> process_top_level_blocks
-  |> pandoc.render(to_file: "example.html", to_format: "html")
+  |> pandoc.document_to_file(to_file: "example.html", to_format: "html")
 }
 
 fn process_top_level_blocks(document: doc.Document) -> doc.Document {

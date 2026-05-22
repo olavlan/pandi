@@ -246,9 +246,9 @@ import gleam/list
 import pandi as doc
 
 pub fn main() {
-  pandoc.parse(from_file: "example.md", from_format: "markdown")
+  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
   |&gt; process_top_level_blocks
-  |&gt; pandoc.render(to_file: "example.html", to_format: "html")
+  |&gt; pandoc.document_to_file(to_file: "example.html", to_format: "html")
 }
 
 fn process_top_level_blocks(document: doc.Document) -&gt; doc.Document {
@@ -295,7 +295,7 @@ import simplifile
 
 const document_folder = "resources/"
 
-pub fn parse(
+pub fn file_to_document(
   from_file filename: String,
   from_format from_format: String,
 ) -&gt; doc.Document {
@@ -310,7 +310,7 @@ pub fn parse(
   document
 }
 
-pub fn render(
+pub fn document_to_file(
   document: doc.Document,
   to_file filename: String,
   to_format to_format,
@@ -445,9 +445,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779485403"></script>
+    <script src="./js/index.js?v=1779485825"></script>
     <script>
-      fetch("./search-data.json?v=1779485403")
+      fetch("./search-data.json?v=1779485825")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
