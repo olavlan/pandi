@@ -282,13 +282,13 @@ href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT
 title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 <hr />
 <p>Here we have only processed top-level document blocks, and no inlines (words, links etc.).
-If you need more advanced processing, filters can be used; they are functions that are applied to all elements in the document tree.
-<a href="/pandoc_filter/README.md">pandoc-filter</a> provides an opinionated way to do this with <code>pandi</code>.</p>
+If you need more advanced processing, document filters can be used; they are functions that are applied to all elements in the document tree.
+<a href="/pandoc_filter">pandoc-filter</a> provides an opinionated way to do this with <code>pandi</code>.</p>
 <h2>What needs to be implemented</h2>
 <h3>A <code>pandoc</code> wrapper</h3>
 <p>This library deliberately does not call <code>pandoc</code>, but works with its json output format.
 That means your application must call <code>pandoc</code> in order to bridge the gap between json and the desired document formats.</p>
-<p>The above example uses the following generic <code>pandoc</code> wrapper that works for document files:</p>
+<p>The above example uses the following generic <code>pandoc</code> wrapper that works for files on disk:</p>
 <pre><code class="language-gleam">import pandi as doc
 import shellout
 import simplifile
@@ -336,7 +336,7 @@ pub fn render(
   let assert Ok(_) = simplifile.delete(json_file)
 }
 </code></pre>
-<p>Adding proper file and error handling to this example might be enough for many applications.</p>
+<p>Adding proper file and error handling to this example could be enough for many applications.</p>
 <h3>element construction</h3>
 <p>The above example uses the following helpers to construct the playground link:</p>
 <pre><code class="language-gleam">import gleam/list
@@ -443,9 +443,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779483854"></script>
+    <script src="./js/index.js?v=1779484025"></script>
     <script>
-      fetch("./search-data.json?v=1779483854")
+      fetch("./search-data.json?v=1779484025")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

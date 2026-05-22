@@ -28,8 +28,8 @@ For now, let's see how the produced html will render:
 ---
 
 Here we have only processed top-level document blocks, and no inlines (words, links etc.).
-If you need more advanced processing, filters can be used; they are functions that are applied to all elements in the document tree.
-[pandoc-filter](/pandoc_filter/README.md) provides an opinionated way to do this with `pandi`.
+If you need more advanced processing, document filters can be used; they are functions that are applied to all elements in the document tree.
+[pandoc-filter](/pandoc_filter) provides an opinionated way to do this with `pandi`.
 
 ## What needs to be implemented
 
@@ -38,13 +38,13 @@ If you need more advanced processing, filters can be used; they are functions th
 This library deliberately does not call `pandoc`, but works with its json output format.
 That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
 
-The above example uses the following generic `pandoc` wrapper that works for document files:
+The above example uses the following generic `pandoc` wrapper that works for files on disk:
 
 ```gleam
 {{./examples/src/examples/pandoc.gleam}}
 ```
 
-Adding proper file and error handling to this example might be enough for many applications.
+Adding proper file and error handling to this example could be enough for many applications.
 
 ### element construction
 
