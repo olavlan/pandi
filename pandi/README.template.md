@@ -56,4 +56,4 @@ The given example defines the following helpers to construct the playground link
 {{./examples/src/examples/gleam_markdown/element.gleam}}
 ```
 
-The complete working example exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed.
+*The complete working example exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed.*
