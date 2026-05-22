@@ -335,7 +335,7 @@ pub fn render(
   let assert Ok(_) = simplifile.delete(json_file)
 }
 </code></pre>
-<p>Every application needs different way of handling files, errors, and the different targets.
+<p>Every application needs different ways of handling files, errors, and the different targets.
 It’s out of this library’s scope to provide a generic solution to this.</p>
 <h3>Constructing elements</h3>
 <p>This library deliberately does not expose convenience functions for constructing elements.
@@ -456,9 +456,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779480237"></script>
+    <script src="./js/index.js?v=1779480408"></script>
     <script>
-      fetch("./search-data.json?v=1779480237")
+      fetch("./search-data.json?v=1779480408")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

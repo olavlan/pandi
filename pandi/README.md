@@ -131,7 +131,7 @@ pub fn render(
 }
 ```
 
-Every application needs different way of handling files, errors, and the different targets.
+Every application needs different ways of handling files, errors, and the different targets.
 It's out of this library's scope to provide a generic solution to this.
 
 ### Constructing elements

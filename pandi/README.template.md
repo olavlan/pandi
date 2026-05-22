@@ -43,7 +43,7 @@ The above example uses the following generic `pandoc` wrapper that works on file
 {{./examples/src/examples/pandoc.gleam}}
 ```
 
-Every application needs different way of handling files, errors, and the different targets.
+Every application needs different ways of handling files, errors, and the different targets.
 It's out of this library's scope to provide a generic solution to this.
 
 ### Constructing elements
