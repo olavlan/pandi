@@ -48,10 +48,7 @@ It's out of this library's scope to provide a generic solution to this.
 
 ### Constructing elements
 
-This library deliberately does not expose convenience functions for constructing elements.
-The type constructors are meant to be fully usable for both pattern matching and element construction.
-
-The above example uses the following helpers to construct the links:
+The above example uses the following helpers to construct the playground link:
 
 ```gleam
 {{./examples/src/examples/gleam_markdown/element.gleam}}

@@ -338,39 +338,26 @@ pub fn render(
 <p>Every application needs different ways of handling files, errors, and the different targets.
 It’s out of this library’s scope to provide a generic solution to this.</p>
 <h3>Constructing elements</h3>
-<p>This library deliberately does not expose convenience functions for constructing elements.
-The type constructors are meant to be fully usable for both pattern matching and element construction.</p>
-<p>The above example uses the following helpers to construct the links:</p>
-<pre><code class="language-gleam">import pandi as doc
-
-pub fn hex_link(package_name: String) -&gt; doc.Inline {
-  let url = "https://hexdocs.pm/" &lt;&gt; package_name &lt;&gt; "/index.html"
-  let title = package_name &lt;&gt; " at Hex Docs"
-  basic_link(url: url, title: title, text: package_name)
-}
+<p>The above example uses the following helpers to construct the playground link:</p>
+<pre><code class="language-gleam">import gleam/list
+import gleam/string
+import pandi as doc
 
 pub fn gleam_playground_link(gleam_code: String) -&gt; doc.Block {
-  let compressed_code = make_v1_hash(gleam_code)
-  let url = "https://playground.gleam.run/#" &lt;&gt; compressed_code
+  let url = "https://playground.gleam.run/#" &lt;&gt; make_v1_hash(gleam_code)
   doc.Para(content: [
-    basic_link(
-      url: url,
-      title: "Gleam playground",
-      text: "Open code in Gleam playground",
+    doc.Link(
+      attributes: doc.Attributes(id: "", classes: [], keyvalues: []),
+      target: doc.Target(url: url, title: "Gleam playground"),
+      content: text("Open code in Gleam playground."),
     ),
   ])
 }
 
-fn basic_link(
-  url url: String,
-  title title: String,
-  text text: String,
-) -&gt; doc.Inline {
-  doc.Link(
-    attributes: doc.Attributes(id: "", classes: [], keyvalues: []),
-    target: doc.Target(url: url, title: title),
-    content: [doc.Str(text)],
-  )
+pub fn text(text: String) -&gt; List(doc.Inline) {
+  string.split(text, on: " ")
+  |&gt; list.map(doc.Str)
+  |&gt; list.intersperse(doc.Space)
 }
 
 @external(javascript, "./lz_ffi.mjs", "makeV1Hash")
@@ -456,9 +443,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779480408"></script>
+    <script src="./js/index.js?v=1779482402"></script>
     <script>
-      fetch("./search-data.json?v=1779480408")
+      fetch("./search-data.json?v=1779482402")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
