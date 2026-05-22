@@ -20,7 +20,7 @@ pub fn main() {
 ```
 ````
 
-Assume we want to add a paragraph after every Gleam code block linking to the playground.
+Assume we want to add a paragraph after each Gleam code block linking to the [Gleam playground](https://playground.gleam.run/), and then convert to html.
 We can achieve this in the following way:
 
 ```gleam
@@ -56,7 +56,17 @@ For now, let's see how the produced html renders:
 
 ---
 
-
+<p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
+example:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  io<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hello, world!&quot;</span><span class="op">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><a
+href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
+title="Gleam playground">Open code in Gleam playground</a></p>
 
 ---
 
@@ -73,7 +83,52 @@ That means your application must call `pandoc` to bridge the gap between json an
 The above example uses the following generic `pandoc` wrapper that works on files:
 
 ```gleam
+import pandi as doc
+import shellout
+import simplifile
 
+const document_folder = "resources/"
+
+pub fn parse(
+  from_file filename: String,
+  from_format from_format: String,
+) -> doc.Document {
+  let assert Ok(result) =
+    shellout.command(
+      run: "pandoc",
+      with: ["-f", from_format, "-t", "json", document_folder <> filename],
+      in: ".",
+      opt: [shellout.LetBeStderr],
+    )
+  let assert Ok(document) = doc.from_json(result)
+  document
+}
+
+pub fn render(
+  document: doc.Document,
+  to_file filename: String,
+  to_format to_format,
+) {
+  let json_file = document_folder <> filename <> ".json"
+  let assert Ok(_) =
+    simplifile.write(to: json_file, contents: doc.to_json(document))
+  let assert Ok(_) =
+    shellout.command(
+      run: "pandoc",
+      with: [
+        "-f",
+        "json",
+        "-t",
+        to_format,
+        "-o",
+        document_folder <> filename,
+        json_file,
+      ],
+      in: ".",
+      opt: [],
+    )
+  let assert Ok(_) = simplifile.delete(json_file)
+}
 ```
 
 Every application needs different file and error handling, and handling of the different targets.

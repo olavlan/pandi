@@ -11,7 +11,7 @@ As an example, consider the following Markdown document:
 {{./examples/resources/example.md}}
 ````
 
-Assume we want to add a paragraph after every Gleam code block linking to the playground.
+Assume we want to add a paragraph after each Gleam code block linking to the [Gleam playground](https://playground.gleam.run/), and then convert to html.
 We can achieve this in the following way:
 
 ```gleam
@@ -23,7 +23,7 @@ For now, let's see how the produced html renders:
 
 ---
 
-{{./examples/src/examples/resources/example.html}}
+{{./examples/resources/example.html}}
 
 ---
 
@@ -40,7 +40,7 @@ That means your application must call `pandoc` to bridge the gap between json an
 The above example uses the following generic `pandoc` wrapper that works on files:
 
 ```gleam
-{{./examples/pandoc.gleam}}
+{{./examples/src/examples/pandoc.gleam}}
 ```
 
 Every application needs different file and error handling, and handling of the different targets.
