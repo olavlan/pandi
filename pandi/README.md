@@ -6,7 +6,7 @@
 [Pandoc filters](https://pandoc.org/filters.html) in Gleam.
 
 Pandoc allows you to process documents in a format-independent way.
-This package's goal is to make it easy to create a Pandoc-backed document processors.
+This package's goal is to make it easy to create Pandoc-backed document processors.
 
 As an example, consider the following Markdown document:
 
@@ -55,13 +55,16 @@ fn filter_block(block: doc.Block) -> List(doc.Block) {
 ```
 
 There is a bit you have to implement yourself for this to work - see the next section for details.
-For now, this is how the produced html renders:
+For now, let's see how the produced html renders:
 
 ---
 
 
 
 ---
+
+Note that we only process top-level document blocks in this example, and no inlines (words, links etc.).
+If you need more advanced processing, [pandoc-filter](/pandoc_filter/README.md) provides an easy way to create document filters (functions that are applied to the whole document tree.)
 
 ## What you need to implement yourself
 
