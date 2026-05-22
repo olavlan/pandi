@@ -3,7 +3,7 @@
 [![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
 
-This package's goal is to make it easy to create [Pandoc](https://pandoc.org/)-backed document processors.
+`pandi`'s goal is to make it easy to create [Pandoc](https://pandoc.org/)-backed document processors.
 
 As an example, consider the following Markdown document:
 
@@ -70,18 +70,18 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 
 ---
 
-Here we have only processed top-level document blocks, but no nested blocks inlines (words, links etc.).
-If you need more advanced processing, document filters can be used; they are functions that are applied to all elements in the document tree.
+Here we have only processed top-level block elements, but no nested block elements or inline elements (words, links etc.).
+If you need more advanced processing, document filters should be used; they are functions that are applied to all elements in the document tree.
 [pandoc-filter](/pandoc_filter) provides an opinionated way to do this with `pandi`.
 
 ## What needs to be implemented
 
 ### A `pandoc` wrapper
 
-This library deliberately does not call `pandoc`, but works with its json output format.
+`pandi` deliberately does not call `pandoc`, but works with its json output format.
 That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
 
-The above example uses the following generic `pandoc` wrapper that works for files on disk:
+The given example defines the following generic `pandoc` wrapper that works for files on disk:
 
 ```gleam
 import pandi as doc
@@ -136,7 +136,9 @@ Adding proper file and error handling to this example could be enough for many a
 
 ### Element construction
 
-The above example uses the following helpers to construct the playground link:
+`pandi` does not expose convenience functions to construct elements; the type constructors are used directly.
+
+The given example defines the following helpers to construct the playground link:
 
 ```gleam
 import gleam/list
@@ -163,3 +165,5 @@ pub fn text(text: String) -> List(doc.Inline) {
 @external(javascript, "./lz_ffi.mjs", "makeV1Hash")
 fn make_v1_hash(code: String) -> String
 ```
+
+The complete working example exists is [this](https://github.com/olavlan/pandi/tree/main/pandi/examples) Gleam project, and should work as long as you have `pandoc` installed.
