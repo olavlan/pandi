@@ -51,7 +51,7 @@ fn process_block(block: doc.Block) -> List(doc.Block) {
 }
 ```
 
-There is a bit you have to implement yourself for this to work; see the next section for details.
+There is a bit that you have to implement yourself for this to work; see the next section for details.
 For now, let's see how the produced html will render:
 
 ---
@@ -70,7 +70,7 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 
 ---
 
-Here we have only processed top-level document blocks, and no inlines (words, links etc.).
+Here we have only processed top-level document blocks, but no nested blocks inlines (words, links etc.).
 If you need more advanced processing, document filters can be used; they are functions that are applied to all elements in the document tree.
 [pandoc-filter](/pandoc_filter) provides an opinionated way to do this with `pandi`.
 
@@ -134,7 +134,7 @@ pub fn render(
 
 Adding proper file and error handling to this example could be enough for many applications.
 
-### element construction
+### Element construction
 
 The above example uses the following helpers to construct the playground link:
 

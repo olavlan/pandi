@@ -266,7 +266,7 @@ fn process_block(block: doc.Block) -&gt; List(doc.Block) {
   }
 }
 </code></pre>
-<p>There is a bit you have to implement yourself for this to work; see the next section for details.
+<p>There is a bit that you have to implement yourself for this to work; see the next section for details.
 For now, let’s see how the produced html will render:</p>
 <hr />
 <p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
@@ -281,7 +281,7 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
 title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 <hr />
-<p>Here we have only processed top-level document blocks, and no inlines (words, links etc.).
+<p>Here we have only processed top-level document blocks, but no nested blocks inlines (words, links etc.).
 If you need more advanced processing, document filters can be used; they are functions that are applied to all elements in the document tree.
 <a href="/pandoc_filter">pandoc-filter</a> provides an opinionated way to do this with <code>pandi</code>.</p>
 <h2>What needs to be implemented</h2>
@@ -337,7 +337,7 @@ pub fn render(
 }
 </code></pre>
 <p>Adding proper file and error handling to this example could be enough for many applications.</p>
-<h3>element construction</h3>
+<h3>Element construction</h3>
 <p>The above example uses the following helpers to construct the playground link:</p>
 <pre><code class="language-gleam">import gleam/list
 import gleam/string
@@ -443,9 +443,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779484025"></script>
+    <script src="./js/index.js?v=1779484273"></script>
     <script>
-      fetch("./search-data.json?v=1779484025")
+      fetch("./search-data.json?v=1779484273")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
