@@ -3,10 +3,7 @@
 [![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
 
-[Pandoc filters](https://pandoc.org/filters.html) in Gleam.
-
-Pandoc allows you to process documents in a format-independent way.
-This package's goal is to make it easy to create Pandoc-backed document processors.
+This package's goal is to make it easy to create [Pandoc](https://pandoc.org/)-backed document processors.
 
 As an example, consider the following Markdown document:
 
