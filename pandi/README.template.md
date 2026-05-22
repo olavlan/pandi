@@ -18,7 +18,7 @@ We can achieve this in the following way:
 {{./examples/src/examples/gleam_markdown.gleam}}
 ```
 
-There is a bit you have to implement yourself for this to work - see the next section for details.
+There is a bit you have to implement yourself for this to work; see the next section for details.
 For now, let's see how the produced html renders:
 
 ---
@@ -27,17 +27,17 @@ For now, let's see how the produced html renders:
 
 ---
 
-Note that we only process top-level document blocks in this example, and no inlines (words, links etc.).
-If you need more advanced processing, [pandoc-filter](/pandoc_filter/README.md) provides an easy way to create document filters, i.e. functions that are applied to the whole document tree.
+Note that we only processed top-level document blocks and no inlines (words, links etc.).
+If you need more advanced processing, [pandoc-filter](/pandoc_filter/README.md) provides an opinionated way to create and run document filters, i.e. functions that are applied to the whole document tree.
 
-## What you need to implement yourself
+## What needs to be implemented
 
 ### A `pandoc` wrapper
 
 This library deliberately does not call `pandoc`, but works with its json output format.
-That means your application must call `pandoc` to bridge the gap between json and the desired document formats.
+That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
 
-The above example uses the following generic `pandoc` wrapper that works on files:
+The above example uses the following generic `pandoc` wrapper for files on disk:
 
 ```gleam
 {{./examples/src/examples/pandoc.gleam}}
@@ -46,7 +46,7 @@ The above example uses the following generic `pandoc` wrapper that works on file
 Every application needs different ways of handling files, errors, and the different targets.
 It's out of this library's scope to provide a generic solution to this.
 
-### Constructing elements
+### Element construction
 
 The above example uses the following helpers to construct the playground link:
 

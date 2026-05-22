@@ -266,7 +266,7 @@ fn filter_block(block: doc.Block) -&gt; List(doc.Block) {
   }
 }
 </code></pre>
-<p>There is a bit you have to implement yourself for this to work - see the next section for details.
+<p>There is a bit you have to implement yourself for this to work; see the next section for details.
 For now, let’s see how the produced html renders:</p>
 <hr />
 <p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
@@ -281,13 +281,13 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
 title="Gleam playground">Open code in Gleam playground</a></p>
 <hr />
-<p>Note that we only process top-level document blocks in this example, and no inlines (words, links etc.).
-If you need more advanced processing, <a href="/pandoc_filter/README.md">pandoc-filter</a> provides an easy way to create document filters, i.e. functions that are applied to the whole document tree.</p>
-<h2>What you need to implement yourself</h2>
+<p>Note that we only processed top-level document blocks and no inlines (words, links etc.).
+If you need more advanced processing, <a href="/pandoc_filter/README.md">pandoc-filter</a> provides an opinionated way to create and run document filters, i.e. functions that are applied to the whole document tree.</p>
+<h2>What needs to be implemented</h2>
 <h3>A <code>pandoc</code> wrapper</h3>
 <p>This library deliberately does not call <code>pandoc</code>, but works with its json output format.
-That means your application must call <code>pandoc</code> to bridge the gap between json and the desired document formats.</p>
-<p>The above example uses the following generic <code>pandoc</code> wrapper that works on files:</p>
+That means your application must call <code>pandoc</code> in order to bridge the gap between json and the desired document formats.</p>
+<p>The above example uses the following generic <code>pandoc</code> wrapper for files on disk:</p>
 <pre><code class="language-gleam">import pandi as doc
 import shellout
 import simplifile
@@ -337,7 +337,7 @@ pub fn render(
 </code></pre>
 <p>Every application needs different ways of handling files, errors, and the different targets.
 It’s out of this library’s scope to provide a generic solution to this.</p>
-<h3>Constructing elements</h3>
+<h3>Element construction</h3>
 <p>The above example uses the following helpers to construct the playground link:</p>
 <pre><code class="language-gleam">import gleam/list
 import gleam/string
@@ -443,9 +443,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779482402"></script>
+    <script src="./js/index.js?v=1779482742"></script>
     <script>
-      fetch("./search-data.json?v=1779482402")
+      fetch("./search-data.json?v=1779482742")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
