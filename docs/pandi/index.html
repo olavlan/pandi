@@ -238,7 +238,7 @@ pub fn main() {
 }
 ```
 </code></pre>
-<p>Assume we want to add a paragraph after each Gleam code block linking to the <a href="https://playground.gleam.run/">Gleam playground</a>, and then convert to html.
+<p>Let’s say we want to add a paragraph after each Gleam code block linking to the <a href="https://playground.gleam.run/">Gleam playground</a>, and then convert the document to html.
 We can achieve this in the following way:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
@@ -247,16 +247,16 @@ import pandi as doc
 
 pub fn main() {
   pandoc.parse(from_file: "example.md", from_format: "markdown")
-  |&gt; filter_top_level_blocks
+  |&gt; process_top_level_blocks
   |&gt; pandoc.render(to_file: "example.html", to_format: "html")
 }
 
-fn filter_top_level_blocks(document: doc.Document) -&gt; doc.Document {
-  let new_blocks = list.flat_map(document.blocks, filter_block)
+fn process_top_level_blocks(document: doc.Document) -&gt; doc.Document {
+  let new_blocks = list.flat_map(document.blocks, process_block)
   doc.Document(..document, blocks: new_blocks)
 }
 
-fn filter_block(block: doc.Block) -&gt; List(doc.Block) {
+fn process_block(block: doc.Block) -&gt; List(doc.Block) {
   case block {
     doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -&gt; [
       block,
@@ -267,7 +267,7 @@ fn filter_block(block: doc.Block) -&gt; List(doc.Block) {
 }
 </code></pre>
 <p>There is a bit you have to implement yourself for this to work; see the next section for details.
-For now, let’s see how the produced html renders:</p>
+For now, let’s see how the produced html will render:</p>
 <hr />
 <p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
 example:</p>
@@ -279,15 +279,16 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><a
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
-title="Gleam playground">Open code in Gleam playground</a></p>
+title="Gleam playground">Open code in Gleam playground ↗</a></p>
 <hr />
-<p>Note that we only processed top-level document blocks and no inlines (words, links etc.).
-If you need more advanced processing, <a href="/pandoc_filter/README.md">pandoc-filter</a> provides an opinionated way to create and run document filters, i.e. functions that are applied to the whole document tree.</p>
+<p>Here we have only processed top-level document blocks, and no inlines (words, links etc.).
+If you need more advanced processing, filters can be used; they are functions that are applied to all elements in the document tree.
+<a href="/pandoc_filter/README.md">pandoc-filter</a> provides an opinionated way to do this with <code>pandi</code>.</p>
 <h2>What needs to be implemented</h2>
 <h3>A <code>pandoc</code> wrapper</h3>
 <p>This library deliberately does not call <code>pandoc</code>, but works with its json output format.
 That means your application must call <code>pandoc</code> in order to bridge the gap between json and the desired document formats.</p>
-<p>The above example uses the following generic <code>pandoc</code> wrapper for files on disk:</p>
+<p>The above example uses the following generic <code>pandoc</code> wrapper that works for document files:</p>
 <pre><code class="language-gleam">import pandi as doc
 import shellout
 import simplifile
@@ -335,9 +336,8 @@ pub fn render(
   let assert Ok(_) = simplifile.delete(json_file)
 }
 </code></pre>
-<p>Every application needs different ways of handling files, errors, and the different targets.
-It’s out of this library’s scope to provide a generic solution to this.</p>
-<h3>Element construction</h3>
+<p>Adding proper file and error handling to this example might be enough for many applications.</p>
+<h3>element construction</h3>
 <p>The above example uses the following helpers to construct the playground link:</p>
 <pre><code class="language-gleam">import gleam/list
 import gleam/string
@@ -349,7 +349,7 @@ pub fn gleam_playground_link(gleam_code: String) -&gt; doc.Block {
     doc.Link(
       attributes: doc.Attributes(id: "", classes: [], keyvalues: []),
       target: doc.Target(url: url, title: "Gleam playground"),
-      content: text("Open code in Gleam playground."),
+      content: text("Open code in Gleam playground ↗"),
     ),
   ])
 }
@@ -443,9 +443,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779482742"></script>
+    <script src="./js/index.js?v=1779483788"></script>
     <script>
-      fetch("./search-data.json?v=1779482742")
+      fetch("./search-data.json?v=1779483788")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

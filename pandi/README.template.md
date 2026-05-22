@@ -11,7 +11,7 @@ As an example, consider the following Markdown document:
 {{./examples/resources/example.md}}
 ````
 
-Assume we want to add a paragraph after each Gleam code block linking to the [Gleam playground](https://playground.gleam.run/), and then convert to html.
+Let's say we want to add a paragraph after each Gleam code block linking to the [Gleam playground](https://playground.gleam.run/), and then convert the document to html.
 We can achieve this in the following way:
 
 ```gleam
@@ -19,7 +19,7 @@ We can achieve this in the following way:
 ```
 
 There is a bit you have to implement yourself for this to work; see the next section for details.
-For now, let's see how the produced html renders:
+For now, let's see how the produced html will render:
 
 ---
 
@@ -27,8 +27,9 @@ For now, let's see how the produced html renders:
 
 ---
 
-Note that we only processed top-level document blocks and no inlines (words, links etc.).
-If you need more advanced processing, [pandoc-filter](/pandoc_filter/README.md) provides an opinionated way to create and run document filters, i.e. functions that are applied to the whole document tree.
+Here we have only processed top-level document blocks, and no inlines (words, links etc.).
+If you need more advanced processing, filters can be used; they are functions that are applied to all elements in the document tree.
+[pandoc-filter](/pandoc_filter/README.md) provides an opinionated way to do this with `pandi`.
 
 ## What needs to be implemented
 
@@ -37,16 +38,15 @@ If you need more advanced processing, [pandoc-filter](/pandoc_filter/README.md) 
 This library deliberately does not call `pandoc`, but works with its json output format.
 That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
 
-The above example uses the following generic `pandoc` wrapper for files on disk:
+The above example uses the following generic `pandoc` wrapper that works for document files:
 
 ```gleam
 {{./examples/src/examples/pandoc.gleam}}
 ```
 
-Every application needs different ways of handling files, errors, and the different targets.
-It's out of this library's scope to provide a generic solution to this.
+Adding proper file and error handling to this example might be enough for many applications.
 
-### Element construction
+### element construction
 
 The above example uses the following helpers to construct the playground link:
 

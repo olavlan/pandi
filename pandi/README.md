@@ -20,7 +20,7 @@ pub fn main() {
 ```
 ````
 
-Assume we want to add a paragraph after each Gleam code block linking to the [Gleam playground](https://playground.gleam.run/), and then convert to html.
+Let's say we want to add a paragraph after each Gleam code block linking to the [Gleam playground](https://playground.gleam.run/), and then convert the document to html.
 We can achieve this in the following way:
 
 ```gleam
@@ -31,16 +31,16 @@ import pandi as doc
 
 pub fn main() {
   pandoc.parse(from_file: "example.md", from_format: "markdown")
-  |> filter_top_level_blocks
+  |> process_top_level_blocks
   |> pandoc.render(to_file: "example.html", to_format: "html")
 }
 
-fn filter_top_level_blocks(document: doc.Document) -> doc.Document {
-  let new_blocks = list.flat_map(document.blocks, filter_block)
+fn process_top_level_blocks(document: doc.Document) -> doc.Document {
+  let new_blocks = list.flat_map(document.blocks, process_block)
   doc.Document(..document, blocks: new_blocks)
 }
 
-fn filter_block(block: doc.Block) -> List(doc.Block) {
+fn process_block(block: doc.Block) -> List(doc.Block) {
   case block {
     doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -> [
       block,
@@ -52,7 +52,7 @@ fn filter_block(block: doc.Block) -> List(doc.Block) {
 ```
 
 There is a bit you have to implement yourself for this to work; see the next section for details.
-For now, let's see how the produced html renders:
+For now, let's see how the produced html will render:
 
 ---
 
@@ -66,12 +66,13 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><a
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
-title="Gleam playground">Open code in Gleam playground</a></p>
+title="Gleam playground">Open code in Gleam playground ↗</a></p>
 
 ---
 
-Note that we only processed top-level document blocks and no inlines (words, links etc.).
-If you need more advanced processing, [pandoc-filter](/pandoc_filter/README.md) provides an opinionated way to create and run document filters, i.e. functions that are applied to the whole document tree.
+Here we have only processed top-level document blocks, and no inlines (words, links etc.).
+If you need more advanced processing, filters can be used; they are functions that are applied to all elements in the document tree.
+[pandoc-filter](/pandoc_filter/README.md) provides an opinionated way to do this with `pandi`.
 
 ## What needs to be implemented
 
@@ -80,7 +81,7 @@ If you need more advanced processing, [pandoc-filter](/pandoc_filter/README.md) 
 This library deliberately does not call `pandoc`, but works with its json output format.
 That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
 
-The above example uses the following generic `pandoc` wrapper for files on disk:
+The above example uses the following generic `pandoc` wrapper that works for document files:
 
 ```gleam
 import pandi as doc
@@ -131,10 +132,9 @@ pub fn render(
 }
 ```
 
-Every application needs different ways of handling files, errors, and the different targets.
-It's out of this library's scope to provide a generic solution to this.
+Adding proper file and error handling to this example might be enough for many applications.
 
-### Element construction
+### element construction
 
 The above example uses the following helpers to construct the playground link:
 
@@ -149,7 +149,7 @@ pub fn gleam_playground_link(gleam_code: String) -> doc.Block {
     doc.Link(
       attributes: doc.Attributes(id: "", classes: [], keyvalues: []),
       target: doc.Target(url: url, title: "Gleam playground"),
-      content: text("Open code in Gleam playground."),
+      content: text("Open code in Gleam playground ↗"),
     ),
   ])
 }
