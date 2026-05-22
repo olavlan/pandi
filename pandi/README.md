@@ -12,6 +12,15 @@ As an example, consider the following Markdown document:
 
 ````md
 
+Gleam is **cool** - here is a *Hello world* example:
+
+```gleam
+import gleam/io
+
+pub fn main() {
+  io.println("Hello, world!")
+}
+```
 ````
 
 Assume we want to add a paragraph after every Gleam code block linking to the playground.
@@ -64,52 +73,7 @@ That means your application must call `pandoc` to bridge the gap between json an
 The above example uses the following generic `pandoc` wrapper that works on files:
 
 ```gleam
-import pandi as doc
-import shellout
-import simplifile
 
-const document_folder = "resources/"
-
-pub fn parse(
-  from_file filename: String,
-  from_format from_format: String,
-) -> doc.Document {
-  let assert Ok(result) =
-    shellout.command(
-      run: "pandoc",
-      with: ["-f", from_format, "-t", "json", document_folder <> filename],
-      in: ".",
-      opt: [shellout.LetBeStderr],
-    )
-  let assert Ok(document) = doc.from_json(result)
-  document
-}
-
-pub fn render(
-  document: doc.Document,
-  to_file filename: String,
-  to_format to_format,
-) {
-  let json_file = document_folder <> filename <> ".json"
-  let assert Ok(_) =
-    simplifile.write(to: json_file, contents: doc.to_json(document))
-  let assert Ok(_) =
-    shellout.command(
-      run: "pandoc",
-      with: [
-        "-f",
-        "json",
-        "-t",
-        to_format,
-        "-o",
-        document_folder <> filename,
-        json_file,
-      ],
-      in: ".",
-      opt: [],
-    )
-  let assert Ok(_) = simplifile.delete(json_file)
-}
 ```
 
 Every application needs different file and error handling, and handling of the different targets.
