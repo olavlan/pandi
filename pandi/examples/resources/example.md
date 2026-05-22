@@ -1,7 +1,5 @@
 
-*Gleam* is **cool**!
-
-Here is a *Hello world* example:
+Gleam is **cool** - here is a *Hello world* example:
 
 ```gleam
 import gleam/io

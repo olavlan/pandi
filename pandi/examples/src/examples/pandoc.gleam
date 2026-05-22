@@ -2,7 +2,7 @@ import pandi as doc
 import shellout
 import simplifile
 
-const document_folder = "src/examples/resources/"
+const document_folder = "resources/"
 
 pub fn parse(
   from_file filename: String,

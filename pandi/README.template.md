@@ -6,8 +6,7 @@
 [Pandoc filters](https://pandoc.org/filters.html) in Gleam.
 
 Pandoc allows you to process documents in a format-independent way.
-
-This package's goal is to make it easy to process Pandoc-compatible documents.
+This package's goal is to make it easy to create a Pandoc-backed document processors.
 
 As an example, consider the following Markdown document:
 
@@ -15,13 +14,15 @@ As an example, consider the following Markdown document:
 {{./examples/src/examples/resources/example.md}}
 ````
 
-We can now create the following processor:
+Assume we want to add a paragraph after every Gleam code block linking to the playground.
+We can achieve this in the following way:
 
 ```gleam
 {{./examples/src/examples/gleam_markdown.gleam}}
 ```
 
-The produced html will render like this:
+There is a bit you have to implement yourself for this to work - see the next section for details.
+For now, this is how the produced html renders:
 
 ---
 
@@ -31,20 +32,19 @@ The produced html will render like this:
 
 ## What you need to implement yourself
 
-### `pandoc` wrapper
+### A `pandoc` wrapper
 
-This library deliberately does not call `pandoc`, but works with its json output format. That means:
+This library deliberately does not call `pandoc`, but works with its json output format.
+That means your application must call `pandoc` to bridge the gap between json and the desired document formats.
 
-* To parse any document format, you need to call `pandoc` to convert to json first.
-* To render to any document format, you need to call `pandoc` to convert from json to the desired format.
-
-The above example uses the following `pandoc` wrapper:
+The above example uses the following generic `pandoc` wrapper that works on files:
 
 ```gleam
 {{./examples/src/examples/pandoc.gleam}}
 ```
 
-This can be used as a starting point for creating a wrapper with appropriate file and error handling.
+Every application needs different file and error handling, and handling of the different targets.
+It's out of this library's scope to provide a generic solution to this.
 
 ### Constructing elements
 

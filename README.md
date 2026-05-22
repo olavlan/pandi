@@ -8,7 +8,7 @@ Gleam packages for working with Pandoc-compatible documents:
 Tasks, pandi:
 
 * Resources folder
-* Tidy API and add short docs
+* Add short docs
 * Ask Discord for feedback
 * Add proper documentation
 

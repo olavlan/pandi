@@ -6,27 +6,16 @@
 [Pandoc filters](https://pandoc.org/filters.html) in Gleam.
 
 Pandoc allows you to process documents in a format-independent way.
-
-This package's goal is to make it easy to process Pandoc-compatible documents.
+This package's goal is to make it easy to create a Pandoc-backed document processors.
 
 As an example, consider the following Markdown document:
 
 ````md
 
-*Gleam* is **cool**!
-
-Here is a *Hello world* example:
-
-```gleam
-import gleam/io
-
-pub fn main() {
-  io.println("Hello, world!")
-}
-```
 ````
 
-We can now create the following processor:
+Assume we want to add a paragraph after every Gleam code block linking to the playground.
+We can achieve this in the following way:
 
 ```gleam
 import examples/gleam_markdown/element
@@ -56,41 +45,30 @@ fn filter_block(block: doc.Block) -> List(doc.Block) {
 }
 ```
 
-The produced html will render like this:
+There is a bit you have to implement yourself for this to work - see the next section for details.
+For now, this is how the produced html renders:
 
 ---
 
-<p><em>Gleam</em> is <strong>cool</strong>!</p>
-<p>Here is a <em>Hello world</em> example:</p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  io<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hello, world!&quot;</span><span class="op">)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p><a
-href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
-title="Gleam playground">Open code in Gleam playground</a></p>
+
 
 ---
 
 ## What you need to implement yourself
 
-### `pandoc` wrapper
+### A `pandoc` wrapper
 
-This library deliberately does not call `pandoc`, but works with its json output format. That means:
+This library deliberately does not call `pandoc`, but works with its json output format.
+That means your application must call `pandoc` to bridge the gap between json and the desired document formats.
 
-* To parse any document format, you need to call `pandoc` to convert to json first.
-* To render to any document format, you need to call `pandoc` to convert from json to the desired format.
-
-The above example uses the following `pandoc` wrapper:
+The above example uses the following generic `pandoc` wrapper that works on files:
 
 ```gleam
 import pandi as doc
 import shellout
 import simplifile
 
-const document_folder = "src/examples/resources/"
+const document_folder = "resources/"
 
 pub fn parse(
   from_file filename: String,
@@ -134,7 +112,8 @@ pub fn render(
 }
 ```
 
-This can be used as a starting point for creating a wrapper with appropriate file and error handling.
+Every application needs different file and error handling, and handling of the different targets.
+It's out of this library's scope to provide a generic solution to this.
 
 ### Constructing elements
 
