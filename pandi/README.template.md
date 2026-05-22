@@ -28,7 +28,7 @@ For now, let's see how the produced html renders:
 ---
 
 Note that we only process top-level document blocks in this example, and no inlines (words, links etc.).
-If you need more advanced processing, [pandoc-filter](/pandoc_filter/README.md) provides an easy way to create document filters (functions that are applied to the whole document tree.)
+If you need more advanced processing, [pandoc-filter](/pandoc_filter/README.md) provides an easy way to create document filters, i.e. functions that are applied to the whole document tree.
 
 ## What you need to implement yourself
 
@@ -43,7 +43,7 @@ The above example uses the following generic `pandoc` wrapper that works on file
 {{./examples/src/examples/pandoc.gleam}}
 ```
 
-Every application needs different file and error handling, and handling of the different targets.
+Every application needs different way of handling files, errors, and the different targets.
 It's out of this library's scope to provide a generic solution to this.
 
 ### Constructing elements
