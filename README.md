@@ -7,20 +7,24 @@ Gleam packages for working with Pandoc-compatible documents:
 
 Tasks, pandi:
 
-* Resources folder
-* Add short docs
-* Ask Discord for feedback
-* Add proper documentation
+* support both targets in example (lz)
+* add docs
+
+Tasks, pandoc_filter
+
+* refine introduction and example
+* add docs
+* ask discord for feedback
 
 Tasks, pandoc-lustre-converter:
 
-* Improve api
-* Readme and short docs
-* Ask Discord for feedback
-* Add proper documentation
+* improve api
+* introduction
+* docs
+* ask Discord for feedback
 
 Tasks, other:
 
-* Adhere to Gleam conventions
-* Test both targets in justfile
+* adhere to Gleam conventions
+* test both targets in justfile
 * support all element types
