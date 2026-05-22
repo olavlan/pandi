@@ -66,7 +66,7 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><a
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
-title="Gleam playground">Open code in Gleam playground ↗</a></p>
+title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 
 ---
 
@@ -149,7 +149,7 @@ pub fn gleam_playground_link(gleam_code: String) -> doc.Block {
     doc.Link(
       attributes: doc.Attributes(id: "", classes: [], keyvalues: []),
       target: doc.Target(url: url, title: "Gleam playground"),
-      content: text("Open code in Gleam playground ↗"),
+      content: text("Open code in Gleam playground 🔗"),
     ),
   ])
 }

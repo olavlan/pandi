@@ -8,7 +8,7 @@ pub fn gleam_playground_link(gleam_code: String) -> doc.Block {
     doc.Link(
       attributes: doc.Attributes(id: "", classes: [], keyvalues: []),
       target: doc.Target(url: url, title: "Gleam playground"),
-      content: text("Open code in Gleam playground ↗"),
+      content: text("Open code in Gleam playground 🔗"),
     ),
   ])
 }
