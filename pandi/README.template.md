@@ -49,7 +49,7 @@ Alternatively, the conversion of documents to json can happen separately from yo
 
 ## Using filters
 
-Taking it a step further, assume that we have the following Markdown document:
+Taking the example a step further, assume that we have the following Markdown document:
 
 ````md
 {{./examples/resources/example-with-nesting.md}}
@@ -82,4 +82,4 @@ The examples use the following helpers to construct the links:
 {{./examples/src/examples/gleam_markdown/element.gleam}}
 ```
 
-*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples targets Javascript because it's needed to compress the Gleam code and construct the Playground link*.
+*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples targets Javascript because it's needed to compress the Gleam code in the Markdown examples (for the Playground link)*.

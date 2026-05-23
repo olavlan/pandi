@@ -137,7 +137,7 @@ Alternatively, the conversion of documents to json can happen separately from yo
 
 ## Using filters
 
-Taking it a step further, assume that we have the following Markdown document:
+Taking the example a step further, assume that we have the following Markdown document:
 
 ````md
 
@@ -268,4 +268,4 @@ fn empty_attributes() -> doc.Attributes {
 fn make_v1_hash(code: String) -> String
 ```
 
-*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples targets Javascript because it's needed to compress the Gleam code and construct the Playground link*.
+*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples targets Javascript because it's needed to compress the Gleam code in the Markdown examples (for the Playground link)*.

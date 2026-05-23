@@ -343,7 +343,7 @@ pub fn document_to_file(
 <p>This can be extended with proper file and error handling, or you can wrap <code>pandoc</code> in a different way.
 Alternatively, the conversion of documents to json can happen separately from your Gleam application.</p>
 <h2>Using filters</h2>
-<p>Taking it a step further, assume that we have the following Markdown document:</p>
+<p>Taking the example a step further, assume that we have the following Markdown document:</p>
 <pre><code class="language-md">
 Gleam is **cool**:
 
@@ -458,7 +458,7 @@ fn empty_attributes() -&gt; doc.Attributes {
 @external(javascript, "./lz_ffi.mjs", "makeV1Hash")
 fn make_v1_hash(code: String) -&gt; String
 </code></pre>
-<p><em>The complete working examples exists <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you have <code>pandoc</code> installed. These examples targets Javascript because it’s needed to compress the Gleam code and construct the Playground link</em>.</p>
+<p><em>The complete working examples exists <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you have <code>pandoc</code> installed. These examples targets Javascript because it’s needed to compress the Gleam code in the Markdown examples (for the Playground link)</em>.</p>
 
 
       </main>
@@ -539,9 +539,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779539424"></script>
+    <script src="./js/index.js?v=1779539611"></script>
     <script>
-      fetch("./search-data.json?v=1779539424")
+      fetch("./search-data.json?v=1779539611")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
