@@ -215,6 +215,8 @@
         
           <li><a href="./pandi.html" class="module-link">pandi</a></li>
         
+          <li><a href="./pandi/filter.html" class="module-link">pandi<wbr />/filter</a></li>
+        
         </ul>
 
         
@@ -281,11 +283,13 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
 title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 <hr />
-<p>Here we have only processed top-level block elements, but no nested block elements or inline elements (words, links etc.).
-If you need more advanced processing, document filters should be used; they are functions that are applied to all elements in the document tree.
-<a href="https://olavlan.github.io/pandi/pandoc_filter/">pandoc-filter</a> provides an opinionated way to do this with <code>pandi</code>.</p>
-<h2>What needs to be implemented</h2>
-<h3>A <code>pandoc</code> wrapper</h3>
+<p>Note that:</p>
+<ul>
+<li>The example needs a <code>pandoc</code> wrapper to work; see the next subsection.</li>
+<li>The example can only process top-level document elements; see the second subsection on how to extend this with <code>pandoc/filter</code>.</li>
+<li>The type constructors for creating elements are quite verbose, so the example uses some helpers; see the last subsection for details.</li>
+</ul>
+<h2>Adding a <code>pandoc</code> wrapper</h2>
 <p><code>pandi</code> deliberately does not call <code>pandoc</code>, but works with its json output format.
 That means your application must call <code>pandoc</code> in order to bridge the gap between json and the desired document formats.</p>
 <p>The given example defines the following generic <code>pandoc</code> wrapper that works for files on disk:</p>
@@ -337,9 +341,77 @@ pub fn document_to_file(
 }
 </code></pre>
 <p>Adding proper file and error handling to this example could be enough for many applications.</p>
-<h3>Element construction</h3>
+<h2>Using filters</h2>
+<p>Assume now that we have the following Markdown document:</p>
+<pre><code class="language-md">
+Gleam is **cool**:
+
+* *Hello world* example:
+
+  ```gleam
+  import gleam/io
+
+  pub fn main() {
+    io.println("Hello, world!")
+  }
+  ```
+
+* Visit `docs:gleam_stdlib` to learn more about the standard library.
+</code></pre>
+<p>Note that the code block is nested in a bullet list.
+In addition to the Playground link, we’d like to replace <code>docs:gleam_stdlib</code> with a link to the Hex documentation.
+The <code>pandi/filter</code> module provides a way to define <em>filters</em>, which can be applied to the whole document tree:</p>
+<pre><code class="language-gleam">import examples/gleam_markdown_with_filter/element
+import examples/pandoc
+import pandi as doc
+import pandi/filter
+
+pub fn main() {
+  let block_filter: filter.BlockFilter = fn(block, _meta) {
+    case block {
+      doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -&gt;
+        filter.keep |&gt; filter.append(element.gleam_playground_link(code))
+      _ -&gt; filter.keep
+    }
+  }
+
+  let inline_filter: filter.InlineFilter = fn(inline, _meta) {
+    case inline {
+      doc.Code(_, "docs:" &lt;&gt; package_name) -&gt;
+        filter.remove |&gt; filter.append(element.hex_link(package_name))
+      _ -&gt; filter.keep
+    }
+  }
+
+  pandoc.file_to_document(
+    from_file: "example-with-nesting.md",
+    from_format: "markdown",
+  )
+  |&gt; filter.filter_blocks(block_filter)
+  |&gt; filter.filter_inlines(inline_filter)
+  |&gt; pandoc.document_to_file(
+    to_file: "example-with-nesting.html",
+    to_format: "html",
+  )
+}
+</code></pre>
+<p>The produced html will render as expected:</p>
+<hr />
+<p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
+example:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  io<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hello, world!&quot;</span><span class="op">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><a
+href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
+title="Gleam playground">Open code in Gleam playground 🔗</a></p>
+<hr />
+<h2>Element construction</h2>
 <p><code>pandi</code> does not expose convenience functions to construct elements; the type constructors are used directly.</p>
-<p>The given example defines the following helpers to construct the playground link:</p>
+<p>The examples use the following helpers to construct the links:</p>
 <pre><code class="language-gleam">import gleam/list
 import gleam/string
 import pandi as doc
@@ -364,7 +436,7 @@ pub fn text(text: String) -&gt; List(doc.Inline) {
 @external(javascript, "./lz_ffi.mjs", "makeV1Hash")
 fn make_v1_hash(code: String) -&gt; String
 </code></pre>
-<p><em>The complete working example exists <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you have <code>pandoc</code> installed.</em></p>
+<p><em>The complete working examples exists <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you have <code>pandoc</code> installed. This specific example targets Javascript because it’s needed to compress the Gleam code and construct the Playground link</em>.</p>
 
 
       </main>
@@ -445,9 +517,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779533326"></script>
+    <script src="./js/index.js?v=1779538410"></script>
     <script>
-      fetch("./search-data.json?v=1779533326")
+      fetch("./search-data.json?v=1779538410")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

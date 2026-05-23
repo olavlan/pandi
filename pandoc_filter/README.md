@@ -9,52 +9,13 @@ As an example, consider the following Markdown document:
 
 ````md
 
-Gleam is **cool**:
-
-* *Hello world* example:
-
-  ```gleam
-  import gleam/io
-
-  pub fn main() {
-    io.println("Hello, world!")
-  }
-  ```
-
-* Visit `docs:gleam_stdlib` to learn more about the standard library.
 ````
 
 Let's say we want to add a paragraph after each Gleam code block linking to the [Gleam playground](https://playground.gleam.run/), and then convert the document to html.
 We can achieve this in the following way:
 
 ```gleam
-import examples/gleam_markdown/element
-import examples/pandoc
-import pandi as doc
-import pandoc_filter as filter
 
-pub fn main() {
-  let block_filter: filter.BlockFilter = fn(block, _meta) {
-    case block {
-      doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) ->
-        filter.keep |> filter.append(element.gleam_playground_link(code))
-      _ -> filter.keep
-    }
-  }
-
-  let inline_filter: filter.InlineFilter = fn(inline, _meta) {
-    case inline {
-      doc.Code(_, "docs:" <> package_name) ->
-        filter.remove |> filter.append(element.hex_link(package_name))
-      _ -> filter.keep
-    }
-  }
-
-  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
-  |> filter.filter_blocks(block_filter)
-  |> filter.filter_inlines(inline_filter)
-  |> pandoc.document_to_file(to_file: "example.html", to_format: "html")
-}
 ```
 
 There is a bit that you have to implement yourself for this to work; see the next section for details.
@@ -152,45 +113,7 @@ Adding proper file and error handling to this example could be enough for many a
 The given example defines the following helpers to construct the playground link:
 
 ```gleam
-import gleam/list
-import gleam/string
-import pandi as doc
 
-pub fn hex_link(package_name: String) -> doc.Inline {
-  let url = "https://hexdocs.pm/" <> package_name <> "/index.html"
-  let title = package_name <> " at Hex Docs"
-  doc.Link(
-    attributes: empty_attributes(),
-    target: doc.Target(url: url, title: title),
-    content: [
-      doc.Code(attributes: empty_attributes(), text: package_name),
-    ],
-  )
-}
-
-pub fn gleam_playground_link(gleam_code: String) -> doc.Block {
-  let url = "https://playground.gleam.run/#" <> make_v1_hash(gleam_code)
-  doc.Para(content: [
-    doc.Link(
-      attributes: empty_attributes(),
-      target: doc.Target(url: url, title: "Gleam playground"),
-      content: text("Open code in Gleam playground 🔗"),
-    ),
-  ])
-}
-
-pub fn text(text: String) -> List(doc.Inline) {
-  string.split(text, on: " ")
-  |> list.map(doc.Str)
-  |> list.intersperse(doc.Space)
-}
-
-fn empty_attributes() -> doc.Attributes {
-  doc.Attributes(id: "", classes: [], keyvalues: [])
-}
-
-@external(javascript, "./lz_ffi.mjs", "makeV1Hash")
-fn make_v1_hash(code: String) -> String
 ```
 
 *The complete working example exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed.*

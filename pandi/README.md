@@ -70,13 +70,13 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 
 ---
 
-Here we have only processed top-level block elements, but no nested block elements or inline elements (words, links etc.).
-If you need more advanced processing, document filters should be used; they are functions that are applied to all elements in the document tree.
-[pandoc-filter](https://olavlan.github.io/pandi/pandoc_filter/) provides an opinionated way to do this with `pandi`.
+Note that:
 
-## What needs to be implemented
+* The example needs a `pandoc` wrapper to work; see the next subsection.
+* The example can only process top-level document elements; see the second subsection on how to extend this with `pandoc/filter`.
+* The type constructors for creating elements are quite verbose, so the example uses some helpers; see the last subsection for details.
 
-### A `pandoc` wrapper
+## Adding a `pandoc` wrapper
 
 `pandi` deliberately does not call `pandoc`, but works with its json output format.
 That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
@@ -134,11 +134,90 @@ pub fn document_to_file(
 
 Adding proper file and error handling to this example could be enough for many applications.
 
-### Element construction
+## Using filters
+
+Assume now that we have the following Markdown document:
+
+````md
+
+Gleam is **cool**:
+
+* *Hello world* example:
+
+  ```gleam
+  import gleam/io
+
+  pub fn main() {
+    io.println("Hello, world!")
+  }
+  ```
+
+* Visit `docs:gleam_stdlib` to learn more about the standard library.
+````
+
+Note that the code block is nested in a bullet list.
+In addition to the Playground link, we'd like to replace `docs:gleam_stdlib` with a link to the Hex documentation.
+The `pandi/filter` module provides a way to define *filters*, which can be applied to the whole document tree:
+
+```gleam
+import examples/gleam_markdown_with_filter/element
+import examples/pandoc
+import pandi as doc
+import pandi/filter
+
+pub fn main() {
+  let block_filter: filter.BlockFilter = fn(block, _meta) {
+    case block {
+      doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) ->
+        filter.keep |> filter.append(element.gleam_playground_link(code))
+      _ -> filter.keep
+    }
+  }
+
+  let inline_filter: filter.InlineFilter = fn(inline, _meta) {
+    case inline {
+      doc.Code(_, "docs:" <> package_name) ->
+        filter.remove |> filter.append(element.hex_link(package_name))
+      _ -> filter.keep
+    }
+  }
+
+  pandoc.file_to_document(
+    from_file: "example-with-nesting.md",
+    from_format: "markdown",
+  )
+  |> filter.filter_blocks(block_filter)
+  |> filter.filter_inlines(inline_filter)
+  |> pandoc.document_to_file(
+    to_file: "example-with-nesting.html",
+    to_format: "html",
+  )
+}
+```
+
+The produced html will render as expected:
+
+---
+
+<p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
+example:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  io<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hello, world!&quot;</span><span class="op">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><a
+href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
+title="Gleam playground">Open code in Gleam playground 🔗</a></p>
+
+---
+
+## Element construction
 
 `pandi` does not expose convenience functions to construct elements; the type constructors are used directly.
 
-The given example defines the following helpers to construct the playground link:
+The examples use the following helpers to construct the links:
 
 ```gleam
 import gleam/list
@@ -166,4 +245,4 @@ pub fn text(text: String) -> List(doc.Inline) {
 fn make_v1_hash(code: String) -> String
 ```
 
-*The complete working example exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed.*
+*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. This specific example targets Javascript because it's needed to compress the Gleam code and construct the Playground link*.

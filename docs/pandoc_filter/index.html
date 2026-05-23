@@ -228,49 +228,10 @@
 <p><code>pandi</code>’s goal is to make it easy to create advanced <a href="https://pandoc.org/">Pandoc</a>-backed document processors.</p>
 <p>As an example, consider the following Markdown document:</p>
 <pre><code class="language-md">
-Gleam is **cool**:
-
-* *Hello world* example:
-
-  ```gleam
-  import gleam/io
-
-  pub fn main() {
-    io.println("Hello, world!")
-  }
-  ```
-
-* Visit `docs:gleam_stdlib` to learn more about the standard library.
 </code></pre>
 <p>Let’s say we want to add a paragraph after each Gleam code block linking to the <a href="https://playground.gleam.run/">Gleam playground</a>, and then convert the document to html.
 We can achieve this in the following way:</p>
-<pre><code class="language-gleam">import examples/gleam_markdown/element
-import examples/pandoc
-import pandi as doc
-import pandoc_filter as filter
-
-pub fn main() {
-  let block_filter: filter.BlockFilter = fn(block, _meta) {
-    case block {
-      doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -&gt;
-        filter.keep |&gt; filter.append(element.gleam_playground_link(code))
-      _ -&gt; filter.keep
-    }
-  }
-
-  let inline_filter: filter.InlineFilter = fn(inline, _meta) {
-    case inline {
-      doc.Code(_, "docs:" &lt;&gt; package_name) -&gt;
-        filter.remove |&gt; filter.append(element.hex_link(package_name))
-      _ -&gt; filter.keep
-    }
-  }
-
-  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
-  |&gt; filter.filter_blocks(block_filter)
-  |&gt; filter.filter_inlines(inline_filter)
-  |&gt; pandoc.document_to_file(to_file: "example.html", to_format: "html")
-}
+<pre><code class="language-gleam">
 </code></pre>
 <p>There is a bit that you have to implement yourself for this to work; see the next section for details.
 For now, let’s see how the produced html will render:</p>
@@ -351,45 +312,7 @@ pub fn document_to_file(
 <h3>Element construction</h3>
 <p><code>pandi</code> does not expose convenience functions to construct elements; the type constructors are used directly.</p>
 <p>The given example defines the following helpers to construct the playground link:</p>
-<pre><code class="language-gleam">import gleam/list
-import gleam/string
-import pandi as doc
-
-pub fn hex_link(package_name: String) -&gt; doc.Inline {
-  let url = "https://hexdocs.pm/" &lt;&gt; package_name &lt;&gt; "/index.html"
-  let title = package_name &lt;&gt; " at Hex Docs"
-  doc.Link(
-    attributes: empty_attributes(),
-    target: doc.Target(url: url, title: title),
-    content: [
-      doc.Code(attributes: empty_attributes(), text: package_name),
-    ],
-  )
-}
-
-pub fn gleam_playground_link(gleam_code: String) -&gt; doc.Block {
-  let url = "https://playground.gleam.run/#" &lt;&gt; make_v1_hash(gleam_code)
-  doc.Para(content: [
-    doc.Link(
-      attributes: empty_attributes(),
-      target: doc.Target(url: url, title: "Gleam playground"),
-      content: text("Open code in Gleam playground 🔗"),
-    ),
-  ])
-}
-
-pub fn text(text: String) -&gt; List(doc.Inline) {
-  string.split(text, on: " ")
-  |&gt; list.map(doc.Str)
-  |&gt; list.intersperse(doc.Space)
-}
-
-fn empty_attributes() -&gt; doc.Attributes {
-  doc.Attributes(id: "", classes: [], keyvalues: [])
-}
-
-@external(javascript, "./lz_ffi.mjs", "makeV1Hash")
-fn make_v1_hash(code: String) -&gt; String
+<pre><code class="language-gleam">
 </code></pre>
 <p><em>The complete working example exists <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you have <code>pandoc</code> installed.</em></p>
 
@@ -472,9 +395,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779533326"></script>
+    <script src="./js/index.js?v=1779538410"></script>
     <script>
-      fetch("./search-data.json?v=1779533326")
+      fetch("./search-data.json?v=1779538410")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

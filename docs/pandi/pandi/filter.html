@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>qcheck_pandoc · qcheck_pandoc · v1.0.0</title>
+    <title>pandi/filter · pandi · v1.0.0</title>
     <meta name="description" content=""/>
     <meta name="theme-color" content="#ffaff3" media="(prefers-color-scheme: light)"/>
     <meta name="theme-color" content="#33384d" media="(prefers-color-scheme: dark)"/>
-    <link rel="stylesheet" href="./css/index.css?v=1.16.0" type="text/css"/>
+    <link rel="stylesheet" href="../css/index.css?v=1.16.0" type="text/css"/>
     <!-- The docs_config.js file is provided by HexDocs and shared
          between multiple versions of the same package. -->
-    <script src="./docs_config.js"></script>
-    <link id="syntax-theme" rel="stylesheet" href="./css/atom-one-light.min.css?v=1.16.0"/>
+    <script src="../docs_config.js"></script>
+    <link id="syntax-theme" rel="stylesheet" href="../css/atom-one-light.min.css?v=1.16.0"/>
     
   </head>
   <body class="prewrap-off theme-light drawer-closed">
@@ -38,7 +38,7 @@
        *   callback: (value) => {...},
        * }, ...};
        */
-      window.unnest = '.';
+      window.unnest = '..';
       const gleamConfig = {
         theme: {
           values: (() => {
@@ -143,7 +143,7 @@
       </button>
 
       <h2>
-        <a href="./">qcheck_pandoc</a>
+        <a href="../">pandi</a>
         <span id="project-version">
           <span> - v1.0.0 </span>
         </span>
@@ -181,7 +181,7 @@
       </h2>
       <div class="search">
         <div class="search-input-wrap">
-          <input type="text" id="search-input" class="search-input" tabindex="0" aria-label="Search qcheck_pandoc" autocomplete="off">
+          <input type="text" id="search-input" class="search-input" tabindex="0" aria-label="Search pandi" autocomplete="off">
           <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"><use xlink:href="#icon-svg-search"></use></svg></label>
         </div>
         <div id="search-results" class="search-results"></div>
@@ -203,7 +203,7 @@
         <h2>Pages</h2>
         <ul>
         
-          <li><a href="./index.html">README</a></li>
+          <li><a href="../index.html">README</a></li>
         
         </ul>
         
@@ -213,26 +213,41 @@
         <h2>Modules</h2>
         <ul>
         
-          <li><a href="./qcheck_pandoc.html" class="module-link">qcheck_pandoc</a></li>
+          <li><a href="../pandi.html" class="module-link">pandi</a></li>
+        
+          <li><a href="../pandi/filter.html" class="module-link">pandi<wbr />/filter</a></li>
         
         </ul>
 
         
+
+<h2>Types</h2>
+<ul>
+  
+  <li><a href="#Action">Action</a></li>
+  
+  <li><a href="#BlockFilter">BlockFilter</a></li>
+  
+  <li><a href="#InlineFilter">InlineFilter</a></li>
+  
+</ul>
 
 
 
 <h2>Values</h2>
 <ul>
   
-  <li><a href="#attributes_generator">attributes_generator</a></li>
+  <li><a href="#append">append</a></li>
   
-  <li><a href="#block_generator">block_generator</a></li>
+  <li><a href="#filter_blocks">filter_blocks</a></li>
   
-  <li><a href="#document_generator">document_generator</a></li>
+  <li><a href="#filter_inlines">filter_inlines</a></li>
   
-  <li><a href="#inlines_generator">inlines_generator</a></li>
+  <li><a href="#keep">keep</a></li>
   
-  <li><a href="#word_generator">word_generator</a></li>
+  <li><a href="#prepend">prepend</a></li>
+  
+  <li><a href="#remove">remove</a></li>
   
 </ul>
 
@@ -242,11 +257,75 @@
       <main class="content">
         
 <h1 id="module-name" class="module-name">
-  <a href="#module-name">qcheck_pandoc</a>
+  <a href="#module-name">pandi/filter</a>
   <svg class="icon icon-gleam-chasse"><use xlink:href="#icon-gleam-chasse"></use></svg>
 </h1>
 
 
+
+<section class="module-members">
+  <h1 id="module-types" class="module-member-kind">
+    <a href="#module-types">Types</a>
+    <svg class="icon icon-gleam-chasse-2"><use xlink:href="#icon-gleam-chasse-2"></use></svg>
+  </h1>
+
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="Action">
+        <a href="#Action">
+          Action
+        </a>
+      </h2> <span class="visibility-tag">opaque</span> 
+      
+    </div>
+    
+    <div class="custom-type-constructors">
+      <div class="rendered-markdown"></div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub opaque type </span><span class="hljs-title">Action</span>(<span class="hljs-variable">element</span>)</code></pre>
+      
+    </div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="BlockFilter">
+        <a href="#BlockFilter">
+          BlockFilter
+        </a>
+      </h2>
+      
+    </div>
+    
+    <div class="custom-type-constructors">
+      <div class="rendered-markdown"></div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockFilter</span> =
+  <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>)</code></pre>
+      
+    </div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="InlineFilter">
+        <a href="#InlineFilter">
+          InlineFilter
+        </a>
+      </h2>
+      
+    </div>
+    
+    <div class="custom-type-constructors">
+      <div class="rendered-markdown"></div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineFilter</span> =
+  <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
+    <a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>,
+  )</code></pre>
+      
+    </div>
+  </div>
+  
+</section>
 
 
 
@@ -258,77 +337,106 @@
   
   <div class="member">
     <div class="member-name">
-      <h2 id="attributes_generator">
-        <a href="#attributes_generator">
-          attributes_generator
+      <h2 id="append">
+        <a href="#append">
+          append
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">attributes_generator</span>() -> <a href="https://hexdocs.pm/qcheck/1.0.4/qcheck.html#Generator" title="qcheck.{type Generator}"><span class="hljs-variable">qcheck</span>.<span class="hljs-title">Generator</span></a>(
-  <span title="pandi.{type Attributes}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Attributes</span></span>,
-)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">append</span>(
+  <span class="hljs-variable">previous_action</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>),
+  <span class="hljs-variable">append</span>: <span class="hljs-variable">element</span>,
+) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="block_generator">
-        <a href="#block_generator">
-          block_generator
+      <h2 id="filter_blocks">
+        <a href="#filter_blocks">
+          filter_blocks
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">block_generator</span>() -> <a href="https://hexdocs.pm/qcheck/1.0.4/qcheck.html#Generator" title="qcheck.{type Generator}"><span class="hljs-variable">qcheck</span>.<span class="hljs-title">Generator</span></a>(<span title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">filter_blocks</span>(
+  <span class="hljs-variable">document</span>: <a href="../pandi.html#Document" title="pandi.{type Document}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Document</span></a>,
+  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
+    <a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>,
+  ),
+) -> <a href="../pandi.html#Document" title="pandi.{type Document}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Document</span></a></code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="document_generator">
-        <a href="#document_generator">
-          document_generator
+      <h2 id="filter_inlines">
+        <a href="#filter_inlines">
+          filter_inlines
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">document_generator</span>() -> <a href="https://hexdocs.pm/qcheck/1.0.4/qcheck.html#Generator" title="qcheck.{type Generator}"><span class="hljs-variable">qcheck</span>.<span class="hljs-title">Generator</span></a>(<span title="pandi.{type Document}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Document</span></span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">filter_inlines</span>(
+  <span class="hljs-variable">document</span>: <a href="../pandi.html#Document" title="pandi.{type Document}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Document</span></a>,
+  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
+    <a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>,
+  ),
+) -> <a href="../pandi.html#Document" title="pandi.{type Document}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Document</span></a></code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="inlines_generator">
-        <a href="#inlines_generator">
-          inlines_generator
+      <h2 id="keep">
+        <a href="#keep">
+          keep
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">inlines_generator</span>() -> <a href="https://hexdocs.pm/qcheck/1.0.4/qcheck.html#Generator" title="qcheck.{type Generator}"><span class="hljs-variable">qcheck</span>.<span class="hljs-title">Generator</span></a>(<span class="hljs-title">List</span>(<span title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></span>))</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">keep</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="word_generator">
-        <a href="#word_generator">
-          word_generator
+      <h2 id="prepend">
+        <a href="#prepend">
+          prepend
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">word_generator</span>() -> <a href="https://hexdocs.pm/qcheck/1.0.4/qcheck.html#Generator" title="qcheck.{type Generator}"><span class="hljs-variable">qcheck</span>.<span class="hljs-title">Generator</span></a>(<span class="hljs-title">String</span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">prepend</span>(
+  <span class="hljs-variable">previous_action</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>),
+  <span class="hljs-variable">prepend</span>: <span class="hljs-variable">element</span>,
+) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="remove">
+        <a href="#remove">
+          remove
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">remove</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
@@ -395,12 +503,12 @@
       </defs>
     </svg>
 
-    <script src="./js/highlight.min.js?v=1.16.0"></script>
-    <script src="./js/highlightjs-gleam.js?v=1.16.0"></script>
-    <script src="./js/highlightjs-erlang.min.js?v=1.16.0"></script>
-    <script src="./js/highlightjs-elixir.min.js?v=1.16.0"></script>
-    <script src="./js/highlightjs-javascript.min.js?v=1.16.0"></script>
-    <script src="./js/highlightjs-typescript.min.js?v=1.16.0"></script>
+    <script src="../js/highlight.min.js?v=1.16.0"></script>
+    <script src="../js/highlightjs-gleam.js?v=1.16.0"></script>
+    <script src="../js/highlightjs-erlang.min.js?v=1.16.0"></script>
+    <script src="../js/highlightjs-elixir.min.js?v=1.16.0"></script>
+    <script src="../js/highlightjs-javascript.min.js?v=1.16.0"></script>
+    <script src="../js/highlightjs-typescript.min.js?v=1.16.0"></script>
     <script>
       document.querySelectorAll("pre code").forEach((elem) => {
         if (elem.className === "") {
@@ -413,10 +521,10 @@
       hljs.highlightAll();
     </script>
 
-    <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779538410"></script>
+    <script src="../js/lunr.min.js?v=1.16.0"></script>
+    <script src="../js/index.js?v=1779538410"></script>
     <script>
-      fetch("./search-data.json?v=1779538410")
+      fetch("../search-data.json?v=1779538410")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
