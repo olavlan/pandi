@@ -1,6 +1,6 @@
 Gleam packages for working with Pandoc-compatible documents:
 
-* [pandi](./pandi): Core package for basic document processing.
+* [pandi](./pandi): Core package including a module for filtering.
 * [pandoc-lustre-converter](,/pandoc_lustre_converter): Document to Lustre converter, with rendering hooks.
 * [qcheck-pandoc](./qcheck_pandoc): Random document generator.
 

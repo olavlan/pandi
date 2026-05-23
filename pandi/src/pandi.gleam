@@ -71,6 +71,9 @@ pub type ListNumberDelimiter {
   TwoParens
 }
 
+/// Create a list of inlines from a string of space-separated words. 
+///
+/// Example: `text("A sentence.") -> [Str("A"), Space, Str("sentence.")`.
 pub fn text(text: String) -> List(Inline) {
   string.split(text, on: " ")
   |> list.map(Str)
