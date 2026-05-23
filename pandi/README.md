@@ -70,15 +70,15 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 
 ---
 
-Note that:
+Details:
 
 * The example needs a `pandoc` wrapper to work; see the next subsection.
-* The example can only process top-level document elements; see the second subsection on how to extend this with `pandoc/filter`.
+* The example can only process top-level document elements; see the second subsection on how to extend this with the `pandi/filter` module.
 * The type constructors for creating elements are quite verbose, so the example uses some helpers; see the last subsection for details.
 
 ## Adding a `pandoc` wrapper
 
-`pandi` deliberately does not call `pandoc`, but works with its json output format.
+`pandi` deliberately doesn't call `pandoc`, but works with its json output format.
 That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
 
 The given example defines the following generic `pandoc` wrapper that works for files on disk:
@@ -136,7 +136,7 @@ Adding proper file and error handling to this example could be enough for many a
 
 ## Using filters
 
-Assume now that we have the following Markdown document:
+Taking it a step further, assume that we have the following Markdown document:
 
 ````md
 
@@ -156,7 +156,8 @@ Gleam is **cool**:
 ````
 
 Note that the code block is nested in a bullet list.
-In addition to the Playground link, we'd like to replace `docs:gleam_stdlib` with a link to the Hex documentation.
+
+In addition to adding the Playground link, we'd like to replace `docs:gleam_stdlib` with a link to the Hex documentation.
 The `pandi/filter` module provides a way to define *filters*, which can be applied to the whole document tree:
 
 ```gleam
@@ -199,8 +200,9 @@ The produced html will render as expected:
 
 ---
 
-<p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
-example:</p>
+<p>Gleam is <strong>cool</strong>:</p>
+<ul>
+<li><p><em>Hello world</em> example:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -209,7 +211,11 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><a
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
-title="Gleam playground">Open code in Gleam playground 🔗</a></p>
+title="Gleam playground">Open code in Gleam playground 🔗</a></p></li>
+<li><p>Visit <a href="https://hexdocs.pm/gleam_stdlib/index.html"
+title="gleam_stdlib at Hex Docs"><code>gleam_stdlib</code></a> to learn
+more about the standard library.</p></li>
+</ul>
 
 ---
 
@@ -261,4 +267,4 @@ fn empty_attributes() -> doc.Attributes {
 fn make_v1_hash(code: String) -> String
 ```
 
-*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. This specific example targets Javascript because it's needed to compress the Gleam code and construct the Playground link*.
+*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples targets Javascript because it's needed to compress the Gleam code and construct the Playground link*.

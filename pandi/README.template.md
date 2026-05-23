@@ -27,15 +27,15 @@ For now, let's see how the produced html will render:
 
 ---
 
-Note that:
+Details:
 
 * The example needs a `pandoc` wrapper to work; see the next subsection.
-* The example can only process top-level document elements; see the second subsection on how to extend this with `pandoc/filter`.
+* The example can only process top-level document elements; see the second subsection on how to extend this with the `pandi/filter` module.
 * The type constructors for creating elements are quite verbose, so the example uses some helpers; see the last subsection for details.
 
 ## Adding a `pandoc` wrapper
 
-`pandi` deliberately does not call `pandoc`, but works with its json output format.
+`pandi` deliberately doesn't call `pandoc`, but works with its json output format.
 That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
 
 The given example defines the following generic `pandoc` wrapper that works for files on disk:
@@ -48,14 +48,15 @@ Adding proper file and error handling to this example could be enough for many a
 
 ## Using filters
 
-Assume now that we have the following Markdown document:
+Taking it a step further, assume that we have the following Markdown document:
 
 ````md
 {{./examples/resources/example-with-nesting.md}}
 ````
 
 Note that the code block is nested in a bullet list.
-In addition to the Playground link, we'd like to replace `docs:gleam_stdlib` with a link to the Hex documentation.
+
+In addition to adding the Playground link, we'd like to replace `docs:gleam_stdlib` with a link to the Hex documentation.
 The `pandi/filter` module provides a way to define *filters*, which can be applied to the whole document tree:
 
 ```gleam
@@ -66,7 +67,7 @@ The produced html will render as expected:
 
 ---
 
-{{./examples/resources/example.html}}
+{{./examples/resources/example-with-nesting.html}}
 
 ---
 
@@ -80,4 +81,4 @@ The examples use the following helpers to construct the links:
 {{./examples/src/examples/gleam_markdown/element.gleam}}
 ```
 
-*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. This specific example targets Javascript because it's needed to compress the Gleam code and construct the Playground link*.
+*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples targets Javascript because it's needed to compress the Gleam code and construct the Playground link*.
