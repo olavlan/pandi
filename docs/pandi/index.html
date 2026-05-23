@@ -283,7 +283,7 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 <hr />
 <p>Here we have only processed top-level block elements, but no nested block elements or inline elements (words, links etc.).
 If you need more advanced processing, document filters should be used; they are functions that are applied to all elements in the document tree.
-<a href="/pandoc_filter">pandoc-filter</a> provides an opinionated way to do this with <code>pandi</code>.</p>
+<a href="https://olavlan.github.io/pandi/pandoc_filter/">pandoc-filter</a> provides an opinionated way to do this with <code>pandi</code>.</p>
 <h2>What needs to be implemented</h2>
 <h3>A <code>pandoc</code> wrapper</h3>
 <p><code>pandi</code> deliberately does not call <code>pandoc</code>, but works with its json output format.
@@ -445,9 +445,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779485961"></script>
+    <script src="./js/index.js?v=1779531313"></script>
     <script>
-      fetch("./search-data.json?v=1779485961")
+      fetch("./search-data.json?v=1779531313")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

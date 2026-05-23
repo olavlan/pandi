@@ -3,34 +3,29 @@
 [![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
 
-[Pandoc filters](https://pandoc.org/filters.html) in Gleam.
-
-Pandoc allows you to process documents in a format-independent way.
-
-This package's goal is to make it easy to process Pandoc-compatible documents.
+`pandi`'s goal is to make it easy to create advanced [Pandoc](https://pandoc.org/)-backed document processors.
 
 As an example, consider the following Markdown document:
 
 ````md
 
-*Gleam* is **cool**!
+Gleam is **cool**:
 
-//TODO write some cool stuff about Gleam here
+* *Hello world* example:
 
-Here is a *Hello world* example:
+  ```gleam
+  import gleam/io
 
-```gleam
-import gleam/io
+  pub fn main() {
+    io.println("Hello, world!")
+  }
+  ```
 
-pub fn main() {
-  io.println("Hello, world!")
-}
-```
-
-Go to `hex:gleam_stdlib` to learn more about the standard library.
+* Visit `docs:gleam_stdlib` to learn more about the standard library.
 ````
 
-We can now create the following processor:
+Let's say we want to add a paragraph after each Gleam code block linking to the [Gleam playground](https://playground.gleam.run/), and then convert the document to html.
+We can achieve this in the following way:
 
 ```gleam
 import examples/gleam_markdown/element
@@ -41,39 +36,35 @@ import pandoc_filter as filter
 pub fn main() {
   let block_filter: filter.BlockFilter = fn(block, _meta) {
     case block {
-      // remove "comment" lines:
-      doc.Para([doc.Str("//" <> _), ..]) -> filter.remove
-      // append a gleam playground link to each code block:
       doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) ->
         filter.keep |> filter.append(element.gleam_playground_link(code))
-      // keep all other inlines (children are still subject to filter):
       _ -> filter.keep
     }
   }
 
   let inline_filter: filter.InlineFilter = fn(inline, _meta) {
     case inline {
-      // replace all occurrences of `hex:[package_name]` with a link to the Hex docs:
-      doc.Code(_, "hex:" <> package_name) ->
+      doc.Code(_, "docs:" <> package_name) ->
         filter.remove |> filter.append(element.hex_link(package_name))
-      // keep all other inlines (children are still subject to filter):
       _ -> filter.keep
     }
   }
 
-  pandoc.parse(from_file: "example.md", from_format: "markdown")
+  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
   |> filter.filter_blocks(block_filter)
   |> filter.filter_inlines(inline_filter)
-  |> pandoc.render(to_file: "example.html", to_format: "html")
+  |> pandoc.document_to_file(to_file: "example.html", to_format: "html")
 }
 ```
 
-The produced html will render like this:
+There is a bit that you have to implement yourself for this to work; see the next section for details.
+For now, let's see how the produced html will render:
 
 ---
 
-<p><em>Gleam</em> is <strong>cool</strong>!</p>
-<p>Here is a <em>Hello world</em> example:</p>
+<p>Gleam is <strong>cool</strong>:</p>
+<ul>
+<li><p><em>Hello world</em> example:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -82,32 +73,35 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
 <p><a
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
-title="Gleam playground">Open code in Gleam playground</a></p>
-<p>Go to <a href="https://hexdocs.pm/gleam_stdlib/index.html"
-title="gleam_stdlib at Hex Docs">gleam_stdlib</a> to learn more about
-the standard library.</p>
+title="Gleam playground">Open code in Gleam playground 🔗</a></p></li>
+<li><p>Visit <a href="https://hexdocs.pm/gleam_stdlib/index.html"
+title="gleam_stdlib at Hex Docs"><code>gleam_stdlib</code></a> to learn
+more about the standard library.</p></li>
+</ul>
 
 ---
 
-## What you need to implement yourself
+Here we have only processed top-level block elements, but no nested block elements or inline elements (words, links etc.).
+If you need more advanced processing, document filters should be used; they are functions that are applied to all elements in the document tree.
+[pandoc-filter](https://olavlan.github.io/pandi/pandoc_filter/) provides an opinionated way to do this with `pandi`.
 
-### `pandoc` wrapper
+## What needs to be implemented
 
-This library deliberately does not call `pandoc`, but works with its json output format. That means:
+### A `pandoc` wrapper
 
-* To parse any document format, you need to call `pandoc` to convert to json first.
-* To render to any document format, you need to call `pandoc` to convert from json to the desired format.
+`pandi` deliberately does not call `pandoc`, but works with its json output format.
+That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
 
-The above example uses the following `pandoc` wrapper:
+The given example defines the following generic `pandoc` wrapper that works for files on disk:
 
 ```gleam
 import pandi as doc
 import shellout
 import simplifile
 
-const document_folder = "src/examples/resources/"
+const document_folder = "resources/"
 
-pub fn parse(
+pub fn file_to_document(
   from_file filename: String,
   from_format from_format: String,
 ) -> doc.Document {
@@ -122,7 +116,7 @@ pub fn parse(
   document
 }
 
-pub fn render(
+pub fn document_to_file(
   document: doc.Document,
   to_file filename: String,
   to_format to_format,
@@ -149,48 +143,54 @@ pub fn render(
 }
 ```
 
-This can be used as a starting point for creating a wrapper with appropriate file and error handling.
+Adding proper file and error handling to this example could be enough for many applications.
 
-### Constructing elements
+### Element construction
 
-This library deliberately does not expose convenience functions for constructing elements.
-The type constructors are meant to be fully usable for both pattern matching and element construction.
+`pandi` does not expose convenience functions to construct elements; the type constructors are used directly.
 
-The above example uses the following helpers to construct the links:
+The given example defines the following helpers to construct the playground link:
 
 ```gleam
+import gleam/list
+import gleam/string
 import pandi as doc
 
 pub fn hex_link(package_name: String) -> doc.Inline {
   let url = "https://hexdocs.pm/" <> package_name <> "/index.html"
   let title = package_name <> " at Hex Docs"
-  basic_link(url: url, title: title, text: package_name)
+  doc.Link(
+    attributes: empty_attributes(),
+    target: doc.Target(url: url, title: title),
+    content: [
+      doc.Code(attributes: empty_attributes(), text: package_name),
+    ],
+  )
 }
 
 pub fn gleam_playground_link(gleam_code: String) -> doc.Block {
-  let compressed_code = make_v1_hash(gleam_code)
-  let url = "https://playground.gleam.run/#" <> compressed_code
+  let url = "https://playground.gleam.run/#" <> make_v1_hash(gleam_code)
   doc.Para(content: [
-    basic_link(
-      url: url,
-      title: "Gleam playground",
-      text: "Open code in Gleam playground",
+    doc.Link(
+      attributes: empty_attributes(),
+      target: doc.Target(url: url, title: "Gleam playground"),
+      content: text("Open code in Gleam playground 🔗"),
     ),
   ])
 }
 
-fn basic_link(
-  url url: String,
-  title title: String,
-  text text: String,
-) -> doc.Inline {
-  doc.Link(
-    attributes: doc.Attributes(id: "", classes: [], keyvalues: []),
-    target: doc.Target(url: url, title: title),
-    content: [doc.Str(text)],
-  )
+pub fn text(text: String) -> List(doc.Inline) {
+  string.split(text, on: " ")
+  |> list.map(doc.Str)
+  |> list.intersperse(doc.Space)
+}
+
+fn empty_attributes() -> doc.Attributes {
+  doc.Attributes(id: "", classes: [], keyvalues: [])
 }
 
 @external(javascript, "./lz_ffi.mjs", "makeV1Hash")
 fn make_v1_hash(code: String) -> String
 ```
+
+*The complete working example exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed.*

@@ -2,9 +2,9 @@ import pandi as doc
 import shellout
 import simplifile
 
-const document_folder = "src/examples/resources/"
+const document_folder = "resources/"
 
-pub fn parse(
+pub fn file_to_document(
   from_file filename: String,
   from_format from_format: String,
 ) -> doc.Document {
@@ -19,7 +19,7 @@ pub fn parse(
   document
 }
 
-pub fn render(
+pub fn document_to_file(
   document: doc.Document,
   to_file filename: String,
   to_format to_format,

@@ -3,56 +3,57 @@
 [![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
 
-[Pandoc filters](https://pandoc.org/filters.html) in Gleam.
-
-Pandoc allows you to process documents in a format-independent way.
-
-This package's goal is to make it easy to process Pandoc-compatible documents.
+`pandi`'s goal is to make it easy to create advanced [Pandoc](https://pandoc.org/)-backed document processors.
 
 As an example, consider the following Markdown document:
 
 ````md
-{{./examples/src/examples/resources/example.md}}
+{{./examples/resources/example.md}}
 ````
 
-We can now create the following processor:
+Let's say we want to add a paragraph after each Gleam code block linking to the [Gleam playground](https://playground.gleam.run/), and then convert the document to html.
+We can achieve this in the following way:
 
 ```gleam
 {{./examples/src/examples/gleam_markdown.gleam}}
 ```
 
-The produced html will render like this:
+There is a bit that you have to implement yourself for this to work; see the next section for details.
+For now, let's see how the produced html will render:
 
 ---
 
-{{./examples/src/examples/resources/example.html}}
+{{./examples/resources/example.html}}
 
 ---
 
-## What you need to implement yourself
+Here we have only processed top-level block elements, but no nested block elements or inline elements (words, links etc.).
+If you need more advanced processing, document filters should be used; they are functions that are applied to all elements in the document tree.
+[pandoc-filter](https://olavlan.github.io/pandi/pandoc_filter/) provides an opinionated way to do this with `pandi`.
 
-### `pandoc` wrapper
+## What needs to be implemented
 
-This library deliberately does not call `pandoc`, but works with its json output format. That means:
+### A `pandoc` wrapper
 
-* To parse any document format, you need to call `pandoc` to convert to json first.
-* To render to any document format, you need to call `pandoc` to convert from json to the desired format.
+`pandi` deliberately does not call `pandoc`, but works with its json output format.
+That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
 
-The above example uses the following `pandoc` wrapper:
+The given example defines the following generic `pandoc` wrapper that works for files on disk:
 
 ```gleam
 {{./examples/src/examples/pandoc.gleam}}
 ```
 
-This can be used as a starting point for creating a wrapper with appropriate file and error handling.
+Adding proper file and error handling to this example could be enough for many applications.
 
-### Constructing elements
+### Element construction
 
-This library deliberately does not expose convenience functions for constructing elements.
-The type constructors are meant to be fully usable for both pattern matching and element construction.
+`pandi` does not expose convenience functions to construct elements; the type constructors are used directly.
 
-The above example uses the following helpers to construct the links:
+The given example defines the following helpers to construct the playground link:
 
 ```gleam
 {{./examples/src/examples/gleam_markdown/element.gleam}}
 ```
+
+*The complete working example exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed.*

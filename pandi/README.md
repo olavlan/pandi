@@ -72,7 +72,7 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 
 Here we have only processed top-level block elements, but no nested block elements or inline elements (words, links etc.).
 If you need more advanced processing, document filters should be used; they are functions that are applied to all elements in the document tree.
-[pandoc-filter](/pandoc_filter) provides an opinionated way to do this with `pandi`.
+[pandoc-filter](https://olavlan.github.io/pandi/pandoc_filter/) provides an opinionated way to do this with `pandi`.
 
 ## What needs to be implemented
 
