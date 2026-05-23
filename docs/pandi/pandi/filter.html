@@ -298,7 +298,19 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
+      <div class="rendered-markdown"><p>A function that takes in a block (and the document metadata), and returns a filter action.</p>
+<p>Example:</p>
+<pre><code class="language-gleam">let increase_header_level: filter.BlockFilter = fn(block, _meta) {
+  case block {
+    doc.Header(level, _, _) -&gt;
+      filter.remove |&gt; filter.append(doc.Header(..block, level: level + 1))
+    _ -&gt; filter.keep
+  }
+}
+</code></pre>
+<p>This filter increases the header level of all <code>Header</code> elements.
+Use <code>filter_blocks</code> to apply the filter to a <code>Document</code> object.</p>
+</div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockFilter</span> =
   <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>)</code></pre>
       
@@ -316,7 +328,18 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
+      <div class="rendered-markdown"><p>A function that takes in an inline (and the document metadata), and returns a filter action.</p>
+<p>Example:</p>
+<pre><code class="language-gleam">let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
+  case inline {
+    doc.Str("Gleam") -&gt; filter.keep |&gt; filter.prepend(doc.Str("⭐️"))
+    _ -&gt; filter.keep
+  }
+}
+</code></pre>
+<p>This filter adds a star in front of every ocurrence of “Gleam” in the document.
+Use <code>filter_inlines</code> to apply the filter to a <code>Document</code> object.</p>
+</div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineFilter</span> =
   <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
     <a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>,
@@ -522,9 +545,9 @@
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779547342"></script>
+    <script src="../js/index.js?v=1779571296"></script>
     <script>
-      fetch("../search-data.json?v=1779547342")
+      fetch("../search-data.json?v=1779571296")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

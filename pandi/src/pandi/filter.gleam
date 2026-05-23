@@ -1,9 +1,40 @@
 import gleam/list
 import pandi as doc
 
+/// A function that takes in a block (and the document metadata), and returns a filter action.
+///
+/// Example:
+///
+/// ```gleam
+/// let increase_header_level: filter.BlockFilter = fn(block, _meta) {
+///   case block {
+///     doc.Header(level, _, _) ->
+///       filter.remove |> filter.append(doc.Header(..block, level: level + 1))
+///     _ -> filter.keep
+///   }
+/// }
+/// ```
+///
+/// This filter increases the header level of all `Header` elements.
+/// Use `filter_blocks` to apply the filter to a `Document` object.
 pub type BlockFilter =
   fn(doc.Block, doc.Meta) -> Action(doc.Block)
 
+/// A function that takes in an inline (and the document metadata), and returns a filter action.
+///
+/// Example:
+///
+/// ```gleam
+/// let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
+///   case inline {
+///     doc.Str("Gleam") -> filter.keep |> filter.prepend(doc.Str("⭐️"))
+///     _ -> filter.keep
+///   }
+/// }
+/// ```
+///
+/// This filter adds a star in front of every ocurrence of "Gleam" in the document.
+/// Use `filter_inlines` to apply the filter to a `Document` object.
 pub type InlineFilter =
   fn(doc.Inline, doc.Meta) -> Action(doc.Inline)
 
