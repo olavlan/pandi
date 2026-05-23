@@ -361,7 +361,7 @@ Gleam is **cool**:
 <p>Note that the code block is nested in a bullet list.
 In addition to the Playground link, we’d like to replace <code>docs:gleam_stdlib</code> with a link to the Hex documentation.
 The <code>pandi/filter</code> module provides a way to define <em>filters</em>, which can be applied to the whole document tree:</p>
-<pre><code class="language-gleam">import examples/gleam_markdown_with_filter/element
+<pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
 import pandi as doc
 import pandi/filter
@@ -416,11 +416,23 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 import gleam/string
 import pandi as doc
 
+pub fn hex_link(package_name: String) -&gt; doc.Inline {
+  let url = "https://hexdocs.pm/" &lt;&gt; package_name &lt;&gt; "/index.html"
+  let title = package_name &lt;&gt; " at Hex Docs"
+  doc.Link(
+    attributes: empty_attributes(),
+    target: doc.Target(url: url, title: title),
+    content: [
+      doc.Code(attributes: empty_attributes(), text: package_name),
+    ],
+  )
+}
+
 pub fn gleam_playground_link(gleam_code: String) -&gt; doc.Block {
   let url = "https://playground.gleam.run/#" &lt;&gt; make_v1_hash(gleam_code)
   doc.Para(content: [
     doc.Link(
-      attributes: doc.Attributes(id: "", classes: [], keyvalues: []),
+      attributes: empty_attributes(),
       target: doc.Target(url: url, title: "Gleam playground"),
       content: text("Open code in Gleam playground 🔗"),
     ),
@@ -431,6 +443,10 @@ pub fn text(text: String) -&gt; List(doc.Inline) {
   string.split(text, on: " ")
   |&gt; list.map(doc.Str)
   |&gt; list.intersperse(doc.Space)
+}
+
+fn empty_attributes() -&gt; doc.Attributes {
+  doc.Attributes(id: "", classes: [], keyvalues: [])
 }
 
 @external(javascript, "./lz_ffi.mjs", "makeV1Hash")
@@ -517,9 +533,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779538410"></script>
+    <script src="./js/index.js?v=1779538478"></script>
     <script>
-      fetch("./search-data.json?v=1779538410")
+      fetch("./search-data.json?v=1779538478")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
