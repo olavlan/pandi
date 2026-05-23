@@ -73,7 +73,7 @@ pub type ListNumberDelimiter {
 
 /// Create a list of inlines from a string of space-separated words. 
 ///
-/// Example: `text("A sentence.") -> [Str("A"), Space, Str("sentence.")`.
+/// Example: `text("A sentence.") -> [Str("A"), Space, Str("sentence.")]`.
 pub fn text(text: String) -> List(Inline) {
   string.split(text, on: " ")
   |> list.map(Str)
@@ -309,7 +309,7 @@ pub fn to_json(doc: Document) -> String {
   |> json.to_string
 }
 
-pub fn encode_document(doc: Document) -> json.Json {
+fn encode_document(doc: Document) -> json.Json {
   json.object([
     #("pandoc-api-version", json.array([1, 23, 1], json.int)),
     #("meta", encode_meta(doc.meta)),

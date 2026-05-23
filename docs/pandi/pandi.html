@@ -251,8 +251,6 @@
   
   <li><a href="#document_decoder">document_decoder</a></li>
   
-  <li><a href="#encode_document">encode_document</a></li>
-  
   <li><a href="#from_json">from_json</a></li>
   
   <li><a href="#text">text</a></li>
@@ -978,21 +976,6 @@
   
   <div class="member">
     <div class="member-name">
-      <h2 id="encode_document">
-        <a href="#encode_document">
-          encode_document
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">encode_document</span>(<span class="hljs-variable">doc</span>: <a href="#Document"><span class="hljs-title">Document</span></a>) -> <a href="https://hexdocs.pm/gleam_json/3.1.0/gleam/json.html#Json" title="gleam/json.{type Json}"><span class="hljs-variable">json</span>.<span class="hljs-title">Json</span></a></code></pre>
-    
-    <div class="rendered-markdown"></div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
       <h2 id="from_json">
         <a href="#from_json">
           from_json
@@ -1021,7 +1004,7 @@
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">text</span>(<span class="hljs-variable">text</span>: <span class="hljs-title">String</span>) -> <span class="hljs-title">List</span>(<a href="#Inline"><span class="hljs-title">Inline</span></a>)</code></pre>
     
     <div class="rendered-markdown"><p>Create a list of inlines from a string of space-separated words.</p>
-<p>Example: <code>text("A sentence.") -&gt; [Str("A"), Space, Str("sentence.")</code>.</p>
+<p>Example: <code>text("A sentence.") -&gt; [Str("A"), Space, Str("sentence.")]</code>.</p>
 </div>
   </div>
   
@@ -1136,9 +1119,9 @@
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779547216"></script>
+    <script src="./js/index.js?v=1779547342"></script>
     <script>
-      fetch("./search-data.json?v=1779547216")
+      fetch("./search-data.json?v=1779547342")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
