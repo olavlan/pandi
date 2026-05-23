@@ -16,13 +16,7 @@ fn snapshot(
 pub fn increase_header_level_test() {
   let blocks = [
     doc.Header(1, doc.Attributes("", [], []), [doc.Str("Header")]),
-    doc.Para([
-      doc.Str("Paragraph"),
-      doc.Space,
-      doc.Str("below"),
-      doc.Space,
-      doc.Str("header."),
-    ]),
+    doc.Para(doc.text("Paragraph after header.")),
   ]
   let block_filter: filter.BlockFilter = fn(block, _meta) {
     case block {
@@ -36,25 +30,13 @@ pub fn increase_header_level_test() {
 
 pub fn remove_comment_paragraphs_test() {
   let blocks = [
-    doc.Para([
-      doc.Str("//"),
-      doc.Space,
-      doc.Str("This is a comment"),
-    ]),
-    doc.Para([
-      doc.Str("Normal"),
-      doc.Space,
-      doc.Str("paragraph."),
-    ]),
-    doc.Para([
-      doc.Str("//"),
-      doc.Space,
-      doc.Str("Another comment"),
-    ]),
+    doc.Para(doc.text("// This should be removed.")),
+    doc.Para(doc.text("This should not be removed.")),
+    doc.Para(doc.text("//This should also be removed.")),
   ]
   let block_filter: filter.BlockFilter = fn(block, _meta) {
     case block {
-      doc.Para([doc.Str("//"), ..]) -> filter.remove
+      doc.Para([doc.Str("//" <> _), ..]) -> filter.remove
       _ -> filter.keep
     }
   }
@@ -69,13 +51,7 @@ pub fn convert_ordered_list_to_bullet_list_test() {
       [doc.Para([doc.Str("Second")])],
       [doc.Para([doc.Str("Third")])],
     ]),
-    doc.Para([
-      doc.Str("After"),
-      doc.Space,
-      doc.Str("the"),
-      doc.Space,
-      doc.Str("list."),
-    ]),
+    doc.Para(doc.text("Paragraph after list.")),
   ]
   let filter: filter.BlockFilter = fn(block, _meta) {
     case block {

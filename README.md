@@ -1,18 +1,15 @@
 Gleam packages for working with Pandoc-compatible documents:
 
 * [pandi](./pandi): Core package for basic document processing.
-* [pandoc-filter](./pandoc_filter): Conveniently process documents by applying filters.
 * [pandoc-lustre-converter](,/pandoc_lustre_converter): Document to Lustre converter, with rendering hooks.
 * [qcheck-pandoc](./qcheck_pandoc): Random document generator.
 
 Tasks, pandi:
 
-* support both targets in example (lz)
 * add docs
 
-Tasks, pandoc_filter
+Tasks, pandi/filter
 
-* refine introduction and example
 * add docs
 * ask discord for feedback
 

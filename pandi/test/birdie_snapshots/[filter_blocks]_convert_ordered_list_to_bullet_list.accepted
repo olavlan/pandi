@@ -1,0 +1,13 @@
+---
+version: 2.0.0
+title: [filter_blocks] convert ordered list to bullet list
+---
+[
+  BulletList
+    [
+      [ Para [ Str "First" ] ] ,
+      [ Para [ Str "Second" ] ] ,
+      [ Para [ Str "Third" ] ] ,
+    ] ,
+  Para [ Str "Paragraph" , Space , Str "after" , Space , Str "list." ] ,
+]

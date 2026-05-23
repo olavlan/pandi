@@ -1,0 +1,8 @@
+---
+version: 2.0.0
+title: [filter_blocks] increase header level from 1 to 2
+---
+[
+  Header 2 ( "" , [  ] , [  ] ) [ Str "Header" ] ,
+  Para [ Str "Paragraph" , Space , Str "after" , Space , Str "header." ] ,
+]

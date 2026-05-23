@@ -418,9 +418,7 @@ more about the standard library.</p></li>
 <h2>Element construction</h2>
 <p><code>pandi</code> does not expose convenience functions to construct elements; the type constructors are used directly.</p>
 <p>The examples use the following helpers to construct the links:</p>
-<pre><code class="language-gleam">import gleam/list
-import gleam/string
-import pandi as doc
+<pre><code class="language-gleam">import pandi as doc
 
 pub fn hex_link(package_name: String) -&gt; doc.Inline {
   let url = "https://hexdocs.pm/" &lt;&gt; package_name &lt;&gt; "/index.html"
@@ -440,15 +438,9 @@ pub fn gleam_playground_link(gleam_code: String) -&gt; doc.Block {
     doc.Link(
       attributes: empty_attributes(),
       target: doc.Target(url: url, title: "Gleam playground"),
-      content: text("Open code in Gleam playground 🔗"),
+      content: doc.text("Open code in Gleam playground 🔗"),
     ),
   ])
-}
-
-pub fn text(text: String) -&gt; List(doc.Inline) {
-  string.split(text, on: " ")
-  |&gt; list.map(doc.Str)
-  |&gt; list.intersperse(doc.Space)
 }
 
 fn empty_attributes() -&gt; doc.Attributes {
@@ -539,9 +531,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779539611"></script>
+    <script src="./js/index.js?v=1779545498"></script>
     <script>
-      fetch("./search-data.json?v=1779539611")
+      fetch("./search-data.json?v=1779545498")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

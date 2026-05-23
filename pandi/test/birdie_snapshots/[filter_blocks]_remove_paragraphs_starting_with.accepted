@@ -1,0 +1,18 @@
+---
+version: 2.0.0
+title: [filter_blocks] remove paragraphs starting with //
+---
+[
+  Para
+    [
+      Str "This" ,
+      Space ,
+      Str "should" ,
+      Space ,
+      Str "not" ,
+      Space ,
+      Str "be" ,
+      Space ,
+      Str "removed." ,
+    ] ,
+]

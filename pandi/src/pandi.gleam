@@ -4,6 +4,7 @@ import gleam/dynamic/decode
 import gleam/int
 import gleam/json
 import gleam/list
+import gleam/string
 
 pub type Document {
   Document(blocks: List(Block), meta: Meta)
@@ -68,6 +69,12 @@ pub type ListNumberDelimiter {
   Period
   OneParen
   TwoParens
+}
+
+pub fn text(text: String) -> List(Inline) {
+  string.split(text, on: " ")
+  |> list.map(Str)
+  |> list.intersperse(Space)
 }
 
 pub fn from_json(json_string: String) -> Result(Document, json.DecodeError) {

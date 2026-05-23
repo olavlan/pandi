@@ -1,5 +1,3 @@
-import gleam/list
-import gleam/string
 import pandi as doc
 
 pub fn hex_link(package_name: String) -> doc.Inline {
@@ -20,15 +18,9 @@ pub fn gleam_playground_link(gleam_code: String) -> doc.Block {
     doc.Link(
       attributes: empty_attributes(),
       target: doc.Target(url: url, title: "Gleam playground"),
-      content: text("Open code in Gleam playground 🔗"),
+      content: doc.text("Open code in Gleam playground 🔗"),
     ),
   ])
-}
-
-pub fn text(text: String) -> List(doc.Inline) {
-  string.split(text, on: " ")
-  |> list.map(doc.Str)
-  |> list.intersperse(doc.Space)
 }
 
 fn empty_attributes() -> doc.Attributes {
