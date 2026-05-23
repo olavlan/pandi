@@ -286,12 +286,12 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 <p>Details:</p>
 <ul>
 <li>The example needs a <code>pandoc</code> wrapper to work; see the next subsection.</li>
-<li>The example can only process top-level document elements; see the second subsection on how to extend this with the <code>pandi/filter</code> module.</li>
+<li>The example only processes top-level document elements; see the second subsection on how to extend this with the <code>pandi/filter</code> module.</li>
 <li>The type constructors for creating elements are quite verbose, so the example uses some helpers; see the last subsection for details.</li>
 </ul>
 <h2>Adding a <code>pandoc</code> wrapper</h2>
-<p><code>pandi</code> deliberately doesn’t call <code>pandoc</code>, but works with its json output format.
-That means your application must call <code>pandoc</code> in order to bridge the gap between json and the desired document formats.</p>
+<p><code>pandi</code> deliberately doesn’t try to run <code>pandoc</code>, but works with its json output format.
+That means your application must run <code>pandoc</code> in order to bridge the gap between json and the desired document formats.</p>
 <p>The given example defines the following generic <code>pandoc</code> wrapper that works for files on disk:</p>
 <pre><code class="language-gleam">import pandi as doc
 import shellout
@@ -340,7 +340,8 @@ pub fn document_to_file(
   let assert Ok(_) = simplifile.delete(json_file)
 }
 </code></pre>
-<p>Adding proper file and error handling to this example could be enough for many applications.</p>
+<p>This can be extended with proper file and error handling, or you can wrap <code>pandoc</code> in a different way.
+Alternatively, the conversion of documents to json can happen separately from your Gleam application.</p>
 <h2>Using filters</h2>
 <p>Taking it a step further, assume that we have the following Markdown document:</p>
 <pre><code class="language-md">
@@ -538,9 +539,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779539086"></script>
+    <script src="./js/index.js?v=1779539424"></script>
     <script>
-      fetch("./search-data.json?v=1779539086")
+      fetch("./search-data.json?v=1779539424")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

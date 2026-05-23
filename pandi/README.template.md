@@ -30,13 +30,13 @@ For now, let's see how the produced html will render:
 Details:
 
 * The example needs a `pandoc` wrapper to work; see the next subsection.
-* The example can only process top-level document elements; see the second subsection on how to extend this with the `pandi/filter` module.
+* The example only processes top-level document elements; see the second subsection on how to extend this with the `pandi/filter` module.
 * The type constructors for creating elements are quite verbose, so the example uses some helpers; see the last subsection for details.
 
 ## Adding a `pandoc` wrapper
 
-`pandi` deliberately doesn't call `pandoc`, but works with its json output format.
-That means your application must call `pandoc` in order to bridge the gap between json and the desired document formats.
+`pandi` deliberately doesn't try to run `pandoc`, but works with its json output format.
+That means your application must run `pandoc` in order to bridge the gap between json and the desired document formats.
 
 The given example defines the following generic `pandoc` wrapper that works for files on disk:
 
@@ -44,7 +44,8 @@ The given example defines the following generic `pandoc` wrapper that works for 
 {{./examples/src/examples/pandoc.gleam}}
 ```
 
-Adding proper file and error handling to this example could be enough for many applications.
+This can be extended with proper file and error handling, or you can wrap `pandoc` in a different way.
+Alternatively, the conversion of documents to json can happen separately from your Gleam application.
 
 ## Using filters
 
