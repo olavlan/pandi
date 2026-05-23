@@ -18,7 +18,7 @@ We can achieve this in the following way:
 {{./examples/src/examples/gleam_markdown.gleam}}
 ```
 
-There is a bit that you have to implement yourself for this to work; see the next section for details.
+As you can tell by the imports, there is a bit more we need for this to work; see the next section for details.
 For now, let's see how the produced html will render:
 
 ---

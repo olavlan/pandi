@@ -268,7 +268,7 @@ fn process_block(block: doc.Block) -&gt; List(doc.Block) {
   }
 }
 </code></pre>
-<p>There is a bit that you have to implement yourself for this to work; see the next section for details.
+<p>As you can tell by the imports, there is a bit more we need for this to work; see the next section for details.
 For now, let’s see how the produced html will render:</p>
 <hr />
 <p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
@@ -533,9 +533,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779538478"></script>
+    <script src="./js/index.js?v=1779538593"></script>
     <script>
-      fetch("./search-data.json?v=1779538478")
+      fetch("./search-data.json?v=1779538593")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
