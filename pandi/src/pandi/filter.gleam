@@ -1,9 +1,9 @@
 import gleam/list
 import pandi/doc
 
-/// A function that takes a block (and document metadata), and returns an action.
+/// A function that takes a block (and the document metadata), and returns an action.
 ///
-/// Use `apply_inline_filter` to apply it to a `Document` object.
+/// Use `apply_block_filter` to apply it to a `Document` object.
 /// 
 /// Examples:
 ///
@@ -55,7 +55,7 @@ type OriginalElementAction {
 
 /// Action to keep an element.
 ///
-/// Note that the children of the element (if any) will be filtered.
+/// Note that children of the element will be filtered.
 ///
 /// This action is typically used to match on remaining elements in a filter function:
 /// ```gleam
@@ -84,7 +84,7 @@ pub const remove: Action(element) = Action([], RemoveOriginal, [])
 
 /// Action to prepend new elements to an element.
 ///
-/// Note that the children of the new elements (if any) will **not** be filtered.
+/// Note that children of new elements will **not** be filtered.
 /// If you want to process the children of new elements, apply a subsequent filter to the document instead.
 ///
 /// Examples:
@@ -104,9 +104,10 @@ pub fn prepend(elements: List(element)) -> Action(element) {
 
 /// Action to append new elements to an element.
 ///
-/// Note that the children of the new elements (if any) will **not** be filtered.
+/// Note that children of new elements will **not** be filtered.
 /// If you want to process the children of new elements, apply a subsequent filter to the document instead.
-///
+/// If you want to freeze the children, use `replace` instead.
+/// 
 /// Examples:
 ///
 /// ```gleam
@@ -125,10 +126,11 @@ pub fn append(elements: List(element)) -> Action(element) {
 
 /// Action to replace an element with new elements.
 ///
-/// Note that the children of the new elements (if any) will **not** be filtered.
+/// Note that children of new elements will **not** be filtered.
 /// If you want to process the children of new elements, apply a subsequent filter to the document instead.
 ///
 /// This is typically used to modify elements:
+///
 /// ```gleam
 /// let inlcude_link_symbol: filter.InlineFilter = fn(inline, _meta) {
 ///   case inline {
@@ -139,6 +141,21 @@ pub fn append(elements: List(element)) -> Action(element) {
 ///   }
 /// }
 /// ```
+///
+/// The action may also be used to freeze elements:
+///
+/// ```gleam
+/// let filter: filter.BlockFilter = fn(block, _meta) {
+///   case block {
+///     // freeze every div...
+///     doc.Div(_, _, _) -> filter.replace(block)
+///     // ...so that the remaining patterns will not affect div children:
+///     doc.CodeBlock(_,_) -> filter.remove
+///     _ -> filter.keep
+///   }
+/// }
+/// ```
+/// 
 pub fn replace(elements: List(element)) -> Action(element) {
   Action(elements, RemoveOriginal, [])
 }
