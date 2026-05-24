@@ -81,10 +81,10 @@ pub fn text(text: String) -> List(Inline) {
 }
 
 pub fn from_json(json_string: String) -> Result(Document, json.DecodeError) {
-  json.parse(from: json_string, using: document_decoder())
+  json.parse(from: json_string, using: decoder())
 }
 
-pub fn document_decoder() -> decode.Decoder(Document) {
+pub fn decoder() -> decode.Decoder(Document) {
   use blocks <- decode.field("blocks", decode.list(block_decoder()))
   use meta <- decode.field("meta", meta_decoder())
   decode.success(Document(blocks, meta))
@@ -305,11 +305,11 @@ fn decode_c_at(
 
 pub fn to_json(doc: Document) -> String {
   doc
-  |> encode_document
+  |> encode
   |> json.to_string
 }
 
-fn encode_document(doc: Document) -> json.Json {
+fn encode(doc: Document) -> json.Json {
   json.object([
     #("pandoc-api-version", json.array([1, 23, 1], json.int)),
     #("meta", encode_meta(doc.meta)),
