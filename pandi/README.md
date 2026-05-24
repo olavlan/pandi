@@ -88,7 +88,7 @@ import pandi as doc
 import shellout
 import simplifile
 
-const document_folder = "resources/"
+const folder = "resources/"
 
 pub fn file_to_document(
   from_file filename: String,
@@ -97,7 +97,7 @@ pub fn file_to_document(
   let assert Ok(result) =
     shellout.command(
       run: "pandoc",
-      with: ["-f", from_format, "-t", "json", document_folder <> filename],
+      with: ["-f", from_format, "-t", "json", folder <> filename],
       in: ".",
       opt: [shellout.LetBeStderr],
     )
@@ -110,21 +110,13 @@ pub fn document_to_file(
   to_file filename: String,
   to_format to_format,
 ) {
-  let json_file = document_folder <> filename <> ".json"
+  let json_file = folder <> filename <> ".json"
   let assert Ok(_) =
     simplifile.write(to: json_file, contents: doc.to_json(document))
   let assert Ok(_) =
     shellout.command(
       run: "pandoc",
-      with: [
-        "-f",
-        "json",
-        "-t",
-        to_format,
-        "-o",
-        document_folder <> filename,
-        json_file,
-      ],
+      with: ["-f", "json", "-t", to_format, "-o", folder <> filename, json_file],
       in: ".",
       opt: [],
     )
@@ -222,7 +214,8 @@ learn more about the standard library.</p></li>
 
 ## Element construction
 
-`pandi` does not expose convenience functions to construct elements; the type constructors are used directly.
+`pandi` only exposes one convenience functions to construct elements; the `text` constructor.
+Otherwise, the type constructors are used directly.
 
 The examples use the following helpers to construct the links:
 
@@ -262,4 +255,4 @@ fn empty_attributes() -> doc.Attributes {
 fn make_v1_hash(code: String) -> String
 ```
 
-*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples targets Javascript because it's needed to compress the Gleam code in the Markdown examples (for the Playground link)*.
+*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you also have `pandoc` installed. These examples targets Javascript because a library is used to compress the Gleam code (for the Playground link)*.

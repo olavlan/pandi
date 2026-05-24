@@ -297,7 +297,7 @@ That means your application must run <code>pandoc</code> in order to bridge the 
 import shellout
 import simplifile
 
-const document_folder = "resources/"
+const folder = "resources/"
 
 pub fn file_to_document(
   from_file filename: String,
@@ -306,7 +306,7 @@ pub fn file_to_document(
   let assert Ok(result) =
     shellout.command(
       run: "pandoc",
-      with: ["-f", from_format, "-t", "json", document_folder &lt;&gt; filename],
+      with: ["-f", from_format, "-t", "json", folder &lt;&gt; filename],
       in: ".",
       opt: [shellout.LetBeStderr],
     )
@@ -319,21 +319,13 @@ pub fn document_to_file(
   to_file filename: String,
   to_format to_format,
 ) {
-  let json_file = document_folder &lt;&gt; filename &lt;&gt; ".json"
+  let json_file = folder &lt;&gt; filename &lt;&gt; ".json"
   let assert Ok(_) =
     simplifile.write(to: json_file, contents: doc.to_json(document))
   let assert Ok(_) =
     shellout.command(
       run: "pandoc",
-      with: [
-        "-f",
-        "json",
-        "-t",
-        to_format,
-        "-o",
-        document_folder &lt;&gt; filename,
-        json_file,
-      ],
+      with: ["-f", "json", "-t", to_format, "-o", folder &lt;&gt; filename, json_file],
       in: ".",
       opt: [],
     )
@@ -416,7 +408,8 @@ learn more about the standard library.</p></li>
 </ul>
 <hr />
 <h2>Element construction</h2>
-<p><code>pandi</code> does not expose convenience functions to construct elements; the type constructors are used directly.</p>
+<p><code>pandi</code> only exposes one convenience functions to construct elements; the <code>text</code> constructor.
+Otherwise, the type constructors are used directly.</p>
 <p>The examples use the following helpers to construct the links:</p>
 <pre><code class="language-gleam">import pandi as doc
 
@@ -452,7 +445,7 @@ fn empty_attributes() -&gt; doc.Attributes {
 @external(javascript, "./lz_ffi.mjs", "makeV1Hash")
 fn make_v1_hash(code: String) -&gt; String
 </code></pre>
-<p><em>The complete working examples exists <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you have <code>pandoc</code> installed. These examples targets Javascript because it’s needed to compress the Gleam code in the Markdown examples (for the Playground link)</em>.</p>
+<p><em>The complete working examples exists <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you also have <code>pandoc</code> installed. These examples targets Javascript because a library is used to compress the Gleam code (for the Playground link)</em>.</p>
 
 
       </main>
@@ -533,9 +526,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779614941"></script>
+    <script src="./js/index.js?v=1779615301"></script>
     <script>
-      fetch("./search-data.json?v=1779614941")
+      fetch("./search-data.json?v=1779615301")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

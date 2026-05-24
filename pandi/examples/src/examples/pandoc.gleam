@@ -2,7 +2,7 @@ import pandi as doc
 import shellout
 import simplifile
 
-const document_folder = "resources/"
+const folder = "resources/"
 
 pub fn file_to_document(
   from_file filename: String,
@@ -11,7 +11,7 @@ pub fn file_to_document(
   let assert Ok(result) =
     shellout.command(
       run: "pandoc",
-      with: ["-f", from_format, "-t", "json", document_folder <> filename],
+      with: ["-f", from_format, "-t", "json", folder <> filename],
       in: ".",
       opt: [shellout.LetBeStderr],
     )
@@ -24,21 +24,13 @@ pub fn document_to_file(
   to_file filename: String,
   to_format to_format,
 ) {
-  let json_file = document_folder <> filename <> ".json"
+  let json_file = folder <> filename <> ".json"
   let assert Ok(_) =
     simplifile.write(to: json_file, contents: doc.to_json(document))
   let assert Ok(_) =
     shellout.command(
       run: "pandoc",
-      with: [
-        "-f",
-        "json",
-        "-t",
-        to_format,
-        "-o",
-        document_folder <> filename,
-        json_file,
-      ],
+      with: ["-f", "json", "-t", to_format, "-o", folder <> filename, json_file],
       in: ".",
       opt: [],
     )

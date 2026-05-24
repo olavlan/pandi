@@ -74,7 +74,8 @@ The produced html will render as expected:
 
 ## Element construction
 
-`pandi` does not expose convenience functions to construct elements; the type constructors are used directly.
+`pandi` only exposes one convenience functions to construct elements; the `text` constructor.
+Otherwise, the type constructors are used directly.
 
 The examples use the following helpers to construct the links:
 
@@ -82,4 +83,4 @@ The examples use the following helpers to construct the links:
 {{./examples/src/examples/gleam_markdown/element.gleam}}
 ```
 
-*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples targets Javascript because it's needed to compress the Gleam code in the Markdown examples (for the Playground link)*.
+*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you also have `pandoc` installed. These examples targets Javascript because a library is used to compress the Gleam code (for the Playground link)*.
