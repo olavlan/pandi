@@ -241,7 +241,7 @@ pub fn main() {
 ```
 </code></pre>
 <p>Let’s say we want to add a paragraph after each Gleam code block linking to the <a href="https://playground.gleam.run/">Gleam playground</a>, and then convert the document to html.
-We can achieve this with <code>pandoc</code> and <code>pandi</code>:</p>
+We can achieve this with Pandoc and <code>pandi</code>:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
 import gleam/list
@@ -268,8 +268,8 @@ fn process_block(block: doc.Block) -&gt; List(doc.Block) {
   }
 }
 </code></pre>
-<p>As you can tell by the imports, there is a bit more we need for this to work; which we will cover in the next sections.
-For now, here is the rendered html of our processed document:</p>
+<p>We’ll explain the imported <code>pandoc</code> and <code>element</code> modules in the next sections.
+For now, here is the rendered html:</p>
 <hr />
 <p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
 example:</p>
@@ -283,16 +283,10 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
 title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 <hr />
-<p>We will now cover the following details:</p>
-<ul>
-<li>Adding a wrapper for the <code>pandoc</code> executable.</li>
-<li>Extending the example with the <code>pandi/filter</code> module, allowing us to easily process the whole document tree (not only the top-level blocks).</li>
-<li>How the example constructs new elements.</li>
-</ul>
-<h2>Adding a <code>pandoc</code> wrapper</h2>
-<p><code>pandi</code> deliberately doesn’t try to run <code>pandoc</code>, but works with its json output format.
-That means your application must run <code>pandoc</code> in order to bridge the gap between json and the desired document formats.</p>
-<p>The example uses the following generic <code>pandoc</code> wrapper for document files:</p>
+<h2>Adding a Gleam wrapper for Pandoc</h2>
+<p><code>pandi</code> deliberately doesn’t try to run Pandoc, but works with its json output format.
+That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.</p>
+<p>The example defines the following generic <code>pandoc</code> module for working with document files:</p>
 <pre><code class="language-gleam">import pandi as doc
 import shellout
 import simplifile
@@ -332,9 +326,9 @@ pub fn document_to_file(
   let assert Ok(_) = simplifile.delete(json_file)
 }
 </code></pre>
-<p>This can be extended with proper file and error handling, or you can wrap <code>pandoc</code> in a different way.
-Alternatively, you can convert documents to json separately from your Gleam application.</p>
-<h2>Using filters</h2>
+<p>This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
+Alternatively, you can convert documents to Pandoc’s json separately from your Gleam application.</p>
+<h2>More advanced processing with filters</h2>
 <p>Taking the example a step further, assume we have the following Markdown document:</p>
 <pre><code class="language-md">
 Gleam is **cool**:
@@ -353,7 +347,8 @@ Gleam is **cool**:
 </code></pre>
 <p>Note that the code block is nested in a bullet list.</p>
 <p>In addition to adding the Playground link after the code block, we’d like to replace <code>docs:gleam_stdlib</code> with a link to the Hex documentation.
-The <code>pandi/filter</code> module provides a way to define <em>filters</em>, which can be applied to the whole document tree:</p>
+The <code>pandi/filter</code> module makes this easy with the concept of <em>document filters</em>.
+A filter is simply an element-processing function that can be applied to all elements in the document tree:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
 import pandi as doc
@@ -388,7 +383,9 @@ pub fn main() {
   )
 }
 </code></pre>
-<p>The produced html will render as expected:</p>
+<p>Note that we separate between block and inline filters for type safety.
+Since block changes might overwrite inline changes, inline filters are typically applied last.</p>
+<p>Here is the rendered html:</p>
 <hr />
 <p>Gleam is <strong>cool</strong>:</p>
 <ul>
@@ -408,9 +405,9 @@ learn more about the standard library.</p></li>
 </ul>
 <hr />
 <h2>Element construction</h2>
-<p><code>pandi</code> only exposes one convenience functions to construct elements; the <code>text</code> constructor.
+<p><code>pandi</code> only exposes one convenience function to construct elements; the <code>text</code> function.
 Otherwise, the type constructors are used directly.</p>
-<p>The examples use the following helpers to construct the links:</p>
+<p>The above examples uses an <code>element</code> module which defines the following helpers:</p>
 <pre><code class="language-gleam">import pandi as doc
 
 pub fn hex_link(package_name: String) -&gt; doc.Inline {
@@ -526,9 +523,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779615301"></script>
+    <script src="./js/index.js?v=1779618876"></script>
     <script>
-      fetch("./search-data.json?v=1779615301")
+      fetch("./search-data.json?v=1779618876")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
