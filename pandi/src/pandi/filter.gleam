@@ -10,7 +10,8 @@ import pandi/doc
 /// ```gleam
 /// let increase_header_level: filter.BlockFilter = fn(block, _meta) {
 ///   case block {
-///     doc.Header(level, _, _) -> [doc.Header(..block, level: level + 1)] |> filter.replace
+///     doc.Header(level, _, _) -> 
+///       [doc.Header(..block, level: level + 1)] |> filter.replace
 ///     _ -> filter.keep
 ///   }
 /// }
@@ -19,7 +20,7 @@ import pandi/doc
 pub type BlockFilter =
   fn(doc.Block, doc.Meta) -> Action(doc.Block)
 
-/// A function that takes in an inline (and the document metadata), and returns an action.
+/// A function that takes an inline (and the document metadata), and returns an action.
 ///
 /// Use `apply_inline_filter` to apply it to a `Document` object.
 /// 
@@ -86,7 +87,7 @@ pub const remove: Action(element) = Action([], RemoveOriginal, [])
 /// Action to prepend new elements to an element.
 ///
 /// Note that the children of the prepended elements (if any) will **not** be filtered.
-/// If you want to process the children of prepended elements, apply a new filter to the document.
+/// If you want to process the children of prepended elements, apply a subsequent filter to the document instead.
 ///
 /// Examples:
 ///
@@ -106,15 +107,16 @@ pub fn prepend(elements: List(element)) -> Action(element) {
 /// Action to append new elements to an element.
 ///
 /// Note that the children of the appended elements (if any) will **not** be filtered.
-/// If you want to process the children of appended elements, apply a new filter to the document.
+/// If you want to process the children of appended elements, apply a subsequent filter to the document instead.
 ///
 /// Examples:
 ///
-/// Append a link symbol to every link:
 /// ```gleam
-/// let append_link_symbol: filter.InlineFilter = fn(inline, _meta) {
-///   case inline {
-///     doc.Link(_,_,content) -> [doc.doc.Str("⭐️")] |> filter.prepend
+/// let run_code = fn(code: String) -> String { todo }
+/// let append_code_result: filter.BlockFilter = fn(block, _meta) {
+///   case block {
+///     doc.CodeBlock(_, code) ->
+///       [doc.Para(doc.text(run_code(code)))] |> filter.append
 ///     _ -> filter.keep
 ///   }
 /// }
@@ -126,7 +128,7 @@ pub fn append(elements: List(element)) -> Action(element) {
 /// Action to replace an element.
 ///
 /// Note that the children of the replacements (if any) will **not** be filtered.
-/// If you want to process the children of the replacements, apply a new filter to the document.
+/// If you want to process the children of the replacements, apply a subsequent filter to the document instead.
 ///
 /// This is typically used to modify elements:
 /// ```gleam

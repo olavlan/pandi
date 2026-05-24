@@ -28,11 +28,19 @@ pub fn main() {
       _ -> filter.keep
     }
   }
-  let inlcude_link_symbol: filter.InlineFilter = fn(inline, _meta) {
+  let include_link_symbol: filter.InlineFilter = fn(inline, _meta) {
     case inline {
       doc.Link(_, content, _) ->
         [doc.Link(..inline, content: list.append(content, doc.text(" ")))]
         |> filter.replace
+      _ -> filter.keep
+    }
+  }
+  let run_code = fn(code: String) -> String { todo }
+  let append_code_result: filter.BlockFilter = fn(block, _meta) {
+    case block {
+      doc.CodeBlock(_, code) ->
+        [doc.Para(doc.text(run_code(code)))] |> filter.append
       _ -> filter.keep
     }
   }
@@ -41,5 +49,7 @@ pub fn main() {
     ordered_to_bullet_list,
     remove_comment_divs,
     prepend_gleam_star,
+    include_link_symbol,
+    append_code_result,
   )
 }
