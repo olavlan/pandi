@@ -284,7 +284,7 @@
     
     <div class="custom-type-constructors">
       <div class="rendered-markdown"><p>The type that a filter function returns.</p>
-<p>Create <code>Action</code> objects with these contructors: <code>keep</code>, <code>remove</code>, <code>replace</code>, <code>append</code> and <code>prepend</code>.</p>
+<p>Use the provided constructors: <code>keep</code>, <code>remove</code>, <code>replace</code>, <code>append</code> and <code>prepend</code>.</p>
 </div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub opaque type </span><span class="hljs-title">Action</span>(<span class="hljs-variable">element</span>)</code></pre>
       
@@ -371,9 +371,7 @@
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">append</span>(<span class="hljs-variable">elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">element</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Action to append new elements to an element.</p>
-<p>Note that children of new elements will <strong>not</strong> be filtered.
-If you want to process the children of new elements, apply a new filter to the document instead.</p>
-<p>Examples:</p>
+<p>Example:</p>
 <pre><code class="language-gleam">let run_code = fn(code: String) -&gt; String { todo }
 let append_code_result: filter.BlockFilter = fn(block, _meta) {
   case block {
@@ -405,7 +403,7 @@ let append_code_result: filter.BlockFilter = fn(block, _meta) {
     
     <div class="rendered-markdown"><p>Apply a block filter to a document.</p>
 <p>This recursively applies the filter to every inline in the document.
-Note that new elements are freezed; they will not be processed by the filter that inserted them.
+Note that new elements are freezed; they cannot be processed by the filter that inserted them.
 To further process new elements, apply a new filter intead.</p>
 <p>Example:</p>
 <pre><code class="language-gleam">let document =
@@ -458,7 +456,7 @@ document
     
     <div class="rendered-markdown"><p>Apply an inline filter to a document.</p>
 <p>This recursively applies the filter to every inline in the document.
-Note that new elements are freezed; they will not be processed by the filter that inserted them.
+Note that new elements are freezed; they cannot be processed by the filter that inserted them.
 To further process new elements, apply a new filter intead.</p>
 <p>Example:</p>
 <pre><code class="language-gleam">let document =
@@ -516,8 +514,6 @@ document
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">prepend</span>(<span class="hljs-variable">elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">element</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Action to prepend new elements to an element.</p>
-<p>Note that children of new elements will <strong>not</strong> be filtered.
-If you want to process the children of new elements, apply a new filter to the document instead.</p>
 <p>Example:</p>
 <pre><code class="language-gleam">let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
   case inline {
@@ -566,8 +562,6 @@ If you want to process the children of new elements, apply a new filter to the d
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">replace</span>(<span class="hljs-variable">elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">element</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Action to replace an element with new elements.</p>
-<p>Note that children of new elements will <strong>not</strong> be filtered.
-If you want to process the children of new elements, apply a new filter to the document instead.</p>
 <p>This action is typically used to modify elements:</p>
 <pre><code class="language-gleam">let inlcude_link_symbol: filter.InlineFilter = fn(inline, _meta) {
   case inline {
@@ -662,9 +656,9 @@ If you want to process the children of new elements, apply a new filter to the d
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779644380"></script>
+    <script src="../js/index.js?v=1779644851"></script>
     <script>
-      fetch("../search-data.json?v=1779644380")
+      fetch("../search-data.json?v=1779644851")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

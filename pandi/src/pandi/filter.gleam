@@ -39,7 +39,7 @@ pub type InlineFilter =
 
 ///The type that a filter function returns.
 ///
-/// Create `Action` objects with these contructors: `keep`, `remove`, `replace`, `append` and `prepend`.
+/// Use the provided constructors: `keep`, `remove`, `replace`, `append` and `prepend`.
 pub opaque type Action(element) {
   Action(
     prepend: List(element),
@@ -83,9 +83,6 @@ pub const remove: Action(element) = Action([], RemoveOriginal, [])
 
 /// Action to prepend new elements to an element.
 ///
-/// Note that children of new elements will **not** be filtered.
-/// If you want to process the children of new elements, apply a new filter to the document instead.
-///
 /// Example:
 ///
 /// ```gleam
@@ -102,10 +99,7 @@ pub fn prepend(elements: List(element)) -> Action(element) {
 
 /// Action to append new elements to an element.
 ///
-/// Note that children of new elements will **not** be filtered.
-/// If you want to process the children of new elements, apply a new filter to the document instead.
-/// 
-/// Examples:
+/// Example:
 ///
 /// ```gleam
 /// let run_code = fn(code: String) -> String { todo }
@@ -122,9 +116,6 @@ pub fn append(elements: List(element)) -> Action(element) {
 }
 
 /// Action to replace an element with new elements.
-///
-/// Note that children of new elements will **not** be filtered.
-/// If you want to process the children of new elements, apply a new filter to the document instead.
 ///
 /// This action is typically used to modify elements:
 ///
@@ -145,7 +136,7 @@ pub fn replace(elements: List(element)) -> Action(element) {
 /// Apply a block filter to a document.
 ///
 /// This recursively applies the filter to every inline in the document.
-/// Note that new elements are freezed; they will not be processed by the filter that inserted them.
+/// Note that new elements are freezed; they cannot be processed by the filter that inserted them.
 /// To further process new elements, apply a new filter intead. 
 ///
 /// Example:
@@ -190,7 +181,7 @@ pub fn apply_block_filter(
 /// Apply an inline filter to a document.
 ///
 /// This recursively applies the filter to every inline in the document.
-/// Note that new elements are freezed; they will not be processed by the filter that inserted them.
+/// Note that new elements are freezed; they cannot be processed by the filter that inserted them.
 /// To further process new elements, apply a new filter intead. 
 ///
 /// Example:
