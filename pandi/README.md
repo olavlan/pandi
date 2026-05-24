@@ -70,9 +70,9 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 
 ---
 
-## Adding a Gleam wrapper for Pandoc
+## Adding a Pandoc wrapper
 
-`pandi` deliberately doesn't try to run Pandoc, but works with its json output format.
+`pandi` deliberately doesn't try to run Pandoc, but works with its json output format instead.
 That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.
 
 The example defines the following generic `pandoc` module for working with files:
@@ -119,7 +119,7 @@ pub fn document_to_file(
 ```
 
 This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
-Alternatively, you can convert documents to Pandoc's json separately from your Gleam application.
+Alternatively, you can convert documents to json separately from your Gleam application.
 
 ## More advanced processing with filters
 
@@ -142,9 +142,9 @@ Gleam is **cool**:
 * Visit `docs:gleam_stdlib` to learn more about the standard library.
 ````
 
-We still want to add the Playground link after the (now nested) code block, and additionally replace occurrences of  `docs:[package_name]` with a link to the Hex documentation.
+We still want to add the Playground link after the (now nested) code block, and additionally replace occurrences of  `docs:[package_name]` with a link to the Hex docs.
 
-The `pandi/filter` module makes this easy with the concept of *document filters*.
+This can be done with *filters*, using the `pandi/filter` module.
 A filter is an element-processing function that can be applied to all elements in the document tree:
 
 ```gleam
@@ -208,7 +208,7 @@ learn more about the standard library.</p></li>
 `pandi` only exposes one convenience function to construct elements; the `text` function.
 Otherwise, the type constructors are used directly.
 
-The examples defines an `element` module with the following helpers:
+The above example defines an `element` module with the following helpers:
 
 ```gleam
 import pandi/doc

@@ -283,8 +283,8 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
 title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 <hr />
-<h2>Adding a Gleam wrapper for Pandoc</h2>
-<p><code>pandi</code> deliberately doesn’t try to run Pandoc, but works with its json output format.
+<h2>Adding a Pandoc wrapper</h2>
+<p><code>pandi</code> deliberately doesn’t try to run Pandoc, but works with its json output format instead.
 That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.</p>
 <p>The example defines the following generic <code>pandoc</code> module for working with files:</p>
 <pre><code class="language-gleam">import pandi/doc
@@ -327,7 +327,7 @@ pub fn document_to_file(
 }
 </code></pre>
 <p>This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
-Alternatively, you can convert documents to Pandoc’s json separately from your Gleam application.</p>
+Alternatively, you can convert documents to json separately from your Gleam application.</p>
 <h2>More advanced processing with filters</h2>
 <p>Taking the example a step further, assume we have the following Markdown document:</p>
 <pre><code class="language-md">
@@ -345,8 +345,8 @@ Gleam is **cool**:
 
 * Visit `docs:gleam_stdlib` to learn more about the standard library.
 </code></pre>
-<p>We still want to add the Playground link after the (now nested) code block, and additionally replace occurrences of  <code>docs:[package_name]</code> with a link to the Hex documentation.</p>
-<p>The <code>pandi/filter</code> module makes this easy with the concept of <em>document filters</em>.
+<p>We still want to add the Playground link after the (now nested) code block, and additionally replace occurrences of  <code>docs:[package_name]</code> with a link to the Hex docs.</p>
+<p>This can be done with <em>filters</em>, using the <code>pandi/filter</code> module.
 A filter is an element-processing function that can be applied to all elements in the document tree:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
@@ -400,7 +400,7 @@ learn more about the standard library.</p></li>
 <h2>Element construction</h2>
 <p><code>pandi</code> only exposes one convenience function to construct elements; the <code>text</code> function.
 Otherwise, the type constructors are used directly.</p>
-<p>The examples defines an <code>element</code> module with the following helpers:</p>
+<p>The above example defines an <code>element</code> module with the following helpers:</p>
 <pre><code class="language-gleam">import pandi/doc
 
 pub fn hex_link(package_name: String) -&gt; doc.Inline {
@@ -516,9 +516,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779620688"></script>
+    <script src="./js/index.js?v=1779621446"></script>
     <script>
-      fetch("./search-data.json?v=1779620688")
+      fetch("./search-data.json?v=1779621446")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
