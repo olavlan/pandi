@@ -542,7 +542,7 @@ Note that children of the kept element will be filtered recursively.</code></pre
 <p>Example:</p>
 <pre><code class="language-gleam">let remove_comment_lines: filter.BlockFilter = fn(block, _meta) {
   case block {
-    doc.Paragraph([doc.Str("//" &lt;&gt; _), ..]) -&gt; filter.remove
+    doc.Para([doc.Str("//" &lt;&gt; _), ..]) -&gt; filter.remove
     _ -&gt; filter.keep
   }
 }
@@ -657,9 +657,9 @@ Note that children of the kept element will be filtered recursively.</code></pre
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779645163"></script>
+    <script src="../js/index.js?v=1779645361"></script>
     <script>
-      fetch("../search-data.json?v=1779645163")
+      fetch("../search-data.json?v=1779645361")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

@@ -34,13 +34,13 @@ pub fn remove_comment_paragraphs_test() {
     doc.Para(doc.text("This should not be removed.")),
     doc.Para(doc.text("//This should also be removed.")),
   ]
-  let block_filter: filter.BlockFilter = fn(block, _meta) {
+  let remove_comment_lines: filter.BlockFilter = fn(block, _meta) {
     case block {
       doc.Para([doc.Str("//" <> _), ..]) -> filter.remove
       _ -> filter.keep
     }
   }
-  snapshot(blocks, block_filter, "remove paragraphs starting with //")
+  snapshot(blocks, remove_comment_lines, "remove paragraphs starting with //")
 }
 
 pub fn convert_ordered_list_to_bullet_list_test() {

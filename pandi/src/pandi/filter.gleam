@@ -74,7 +74,7 @@ pub const keep: Action(element) = Action([], KeepOriginal, [])
 /// ```gleam
 /// let remove_comment_lines: filter.BlockFilter = fn(block, _meta) {
 ///   case block {
-///     doc.Paragraph([doc.Str("//" <> _), ..]) -> filter.remove
+///     doc.Para([doc.Str("//" <> _), ..]) -> filter.remove
 ///     _ -> filter.keep
 ///   }
 /// }
