@@ -1003,7 +1003,7 @@
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">text</span>(<span class="hljs-variable">text</span>: <span class="hljs-title">String</span>) -> <span class="hljs-title">List</span>(<a href="#Inline"><span class="hljs-title">Inline</span></a>)</code></pre>
     
-    <div class="rendered-markdown"><p>Create a list of inlines from a string of space-separated words.</p>
+    <div class="rendered-markdown"><p>Convert a string of space-separated words to a list of inlines.</p>
 <p>Example: <code>text("A sentence.") -&gt; [Str("A"), Space, Str("sentence.")]</code>.</p>
 </div>
   </div>
@@ -1119,9 +1119,9 @@
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779621578"></script>
+    <script src="../js/index.js?v=1779621647"></script>
     <script>
-      fetch("../search-data.json?v=1779621578")
+      fetch("../search-data.json?v=1779621647")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
