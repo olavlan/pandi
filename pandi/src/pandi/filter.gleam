@@ -3,7 +3,7 @@ import pandi/doc
 
 /// A function that takes a block (and the document metadata) and returns an action.
 ///
-/// Use `apply_block_filter` to apply it to a `Document` object.
+/// Use `apply_block_filter` to apply it to a document object.
 /// 
 /// Example:
 ///
@@ -22,7 +22,7 @@ pub type BlockFilter =
 
 /// A function that takes an inline (and the document metadata) and returns an action.
 ///
-/// Use `apply_inline_filter` to apply it to a `Document` object.
+/// Use `apply_inline_filter` to apply it to a document object.
 /// 
 /// Example:
 ///

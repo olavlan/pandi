@@ -303,7 +303,7 @@
     
     <div class="custom-type-constructors">
       <div class="rendered-markdown"><p>A function that takes a block (and the document metadata) and returns an action.</p>
-<p>Use <code>apply_block_filter</code> to apply it to a <code>Document</code> object.</p>
+<p>Use <code>apply_block_filter</code> to apply it to a document object.</p>
 <p>Example:</p>
 <pre><code class="language-gleam">let increase_header_level: filter.BlockFilter = fn(block, _meta) {
   case block {
@@ -332,7 +332,7 @@
     
     <div class="custom-type-constructors">
       <div class="rendered-markdown"><p>A function that takes an inline (and the document metadata) and returns an action.</p>
-<p>Use <code>apply_inline_filter</code> to apply it to a <code>Document</code> object.</p>
+<p>Use <code>apply_inline_filter</code> to apply it to a document object.</p>
 <p>Example:</p>
 <pre><code class="language-gleam">let capitalize_gleam: filter.InlineFilter = fn(inline, _meta) {
   case inline {
@@ -657,9 +657,9 @@ Note that children of the kept element will be filtered recursively.</code></pre
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779645361"></script>
+    <script src="../js/index.js?v=1779645551"></script>
     <script>
-      fetch("../search-data.json?v=1779645361")
+      fetch("../search-data.json?v=1779645551")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

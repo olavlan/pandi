@@ -36,7 +36,7 @@ pub fn main() {
       _ -> filter.keep
     }
   }
-  let run_code = fn(code: String) -> String { todo }
+  let run_code = fn(_code: String) -> String { "mock result" }
   let append_code_result: filter.BlockFilter = fn(block, _meta) {
     case block {
       doc.CodeBlock(_, code) ->
