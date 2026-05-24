@@ -32,7 +32,7 @@ For now, here is the rendered html:
 `pandi` deliberately doesn't try to run Pandoc, but works with its json output format instead.
 That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.
 
-The example defines the following generic `pandoc` module for working with files:
+The example defines the following `pandoc` module for working with files:
 
 ```gleam
 {{./examples/src/examples/pandoc.gleam}}
@@ -49,10 +49,10 @@ Taking the example a step further, assume we have the following Markdown documen
 {{./examples/resources/example-2.md}}
 ````
 
-We still want to add the Playground link after the (now nested) code block, and additionally replace occurrences of  `docs:[package_name]` with a link to the Hex docs.
+We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of  `docs:[package_name]` with a link to the Hex docs.
 
 This can be done with *filters*, using the `pandi/filter` module.
-A filter is an element-processing function that can be applied to all elements in the document tree:
+A filter is an element-processing function that can be applied the whole document tree:
 
 ```gleam
 {{./examples/src/examples/gleam_markdown_with_filter.gleam}}

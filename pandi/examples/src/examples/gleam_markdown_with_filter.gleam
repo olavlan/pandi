@@ -21,7 +21,7 @@ pub fn main() {
   }
 
   pandoc.file_to_document(from_file: "example-2.md", from_format: "markdown")
-  |> filter.filter_blocks(block_filter)
-  |> filter.filter_inlines(inline_filter)
+  |> filter.apply_block_filter(block_filter)
+  |> filter.apply_inline_filter(inline_filter)
   |> pandoc.document_to_file(to_file: "example-2.html", to_format: "html")
 }

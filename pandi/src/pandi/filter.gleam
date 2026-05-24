@@ -91,7 +91,7 @@ pub fn replace(elements: List(element)) -> Action(element) {
   Action(elements, RemoveOriginal, [])
 }
 
-pub fn filter_blocks(
+pub fn apply_block_filter(
   document: doc.Document,
   filter: BlockFilter,
 ) -> doc.Document {
@@ -99,7 +99,7 @@ pub fn filter_blocks(
   doc.Document(..document, blocks: new_blocks)
 }
 
-pub fn filter_inlines(
+pub fn apply_inline_filter(
   document: doc.Document,
   filter: InlineFilter,
 ) -> doc.Document {

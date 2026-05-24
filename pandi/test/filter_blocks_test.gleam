@@ -8,7 +8,7 @@ fn snapshot(
   title: String,
 ) {
   doc.Document(blocks, [])
-  |> filter.filter_blocks(block_filter)
+  |> filter.apply_block_filter(block_filter)
   |> doc.to_string
   |> birdie.snap(title: "[filter_blocks] " <> title)
 }
