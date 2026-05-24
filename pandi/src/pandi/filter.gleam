@@ -56,8 +56,6 @@ type OriginalElementAction {
 /// Action to keep an element.
 ///
 /// Note that the children of the element (if any) will be filtered.
-/// If you want to "freeze" the children of an element, use `replace(block)`,
-/// where `block` is the element you're matching on.
 ///
 /// This action is typically used to match on remaining elements in a filter function:
 /// ```gleam
@@ -86,8 +84,8 @@ pub const remove: Action(element) = Action([], RemoveOriginal, [])
 
 /// Action to prepend new elements to an element.
 ///
-/// Note that the children of the prepended elements (if any) will **not** be filtered.
-/// If you want to process the children of prepended elements, apply a subsequent filter to the document instead.
+/// Note that the children of the new elements (if any) will **not** be filtered.
+/// If you want to process the children of new elements, apply a subsequent filter to the document instead.
 ///
 /// Examples:
 ///
@@ -106,8 +104,8 @@ pub fn prepend(elements: List(element)) -> Action(element) {
 
 /// Action to append new elements to an element.
 ///
-/// Note that the children of the appended elements (if any) will **not** be filtered.
-/// If you want to process the children of appended elements, apply a subsequent filter to the document instead.
+/// Note that the children of the new elements (if any) will **not** be filtered.
+/// If you want to process the children of new elements, apply a subsequent filter to the document instead.
 ///
 /// Examples:
 ///
@@ -125,10 +123,10 @@ pub fn append(elements: List(element)) -> Action(element) {
   Action([], KeepOriginal, elements)
 }
 
-/// Action to replace an element.
+/// Action to replace an element with new elements.
 ///
-/// Note that the children of the replacements (if any) will **not** be filtered.
-/// If you want to process the children of the replacements, apply a subsequent filter to the document instead.
+/// Note that the children of the new elements (if any) will **not** be filtered.
+/// If you want to process the children of new elements, apply a subsequent filter to the document instead.
 ///
 /// This is typically used to modify elements:
 /// ```gleam
