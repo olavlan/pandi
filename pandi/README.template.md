@@ -49,9 +49,8 @@ Taking the example a step further, assume we have the following Markdown documen
 {{./examples/resources/example-with-nesting.md}}
 ````
 
-Note that the code block is nested in a bullet list.
+In addition to adding the Playground link after the (now nested) code block, we'd like to replace `docs:gleam_stdlib` with a link to the Hex documentation.
 
-In addition to adding the Playground link after the code block, we'd like to replace `docs:gleam_stdlib` with a link to the Hex documentation.
 The `pandi/filter` module makes this easy with the concept of *document filters*.
 A filter is simply an element-processing function that can be applied to all elements in the document tree:
 

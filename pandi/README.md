@@ -29,17 +29,6 @@ import examples/pandoc
 import gleam/list
 import pandi/doc
 
-pub fn main() {
-  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
-  |> process_top_level_blocks
-  |> pandoc.document_to_file(to_file: "example.html", to_format: "html")
-}
-
-fn process_top_level_blocks(document: doc.Document) -> doc.Document {
-  let new_blocks = list.flat_map(document.blocks, process_block)
-  doc.Document(..document, blocks: new_blocks)
-}
-
 fn process_block(block: doc.Block) -> List(doc.Block) {
   case block {
     doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -> [
@@ -48,6 +37,17 @@ fn process_block(block: doc.Block) -> List(doc.Block) {
     ]
     _ -> [block]
   }
+}
+
+fn process_top_level_blocks(document: doc.Document) -> doc.Document {
+  let new_blocks = list.flat_map(document.blocks, process_block)
+  doc.Document(..document, blocks: new_blocks)
+}
+
+pub fn main() {
+  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
+  |> process_top_level_blocks
+  |> pandoc.document_to_file(to_file: "example.html", to_format: "html")
 }
 ```
 
@@ -142,9 +142,8 @@ Gleam is **cool**:
 * Visit `docs:gleam_stdlib` to learn more about the standard library.
 ````
 
-Note that the code block is nested in a bullet list.
+In addition to adding the Playground link after the (now nested) code block, we'd like to replace `docs:gleam_stdlib` with a link to the Hex documentation.
 
-In addition to adding the Playground link after the code block, we'd like to replace `docs:gleam_stdlib` with a link to the Hex documentation.
 The `pandi/filter` module makes this easy with the concept of *document filters*.
 A filter is simply an element-processing function that can be applied to all elements in the document tree:
 
