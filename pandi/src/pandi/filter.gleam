@@ -1,11 +1,11 @@
 import gleam/list
 import pandi/doc
 
-/// A function that takes a block (and the document metadata), and returns an action.
+/// A function that takes a block (and the document metadata) and returns an action.
 ///
 /// Use `apply_block_filter` to apply it to a `Document` object.
 /// 
-/// Examples:
+/// Example:
 ///
 /// ```gleam
 /// let increase_header_level: filter.BlockFilter = fn(block, _meta) {
@@ -20,11 +20,11 @@ import pandi/doc
 pub type BlockFilter =
   fn(doc.Block, doc.Meta) -> Action(doc.Block)
 
-/// A function that takes an inline (and the document metadata), and returns an action.
+/// A function that takes an inline (and the document metadata) and returns an action.
 ///
 /// Use `apply_inline_filter` to apply it to a `Document` object.
 /// 
-/// Examples:
+/// Example:
 ///
 /// ```gleam
 /// let capitalize_gleam: filter.InlineFilter = fn(inline, _meta) {
@@ -37,9 +37,9 @@ pub type BlockFilter =
 pub type InlineFilter =
   fn(doc.Inline, doc.Meta) -> Action(doc.Inline)
 
-///The type that a filter function must return.
+///The type that a filter function returns.
 ///
-///Use the action contructors: `keep`, `remove`, `replace`, `append` and `prepend`.
+/// Create `Action` objects with these contructors: `keep`, `remove`, `replace`, `append` and `prepend`.
 pub opaque type Action(element) {
   Action(
     prepend: List(element),
@@ -55,7 +55,7 @@ type OriginalElementAction {
 
 /// Action to keep an element.
 ///
-/// Note that children of the element will be filtered.
+/// Note that children of the element will be filtered recursively.
 ///
 /// This action is typically used to match on remaining elements in a filter function:
 /// ```gleam
@@ -69,9 +69,8 @@ pub const keep: Action(element) = Action([], KeepOriginal, [])
 
 /// Action to remove an element.
 ///
-/// Examples:
+/// Example:
 ///
-/// Remove paragraphs starting with "//":
 /// ```gleam
 /// let remove_comment_lines: filter.BlockFilter = fn(block, _meta) {
 ///   case block {
@@ -85,11 +84,10 @@ pub const remove: Action(element) = Action([], RemoveOriginal, [])
 /// Action to prepend new elements to an element.
 ///
 /// Note that children of new elements will **not** be filtered.
-/// If you want to process the children of new elements, apply a subsequent filter to the document instead.
+/// If you want to process the children of new elements, apply a new filter to the document instead.
 ///
-/// Examples:
+/// Example:
 ///
-/// Prepending a star to every ocurrence of "Gleam":
 /// ```gleam
 /// let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
 ///   case inline {
@@ -105,8 +103,7 @@ pub fn prepend(elements: List(element)) -> Action(element) {
 /// Action to append new elements to an element.
 ///
 /// Note that children of new elements will **not** be filtered.
-/// If you want to process the children of new elements, apply a subsequent filter to the document instead.
-/// If you want to freeze the children, use `replace` instead.
+/// If you want to process the children of new elements, apply a new filter to the document instead.
 /// 
 /// Examples:
 ///
@@ -127,9 +124,9 @@ pub fn append(elements: List(element)) -> Action(element) {
 /// Action to replace an element with new elements.
 ///
 /// Note that children of new elements will **not** be filtered.
-/// If you want to process the children of new elements, apply a subsequent filter to the document instead.
+/// If you want to process the children of new elements, apply a new filter to the document instead.
 ///
-/// This is typically used to modify elements:
+/// This action is typically used to modify elements:
 ///
 /// ```gleam
 /// let inlcude_link_symbol: filter.InlineFilter = fn(inline, _meta) {
@@ -141,28 +138,47 @@ pub fn append(elements: List(element)) -> Action(element) {
 ///   }
 /// }
 /// ```
-///
-/// The action may also be used to freeze elements:
-///
-/// ```gleam
-/// let filter: filter.BlockFilter = fn(block, _meta) {
-///   case block {
-///     // freeze every div...
-///     doc.Div(_, _, _) -> filter.replace(block)
-///     // ...so that the remaining patterns will not affect div children:
-///     doc.CodeBlock(_,_) -> filter.remove
-///     _ -> filter.keep
-///   }
-/// }
-/// ```
-/// 
 pub fn replace(elements: List(element)) -> Action(element) {
   Action(elements, RemoveOriginal, [])
 }
 
 /// Apply a block filter to a document.
 ///
+/// This recursively applies the filter to every inline in the document.
+/// Note that new elements are freezed; they will not be processed by the filter that inserted them.
+/// To further process new elements, apply a new filter intead. 
+///
 /// Example:
+/// 
+/// ```gleam
+/// let document =
+///   doc.Document(
+///     blocks: [
+///       doc.Header(
+///         level: 1,
+///         attributes: doc.Attributes("", [], []),
+///         content: doc.text("Header"),
+///       ),
+///     ],
+///     meta: [],
+///   )
+/// 
+/// let increase_header_level: filter.BlockFilter = fn(block, _meta) {
+///   case block {
+///     doc.Header(level, attrs, content) ->
+///       [doc.Header(level + 1, attrs, content)] |> filter.replace
+///     _ -> filter.keep
+///   }
+/// }
+/// 
+/// document
+/// |> filter.apply_block_filter(increase_header_level)
+/// |> doc.to_string
+/// // [
+/// //   Header 2 ( "" , [  ] , [  ] ) [ Str "Header" ] ,
+/// //   Para [ Str "Paragraph" , Space , Str "after" , Space , Str "header." ] ,
+/// // ]
+/// ```
 pub fn apply_block_filter(
   document: doc.Document,
   filter: BlockFilter,
@@ -171,6 +187,30 @@ pub fn apply_block_filter(
   doc.Document(..document, blocks: new_blocks)
 }
 
+/// Apply an inline filter to a document.
+///
+/// This recursively applies the filter to every inline in the document.
+/// Note that new elements are freezed; they will not be processed by the filter that inserted them.
+/// To further process new elements, apply a new filter intead. 
+///
+/// Example:
+///
+/// ```gleam
+/// let document =
+///   doc.Document(blocks: [doc.Para(doc.text("gleam is cool!"))], meta: [])
+/// 
+/// let capitalize_gleam: filter.InlineFilter = fn(inline, _meta) {
+///   case inline {
+///     doc.Str("gleam") -> [doc.Str("Gleam")] |> filter.replace
+///     _ -> filter.keep
+///   }
+/// }
+/// 
+/// document
+/// |> filter.apply_inline_filter(capitalize_gleam)
+/// |> doc.to_string
+/// // [ Para [ Str "Gleam" , Space , Str "is" , Space , Str "cool!" ] ]
+/// ```
 pub fn apply_inline_filter(
   document: doc.Document,
   filter: InlineFilter,

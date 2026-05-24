@@ -283,8 +283,8 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"><p>The type that a filter function must return.</p>
-<p>Use the action contructors: <code>keep</code>, <code>remove</code>, <code>replace</code>, <code>append</code> and <code>prepend</code>.</p>
+      <div class="rendered-markdown"><p>The type that a filter function returns.</p>
+<p>Create <code>Action</code> objects with these contructors: <code>keep</code>, <code>remove</code>, <code>replace</code>, <code>append</code> and <code>prepend</code>.</p>
 </div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub opaque type </span><span class="hljs-title">Action</span>(<span class="hljs-variable">element</span>)</code></pre>
       
@@ -302,9 +302,9 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"><p>A function that takes a block (and the document metadata), and returns an action.</p>
+      <div class="rendered-markdown"><p>A function that takes a block (and the document metadata) and returns an action.</p>
 <p>Use <code>apply_block_filter</code> to apply it to a <code>Document</code> object.</p>
-<p>Examples:</p>
+<p>Example:</p>
 <pre><code class="language-gleam">let increase_header_level: filter.BlockFilter = fn(block, _meta) {
   case block {
     doc.Header(level, _, _) -&gt; 
@@ -331,9 +331,9 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"><p>A function that takes an inline (and the document metadata), and returns an action.</p>
+      <div class="rendered-markdown"><p>A function that takes an inline (and the document metadata) and returns an action.</p>
 <p>Use <code>apply_inline_filter</code> to apply it to a <code>Document</code> object.</p>
-<p>Examples:</p>
+<p>Example:</p>
 <pre><code class="language-gleam">let capitalize_gleam: filter.InlineFilter = fn(inline, _meta) {
   case inline {
     doc.Str("gleam") -&gt; [doc.Str("Gleam")] |&gt; filter.replace
@@ -372,8 +372,7 @@
     
     <div class="rendered-markdown"><p>Action to append new elements to an element.</p>
 <p>Note that children of new elements will <strong>not</strong> be filtered.
-If you want to process the children of new elements, apply a subsequent filter to the document instead.
-If you want to freeze the children, use <code>replace</code> instead.</p>
+If you want to process the children of new elements, apply a new filter to the document instead.</p>
 <p>Examples:</p>
 <pre><code class="language-gleam">let run_code = fn(code: String) -&gt; String { todo }
 let append_code_result: filter.BlockFilter = fn(block, _meta) {
@@ -405,7 +404,38 @@ let append_code_result: filter.BlockFilter = fn(block, _meta) {
 ) -> <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a></code></pre>
     
     <div class="rendered-markdown"><p>Apply a block filter to a document.</p>
+<p>This recursively applies the filter to every inline in the document.
+Note that new elements are freezed; they will not be processed by the filter that inserted them.
+To further process new elements, apply a new filter intead.</p>
 <p>Example:</p>
+<pre><code class="language-gleam">let document =
+  doc.Document(
+    blocks: [
+      doc.Header(
+        level: 1,
+        attributes: doc.Attributes("", [], []),
+        content: doc.text("Header"),
+      ),
+    ],
+    meta: [],
+  )
+
+let increase_header_level: filter.BlockFilter = fn(block, _meta) {
+  case block {
+    doc.Header(level, attrs, content) -&gt;
+      [doc.Header(level + 1, attrs, content)] |&gt; filter.replace
+    _ -&gt; filter.keep
+  }
+}
+
+document
+|&gt; filter.apply_block_filter(increase_header_level)
+|&gt; doc.to_string
+// [
+//   Header 2 ( "" , [  ] , [  ] ) [ Str "Header" ] ,
+//   Para [ Str "Paragraph" , Space , Str "after" , Space , Str "header." ] ,
+// ]
+</code></pre>
 </div>
   </div>
   
@@ -426,7 +456,27 @@ let append_code_result: filter.BlockFilter = fn(block, _meta) {
   ),
 ) -> <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a></code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Apply an inline filter to a document.</p>
+<p>This recursively applies the filter to every inline in the document.
+Note that new elements are freezed; they will not be processed by the filter that inserted them.
+To further process new elements, apply a new filter intead.</p>
+<p>Example:</p>
+<pre><code class="language-gleam">let document =
+  doc.Document(blocks: [doc.Para(doc.text("gleam is cool!"))], meta: [])
+
+let capitalize_gleam: filter.InlineFilter = fn(inline, _meta) {
+  case inline {
+    doc.Str("gleam") -&gt; [doc.Str("Gleam")] |&gt; filter.replace
+    _ -&gt; filter.keep
+  }
+}
+
+document
+|&gt; filter.apply_inline_filter(capitalize_gleam)
+|&gt; doc.to_string
+// [ Para [ Str "Gleam" , Space , Str "is" , Space , Str "cool!" ] ]
+</code></pre>
+</div>
   </div>
   
   <div class="member">
@@ -442,7 +492,7 @@ let append_code_result: filter.BlockFilter = fn(block, _meta) {
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">keep</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Action to keep an element.</p>
-<p>Note that children of the element will be filtered.</p>
+<p>Note that children of the element will be filtered recursively.</p>
 <p>This action is typically used to match on remaining elements in a filter function:</p>
 <pre><code class="language-gleam">let filter: filter.BlockFilter = fn(block, _meta) {
   case block {
@@ -467,9 +517,8 @@ let append_code_result: filter.BlockFilter = fn(block, _meta) {
     
     <div class="rendered-markdown"><p>Action to prepend new elements to an element.</p>
 <p>Note that children of new elements will <strong>not</strong> be filtered.
-If you want to process the children of new elements, apply a subsequent filter to the document instead.</p>
-<p>Examples:</p>
-<p>Prepending a star to every ocurrence of “Gleam”:</p>
+If you want to process the children of new elements, apply a new filter to the document instead.</p>
+<p>Example:</p>
 <pre><code class="language-gleam">let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
   case inline {
     doc.Str("Gleam") -&gt; [doc.Str("⭐️")] |&gt; filter.prepend
@@ -493,8 +542,7 @@ If you want to process the children of new elements, apply a subsequent filter t
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">remove</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Action to remove an element.</p>
-<p>Examples:</p>
-<p>Remove paragraphs starting with “//”:</p>
+<p>Example:</p>
 <pre><code class="language-gleam">let remove_comment_lines: filter.BlockFilter = fn(block, _meta) {
   case block {
     doc.Paragraph([doc.Str("//" &lt;&gt; _), ..]) -&gt; filter.remove
@@ -519,24 +567,13 @@ If you want to process the children of new elements, apply a subsequent filter t
     
     <div class="rendered-markdown"><p>Action to replace an element with new elements.</p>
 <p>Note that children of new elements will <strong>not</strong> be filtered.
-If you want to process the children of new elements, apply a subsequent filter to the document instead.</p>
-<p>This is typically used to modify elements:</p>
+If you want to process the children of new elements, apply a new filter to the document instead.</p>
+<p>This action is typically used to modify elements:</p>
 <pre><code class="language-gleam">let inlcude_link_symbol: filter.InlineFilter = fn(inline, _meta) {
   case inline {
     doc.Link(_, content, _) -&gt;
       [doc.Link(..inline, content: list.append(content, doc.text(" 🔗")))]
       |&gt; filter.replace
-    _ -&gt; filter.keep
-  }
-}
-</code></pre>
-<p>The action may also be used to freeze elements:</p>
-<pre><code class="language-gleam">let filter: filter.BlockFilter = fn(block, _meta) {
-  case block {
-    // freeze every div...
-    doc.Div(_, _, _) -&gt; filter.replace(block)
-    // ...so that the remaining patterns will not affect div children:
-    doc.CodeBlock(_,_) -&gt; filter.remove
     _ -&gt; filter.keep
   }
 }
@@ -625,9 +662,9 @@ If you want to process the children of new elements, apply a subsequent filter t
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779633677"></script>
+    <script src="../js/index.js?v=1779644380"></script>
     <script>
-      fetch("../search-data.json?v=1779633677")
+      fetch("../search-data.json?v=1779644380")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
