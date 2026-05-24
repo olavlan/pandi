@@ -1,4 +1,4 @@
-import pandi as doc
+import pandi/doc
 import shellout
 import simplifile
 

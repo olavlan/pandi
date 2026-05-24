@@ -213,7 +213,7 @@
         <h2>Modules</h2>
         <ul>
         
-          <li><a href="../pandi.html" class="module-link">pandi</a></li>
+          <li><a href="../pandi/doc.html" class="module-link">pandi<wbr />/doc</a></li>
         
           <li><a href="../pandi/filter.html" class="module-link">pandi<wbr />/filter</a></li>
         
@@ -315,7 +315,7 @@
 </code></pre>
 </div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockFilter</span> =
-  <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>)</code></pre>
+  <span class="hljs-keyword">fn</span>(<a href="doc.html#Block" title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<a href="doc.html#Block" title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></a>)</code></pre>
       
     </div>
   </div>
@@ -345,9 +345,7 @@
 </code></pre>
 </div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineFilter</span> =
-  <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
-    <a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>,
-  )</code></pre>
+  <span class="hljs-keyword">fn</span>(<a href="doc.html#Inline" title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<a href="doc.html#Inline" title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></a>)</code></pre>
       
     </div>
   </div>
@@ -388,11 +386,11 @@
     </div>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">filter_blocks</span>(
-  <span class="hljs-variable">document</span>: <a href="../pandi.html#Document" title="pandi.{type Document}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Document</span></a>,
-  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
-    <a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>,
+  <span class="hljs-variable">document</span>: <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a>,
+  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="doc.html#Block" title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
+    <a href="doc.html#Block" title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></a>,
   ),
-) -> <a href="../pandi.html#Document" title="pandi.{type Document}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Document</span></a></code></pre>
+) -> <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a></code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
@@ -408,11 +406,11 @@
     </div>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">filter_inlines</span>(
-  <span class="hljs-variable">document</span>: <a href="../pandi.html#Document" title="pandi.{type Document}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Document</span></a>,
-  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
-    <a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>,
+  <span class="hljs-variable">document</span>: <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a>,
+  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="doc.html#Inline" title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
+    <a href="doc.html#Inline" title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></a>,
   ),
-) -> <a href="../pandi.html#Document" title="pandi.{type Document}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Document</span></a></code></pre>
+) -> <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a></code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
@@ -571,9 +569,9 @@
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779618876"></script>
+    <script src="../js/index.js?v=1779619390"></script>
     <script>
-      fetch("../search-data.json?v=1779618876")
+      fetch("../search-data.json?v=1779619390")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

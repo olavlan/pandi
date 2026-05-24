@@ -1,4 +1,4 @@
-import pandi as doc
+import pandi/doc
 
 pub fn hex_link(package_name: String) -> doc.Inline {
   let url = "https://hexdocs.pm/" <> package_name <> "/index.html"

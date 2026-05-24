@@ -213,7 +213,7 @@
         <h2>Modules</h2>
         <ul>
         
-          <li><a href="./pandi.html" class="module-link">pandi</a></li>
+          <li><a href="./pandi/doc.html" class="module-link">pandi<wbr />/doc</a></li>
         
           <li><a href="./pandi/filter.html" class="module-link">pandi<wbr />/filter</a></li>
         
@@ -245,7 +245,7 @@ We can achieve this with Pandoc and <code>pandi</code>:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
 import gleam/list
-import pandi as doc
+import pandi/doc
 
 pub fn main() {
   pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
@@ -287,7 +287,7 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 <p><code>pandi</code> deliberately doesn’t try to run Pandoc, but works with its json output format.
 That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.</p>
 <p>The example defines the following generic <code>pandoc</code> module for working with document files:</p>
-<pre><code class="language-gleam">import pandi as doc
+<pre><code class="language-gleam">import pandi/doc
 import shellout
 import simplifile
 
@@ -351,7 +351,7 @@ The <code>pandi/filter</code> module makes this easy with the concept of <em>doc
 A filter is simply an element-processing function that can be applied to all elements in the document tree:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
-import pandi as doc
+import pandi/doc
 import pandi/filter
 
 pub fn main() {
@@ -408,7 +408,7 @@ learn more about the standard library.</p></li>
 <p><code>pandi</code> only exposes one convenience function to construct elements; the <code>text</code> function.
 Otherwise, the type constructors are used directly.</p>
 <p>The above examples uses an <code>element</code> module which defines the following helpers:</p>
-<pre><code class="language-gleam">import pandi as doc
+<pre><code class="language-gleam">import pandi/doc
 
 pub fn hex_link(package_name: String) -&gt; doc.Inline {
   let url = "https://hexdocs.pm/" &lt;&gt; package_name &lt;&gt; "/index.html"
@@ -523,9 +523,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779618876"></script>
+    <script src="./js/index.js?v=1779619390"></script>
     <script>
-      fetch("./search-data.json?v=1779618876")
+      fetch("./search-data.json?v=1779619390")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

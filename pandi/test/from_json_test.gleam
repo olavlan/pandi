@@ -1,6 +1,6 @@
 import birdie
 import gleeunit/should
-import pandi
+import pandi/doc
 import simplifile
 
 type Resource {
@@ -17,9 +17,9 @@ fn read_resource(name: String) -> Resource {
 
 fn snapshot(resource_name: String) {
   let Resource(_, json) = read_resource(resource_name)
-  pandi.from_json(json)
+  doc.from_json(json)
   |> should.be_ok
-  |> pandi.to_string
+  |> doc.to_string
   |> birdie.snap(title: "[from_json] " <> resource_name)
 }
 

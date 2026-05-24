@@ -1,7 +1,7 @@
 import examples/gleam_markdown/element
 import examples/pandoc
 import gleam/list
-import pandi as doc
+import pandi/doc
 
 pub fn main() {
   pandoc.file_to_document(from_file: "example.md", from_format: "markdown")

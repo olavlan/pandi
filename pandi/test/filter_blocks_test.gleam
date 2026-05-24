@@ -1,5 +1,5 @@
 import birdie
-import pandi as doc
+import pandi/doc
 import pandi/filter
 
 fn snapshot(

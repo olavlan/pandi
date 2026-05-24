@@ -1,4 +1,4 @@
-import pandi as doc
+import pandi/doc
 import pandi/filter
 
 pub fn main() {

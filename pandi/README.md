@@ -27,7 +27,7 @@ We can achieve this with Pandoc and `pandi`:
 import examples/gleam_markdown/element
 import examples/pandoc
 import gleam/list
-import pandi as doc
+import pandi/doc
 
 pub fn main() {
   pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
@@ -78,7 +78,7 @@ That means your application must run Pandoc in order to bridge the gap between j
 The example defines the following generic `pandoc` module for working with document files:
 
 ```gleam
-import pandi as doc
+import pandi/doc
 import shellout
 import simplifile
 
@@ -151,7 +151,7 @@ A filter is simply an element-processing function that can be applied to all ele
 ```gleam
 import examples/gleam_markdown/element
 import examples/pandoc
-import pandi as doc
+import pandi/doc
 import pandi/filter
 
 pub fn main() {
@@ -218,7 +218,7 @@ Otherwise, the type constructors are used directly.
 The above examples uses an `element` module which defines the following helpers:
 
 ```gleam
-import pandi as doc
+import pandi/doc
 
 pub fn hex_link(package_name: String) -> doc.Inline {
   let url = "https://hexdocs.pm/" <> package_name <> "/index.html"

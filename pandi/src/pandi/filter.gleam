@@ -1,5 +1,5 @@
 import gleam/list
-import pandi as doc
+import pandi/doc
 
 /// A function that takes a block (and document metadata), and returns an action.
 ///

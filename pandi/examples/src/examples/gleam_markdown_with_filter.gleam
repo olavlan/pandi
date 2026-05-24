@@ -1,6 +1,6 @@
 import examples/gleam_markdown/element
 import examples/pandoc
-import pandi as doc
+import pandi/doc
 import pandi/filter
 
 pub fn main() {
