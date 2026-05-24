@@ -135,7 +135,8 @@ pub fn replace(elements: List(element)) -> Action(element) {
 
 /// Apply a block filter to a document.
 ///
-/// This recursively applies the filter to every inline in the document.
+/// This recursively applies the filter to every block element in the document.
+///
 /// Note that new elements are freezed; they cannot be processed by the filter that inserted them.
 /// To further process new elements, apply a new filter intead. 
 ///
@@ -180,7 +181,8 @@ pub fn apply_block_filter(
 
 /// Apply an inline filter to a document.
 ///
-/// This recursively applies the filter to every inline in the document.
+/// This recursively applies the filter to every inline element in the document.
+/// 
 /// Note that new elements are freezed; they cannot be processed by the filter that inserted them.
 /// To further process new elements, apply a new filter intead. 
 ///

@@ -402,8 +402,8 @@ let append_code_result: filter.BlockFilter = fn(block, _meta) {
 ) -> <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a></code></pre>
     
     <div class="rendered-markdown"><p>Apply a block filter to a document.</p>
-<p>This recursively applies the filter to every inline in the document.
-Note that new elements are freezed; they cannot be processed by the filter that inserted them.
+<p>This recursively applies the filter to every block element in the document.</p>
+<p>Note that new elements are freezed; they cannot be processed by the filter that inserted them.
 To further process new elements, apply a new filter intead.</p>
 <p>Example:</p>
 <pre><code class="language-gleam">let document =
@@ -455,8 +455,8 @@ document
 ) -> <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a></code></pre>
     
     <div class="rendered-markdown"><p>Apply an inline filter to a document.</p>
-<p>This recursively applies the filter to every inline in the document.
-Note that new elements are freezed; they cannot be processed by the filter that inserted them.
+<p>This recursively applies the filter to every inline element in the document.</p>
+<p>Note that new elements are freezed; they cannot be processed by the filter that inserted them.
 To further process new elements, apply a new filter intead.</p>
 <p>Example:</p>
 <pre><code class="language-gleam">let document =
@@ -657,9 +657,9 @@ Note that children of the kept element will be filtered recursively.</code></pre
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779645551"></script>
+    <script src="../js/index.js?v=1779645722"></script>
     <script>
-      fetch("../search-data.json?v=1779645551")
+      fetch("../search-data.json?v=1779645722")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
