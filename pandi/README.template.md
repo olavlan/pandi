@@ -11,7 +11,7 @@ As an example, consider the following Markdown document:
 {{./examples/resources/example.md}}
 ````
 
-Let's say we want to link to the [Gleam playground](https://playground.gleam.run/) after each code block, and then convert the document to html.
+Let's say we want to add a link to the [Gleam playground](https://playground.gleam.run/) after each code block, and then convert the document to html.
 We can achieve this with Pandoc and `pandi`:
 
 ```gleam
@@ -59,7 +59,7 @@ A filter is an element-processing function that can be applied the whole documen
 ```
 
 Note that we separate between block and inline filters for type safety.
-Inline filters are typically applied last so they're not overwritten by the block filters.
+Inline filters are typically applied last so they're not overwritten by block filters.
 
 Here is the rendered html:
 
@@ -71,8 +71,8 @@ Here is the rendered html:
 
 ## Element construction
 
-`pandi` only exposes one convenience function to construct elements; the `text` function.
-Otherwise, the type constructors are used directly.
+`pandi` only exposes one convenience function to construct elements; the `doc.text` function.
+Otherwise, the `doc` module's type constructors are used directly.
 
 The above example defines an `element` module with the following helpers:
 

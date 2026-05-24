@@ -240,7 +240,7 @@ pub fn main() {
 }
 ```
 </code></pre>
-<p>Let’s say we want to link to the <a href="https://playground.gleam.run/">Gleam playground</a> after each code block, and then convert the document to html.
+<p>Let’s say we want to add a link to the <a href="https://playground.gleam.run/">Gleam playground</a> after each code block, and then convert the document to html.
 We can achieve this with Pandoc and <code>pandi</code>:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
@@ -377,7 +377,7 @@ pub fn main() {
 }
 </code></pre>
 <p>Note that we separate between block and inline filters for type safety.
-Inline filters are typically applied last so they’re not overwritten by the block filters.</p>
+Inline filters are typically applied last so they’re not overwritten by block filters.</p>
 <p>Here is the rendered html:</p>
 <hr />
 <p>Gleam is <strong>cool</strong>:</p>
@@ -398,8 +398,8 @@ learn more about the standard library.</p></li>
 </ul>
 <hr />
 <h2>Element construction</h2>
-<p><code>pandi</code> only exposes one convenience function to construct elements; the <code>text</code> function.
-Otherwise, the type constructors are used directly.</p>
+<p><code>pandi</code> only exposes one convenience function to construct elements; the <code>doc.text</code> function.
+Otherwise, the <code>doc</code> module’s type constructors are used directly.</p>
 <p>The above example defines an <code>element</code> module with the following helpers:</p>
 <pre><code class="language-gleam">import pandi/doc
 
@@ -516,9 +516,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779621980"></script>
+    <script src="./js/index.js?v=1779622374"></script>
     <script>
-      fetch("./search-data.json?v=1779621980")
+      fetch("./search-data.json?v=1779622374")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
