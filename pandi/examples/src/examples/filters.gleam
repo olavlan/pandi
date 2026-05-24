@@ -1,22 +1,20 @@
 import pandi as doc
 import pandi/filter
 
-fn main() {
+pub fn main() {
   let increase_header_level: filter.BlockFilter = fn(block, _meta) {
     case block {
       doc.Header(level, _, _) ->
-        filter.remove |> filter.append(doc.Header(..block, level: level + 1))
+        [doc.Header(..block, level: level + 1)] |> filter.replace
       _ -> filter.keep
     }
   }
   let ordered_to_bullet_list: filter.BlockFilter = fn(block, _meta) {
     case block {
-      doc.OrderedList(_, items) ->
-        filter.remove |> filter.append(doc.BulletList(items))
+      doc.OrderedList(_, items) -> [doc.BulletList(items)] |> filter.replace
       _ -> filter.keep
     }
   }
-  let horizontal_line_before_subheadings = fn(block, _meta) { todo }
   let remove_comment_divs: filter.BlockFilter = fn(block, _meta) {
     case block {
       doc.Div(doc.Attributes(_, ["comment"], _), _) -> filter.remove
@@ -25,8 +23,14 @@ fn main() {
   }
   let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
     case inline {
-      doc.Str("Gleam") -> filter.keep |> filter.prepend(doc.Str("⭐️"))
+      doc.Str("Gleam") -> doc.text("⭐️ ") |> filter.prepend
       _ -> filter.keep
     }
   }
+  #(
+    increase_header_level,
+    ordered_to_bullet_list,
+    remove_comment_divs,
+    prepend_gleam_star,
+  )
 }

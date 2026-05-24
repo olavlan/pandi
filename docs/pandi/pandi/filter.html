@@ -249,6 +249,8 @@
   
   <li><a href="#remove">remove</a></li>
   
+  <li><a href="#replace">replace</a></li>
+  
 </ul>
 
 
@@ -281,7 +283,9 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
+      <div class="rendered-markdown"><p>The type that a filter function must return.</p>
+<p>Use the action constructors <code>keep</code>, <code>remove</code>, <code>replace</code>, <code>append</code> and <code>prepend</code>.</p>
+</div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub opaque type </span><span class="hljs-title">Action</span>(<span class="hljs-variable">element</span>)</code></pre>
       
     </div>
@@ -298,18 +302,17 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"><p>A function that takes in a block (and the document metadata), and returns a filter action.</p>
-<p>Example:</p>
+      <div class="rendered-markdown"><p>A function that takes a block (and document metadata), and returns an action.</p>
+<p>Define filters as in the examples below, and use <code>filter_blocks</code> to apply them to a <code>Document</code> object.</p>
+<p>Examples:</p>
+<p>Note that <code>pandi</code> is imported as <code>doc</code>.</p>
 <pre><code class="language-gleam">let increase_header_level: filter.BlockFilter = fn(block, _meta) {
   case block {
-    doc.Header(level, _, _) -&gt;
-      filter.remove |&gt; filter.append(doc.Header(..block, level: level + 1))
+    doc.Header(level, _, _) -&gt; [doc.Header(..block, level: level + 1)] |&gt; filter.replace
     _ -&gt; filter.keep
   }
 }
 </code></pre>
-<p>This filter increases the header level of all <code>Header</code> elements.
-Use <code>filter_blocks</code> to apply the filter to a <code>Document</code> object.</p>
 </div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockFilter</span> =
   <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<a href="../pandi.html#Block" title="pandi.{type Block}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Block</span></a>)</code></pre>
@@ -328,17 +331,18 @@ Use <code>filter_blocks</code> to apply the filter to a <code>Document</code> ob
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"><p>A function that takes in an inline (and the document metadata), and returns a filter action.</p>
-<p>Example:</p>
+      <div class="rendered-markdown"><p>A function that takes in an inline (and the document metadata), and returns an action.</p>
+<p>Define filters as in the examples below, and use <code>filter_blocks</code> to apply them to a <code>Document</code> object.</p>
+<p>Examples:</p>
+<p>Note that <code>pandi</code> is imported as <code>doc</code>.</p>
+<p>Adding a star in front of every ocurrence of “Gleam” in the document:</p>
 <pre><code class="language-gleam">let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
   case inline {
-    doc.Str("Gleam") -&gt; filter.keep |&gt; filter.prepend(doc.Str("⭐️"))
+    doc.Str("Gleam") -&gt; [doc.Str("⭐️")] |&gt; filter.prepend
     _ -&gt; filter.keep
   }
 }
 </code></pre>
-<p>This filter adds a star in front of every ocurrence of “Gleam” in the document.
-Use <code>filter_inlines</code> to apply the filter to a <code>Document</code> object.</p>
 </div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineFilter</span> =
   <span class="hljs-keyword">fn</span>(<a href="../pandi.html#Inline" title="pandi.{type Inline}"><span class="hljs-variable">pandi</span>.<span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
@@ -368,10 +372,7 @@ Use <code>filter_inlines</code> to apply the filter to a <code>Document</code> o
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">append</span>(
-  <span class="hljs-variable">previous_action</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>),
-  <span class="hljs-variable">append</span>: <span class="hljs-variable">element</span>,
-) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">append</span>(<span class="hljs-variable">elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">element</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
@@ -428,7 +429,9 @@ Use <code>filter_inlines</code> to apply the filter to a <code>Document</code> o
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">keep</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Action to keep an element, but apply the filter function to its children, if any.</p>
+<p>Typically used to match on remaining elements at the end of a filter function.</p>
+</div>
   </div>
   
   <div class="member">
@@ -441,10 +444,7 @@ Use <code>filter_inlines</code> to apply the filter to a <code>Document</code> o
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">prepend</span>(
-  <span class="hljs-variable">previous_action</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>),
-  <span class="hljs-variable">prepend</span>: <span class="hljs-variable">element</span>,
-) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">prepend</span>(<span class="hljs-variable">elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">element</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
@@ -460,6 +460,32 @@ Use <code>filter_inlines</code> to apply the filter to a <code>Document</code> o
     </div>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">remove</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
+    
+    <div class="rendered-markdown"><p>Action to remove an element.</p>
+<p>Examples:</p>
+<p>Note that <code>pandi</code> is imported as <code>doc</code>.</p>
+<p>Filter that removes paragraphs starting with “//”:</p>
+<pre><code class="language-gleam">let remove_comment_lines: filter.BlockFilter = fn(block, _meta) {
+  case block {
+    doc.Paragraph([doc.Str("//" &lt;&gt; _), ..]) -&gt; filter.remove
+    _ -&gt; filter.keep
+  }
+}
+</code></pre>
+</div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="replace">
+        <a href="#replace">
+          replace
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">replace</span>(<span class="hljs-variable">elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">element</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
@@ -545,9 +571,9 @@ Use <code>filter_inlines</code> to apply the filter to a <code>Document</code> o
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779571296"></script>
+    <script src="../js/index.js?v=1779613869"></script>
     <script>
-      fetch("../search-data.json?v=1779571296")
+      fetch("../search-data.json?v=1779613869")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

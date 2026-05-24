@@ -21,7 +21,7 @@ pub fn increase_header_level_test() {
   let block_filter: filter.BlockFilter = fn(block, _meta) {
     case block {
       doc.Header(level, attrs, content) ->
-        filter.remove |> filter.append(doc.Header(level + 1, attrs, content))
+        [doc.Header(level + 1, attrs, content)] |> filter.replace
       _ -> filter.keep
     }
   }
@@ -55,8 +55,7 @@ pub fn convert_ordered_list_to_bullet_list_test() {
   ]
   let filter: filter.BlockFilter = fn(block, _meta) {
     case block {
-      doc.OrderedList(_, items) ->
-        filter.remove |> filter.append(doc.BulletList(items))
+      doc.OrderedList(_, items) -> [doc.BulletList(items)] |> filter.replace
       _ -> filter.keep
     }
   }

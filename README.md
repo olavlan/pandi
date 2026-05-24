@@ -6,6 +6,7 @@ Gleam packages for working with Pandoc-compatible documents:
 
 Tasks, pandi:
 
+* document module?
 * add docs
 
 Tasks, pandi/filter

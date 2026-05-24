@@ -1,43 +1,49 @@
 import gleam/list
 import pandi as doc
 
-/// A function that takes in a block (and the document metadata), and returns a filter action.
+/// A function that takes a block (and document metadata), and returns an action.
 ///
-/// Example:
+/// Define filters as in the examples below, and use `filter_blocks` to apply them to a `Document` object.
+/// 
+/// Examples:
+///
+/// Note that `pandi` is imported as `doc`.
 ///
 /// ```gleam
 /// let increase_header_level: filter.BlockFilter = fn(block, _meta) {
 ///   case block {
-///     doc.Header(level, _, _) ->
-///       filter.remove |> filter.append(doc.Header(..block, level: level + 1))
+///     doc.Header(level, _, _) -> [doc.Header(..block, level: level + 1)] |> filter.replace
 ///     _ -> filter.keep
 ///   }
 /// }
 /// ```
 ///
-/// This filter increases the header level of all `Header` elements.
-/// Use `filter_blocks` to apply the filter to a `Document` object.
 pub type BlockFilter =
   fn(doc.Block, doc.Meta) -> Action(doc.Block)
 
-/// A function that takes in an inline (and the document metadata), and returns a filter action.
+/// A function that takes in an inline (and the document metadata), and returns an action.
 ///
-/// Example:
+/// Define filters as in the examples below, and use `filter_blocks` to apply them to a `Document` object.
+/// 
+/// Examples:
 ///
+/// Note that `pandi` is imported as `doc`.
+///
+/// Adding a star in front of every ocurrence of "Gleam" in the document:
 /// ```gleam
 /// let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
 ///   case inline {
-///     doc.Str("Gleam") -> filter.keep |> filter.prepend(doc.Str("⭐️"))
+///     doc.Str("Gleam") -> [doc.Str("⭐️")] |> filter.prepend
 ///     _ -> filter.keep
 ///   }
 /// }
 /// ```
-///
-/// This filter adds a star in front of every ocurrence of "Gleam" in the document.
-/// Use `filter_inlines` to apply the filter to a `Document` object.
 pub type InlineFilter =
   fn(doc.Inline, doc.Meta) -> Action(doc.Inline)
 
+///The type that a filter function must return.
+///
+///Use the action constructors `keep`, `remove`, `replace`, `append` and `prepend`.
 pub opaque type Action(element) {
   Action(
     prepend: List(element),
@@ -51,25 +57,38 @@ type OriginalElementAction {
   RemoveOriginal
 }
 
+/// Action to keep an element, but apply the filter function to its children, if any.
+///
+/// Typically used to match on remaining elements at the end of a filter function.
 pub const keep: Action(element) = Action([], KeepOriginal, [])
 
+/// Action to remove an element.
+///
+/// Examples:
+///
+/// Note that `pandi` is imported as `doc`.
+///
+/// Filter that removes paragraphs starting with "//":
+/// ```gleam
+/// let remove_comment_lines: filter.BlockFilter = fn(block, _meta) {
+///   case block {
+///     doc.Paragraph([doc.Str("//" <> _), ..]) -> filter.remove
+///     _ -> filter.keep
+///   }
+/// }
+/// ```
 pub const remove: Action(element) = Action([], RemoveOriginal, [])
 
-pub fn prepend(
-  previous_action: Action(element),
-  prepend: element,
-) -> Action(element) {
-  Action(..previous_action, prepend: [prepend, ..previous_action.prepend])
+pub fn prepend(elements: List(element)) -> Action(element) {
+  Action(elements, KeepOriginal, [])
 }
 
-pub fn append(
-  previous_action: Action(element),
-  append: element,
-) -> Action(element) {
-  Action(
-    ..previous_action,
-    append: list.append(previous_action.append, [append]),
-  )
+pub fn append(elements: List(element)) -> Action(element) {
+  Action([], KeepOriginal, elements)
+}
+
+pub fn replace(elements: List(element)) -> Action(element) {
+  Action(elements, RemoveOriginal, [])
 }
 
 pub fn filter_blocks(

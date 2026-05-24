@@ -371,7 +371,7 @@ pub fn main() {
   let block_filter: filter.BlockFilter = fn(block, _meta) {
     case block {
       doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -&gt;
-        filter.keep |&gt; filter.append(element.gleam_playground_link(code))
+        [element.gleam_playground_link(code)] |&gt; filter.append
       _ -&gt; filter.keep
     }
   }
@@ -379,7 +379,7 @@ pub fn main() {
   let inline_filter: filter.InlineFilter = fn(inline, _meta) {
     case inline {
       doc.Code(_, "docs:" &lt;&gt; package_name) -&gt;
-        filter.remove |&gt; filter.append(element.hex_link(package_name))
+        [element.hex_link(package_name)] |&gt; filter.replace
       _ -&gt; filter.keep
     }
   }
@@ -531,9 +531,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779571296"></script>
+    <script src="./js/index.js?v=1779613869"></script>
     <script>
-      fetch("./search-data.json?v=1779571296")
+      fetch("./search-data.json?v=1779613869")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

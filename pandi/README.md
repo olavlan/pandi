@@ -171,7 +171,7 @@ pub fn main() {
   let block_filter: filter.BlockFilter = fn(block, _meta) {
     case block {
       doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) ->
-        filter.keep |> filter.append(element.gleam_playground_link(code))
+        [element.gleam_playground_link(code)] |> filter.append
       _ -> filter.keep
     }
   }
@@ -179,7 +179,7 @@ pub fn main() {
   let inline_filter: filter.InlineFilter = fn(inline, _meta) {
     case inline {
       doc.Code(_, "docs:" <> package_name) ->
-        filter.remove |> filter.append(element.hex_link(package_name))
+        [element.hex_link(package_name)] |> filter.replace
       _ -> filter.keep
     }
   }
