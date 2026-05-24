@@ -490,14 +490,15 @@ document
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">keep</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Action to keep an element.</p>
-<p>Note that children of the element will be filtered recursively.</p>
 <p>This action is typically used to match on remaining elements in a filter function:</p>
 <pre><code class="language-gleam">let filter: filter.BlockFilter = fn(block, _meta) {
   case block {
     // match and process specific elements, then... 
-    _ -&gt; filter.keep // ...keep the remaining elements
+    _ -&gt; filter.keep // ...keep the remaining elements (and filter their children)
   }
-}</code></pre>
+}
+
+Note that children of the kept element will be filtered recursively.</code></pre>
 </div>
   </div>
   
@@ -656,9 +657,9 @@ document
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779644851"></script>
+    <script src="../js/index.js?v=1779645003"></script>
     <script>
-      fetch("../search-data.json?v=1779644851")
+      fetch("../search-data.json?v=1779645003")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

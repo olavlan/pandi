@@ -55,16 +55,16 @@ type OriginalElementAction {
 
 /// Action to keep an element.
 ///
-/// Note that children of the element will be filtered recursively.
-///
 /// This action is typically used to match on remaining elements in a filter function:
 /// ```gleam
 /// let filter: filter.BlockFilter = fn(block, _meta) {
 ///   case block {
 ///     // match and process specific elements, then... 
-///     _ -> filter.keep // ...keep the remaining elements
+///     _ -> filter.keep // ...keep the remaining elements (and filter their children)
 ///   }
 /// }
+/// 
+/// Note that children of the kept element will be filtered recursively.
 pub const keep: Action(element) = Action([], KeepOriginal, [])
 
 /// Action to remove an element.
