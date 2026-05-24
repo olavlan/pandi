@@ -240,7 +240,7 @@ pub fn main() {
 }
 ```
 </code></pre>
-<p>Let’s say we want to add a paragraph after each Gleam code block linking to the <a href="https://playground.gleam.run/">Gleam playground</a>, and then convert the document to html.
+<p>Let’s say we want to link to the <a href="https://playground.gleam.run/">Gleam playground</a> after each code block, and then convert the document to html.
 We can achieve this with Pandoc and <code>pandi</code>:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
@@ -286,7 +286,7 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 <h2>Adding a Gleam wrapper for Pandoc</h2>
 <p><code>pandi</code> deliberately doesn’t try to run Pandoc, but works with its json output format.
 That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.</p>
-<p>The example defines the following generic <code>pandoc</code> module for working with document files:</p>
+<p>The example defines the following generic <code>pandoc</code> module for working with files:</p>
 <pre><code class="language-gleam">import pandi/doc
 import shellout
 import simplifile
@@ -345,9 +345,9 @@ Gleam is **cool**:
 
 * Visit `docs:gleam_stdlib` to learn more about the standard library.
 </code></pre>
-<p>In addition to adding the Playground link after the (now nested) code block, we’d like to replace <code>docs:gleam_stdlib</code> with a link to the Hex documentation.</p>
+<p>We still want to add the Playground link after the (now nested) code block, and additionally replace occurrences of  <code>docs:[package_name]</code> with a link to the Hex documentation.</p>
 <p>The <code>pandi/filter</code> module makes this easy with the concept of <em>document filters</em>.
-A filter is simply an element-processing function that can be applied to all elements in the document tree:</p>
+A filter is an element-processing function that can be applied to all elements in the document tree:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
 import pandi/doc
@@ -377,7 +377,7 @@ pub fn main() {
 }
 </code></pre>
 <p>Note that we separate between block and inline filters for type safety.
-Since block changes might overwrite inline changes, inline filters are typically applied last.</p>
+Inline filters are typically applied last so they’re not overwritten by the block filters.</p>
 <p>Here is the rendered html:</p>
 <hr />
 <p>Gleam is <strong>cool</strong>:</p>
@@ -400,7 +400,7 @@ learn more about the standard library.</p></li>
 <h2>Element construction</h2>
 <p><code>pandi</code> only exposes one convenience function to construct elements; the <code>text</code> function.
 Otherwise, the type constructors are used directly.</p>
-<p>The above examples uses an <code>element</code> module which defines the following helpers:</p>
+<p>The examples defines an <code>element</code> module with the following helpers:</p>
 <pre><code class="language-gleam">import pandi/doc
 
 pub fn hex_link(package_name: String) -&gt; doc.Inline {
@@ -435,7 +435,7 @@ fn empty_attributes() -&gt; doc.Attributes {
 @external(javascript, "./lz_ffi.mjs", "makeV1Hash")
 fn make_v1_hash(code: String) -&gt; String
 </code></pre>
-<p><em>The complete working examples exists <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you also have <code>pandoc</code> installed. These examples targets Javascript because a library is used to compress the Gleam code (for the Playground link)</em>.</p>
+<p><em>The complete working examples exists <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you have <code>pandoc</code> installed. These examples targets Javascript because a Javascript library is used to compress the Gleam code (for the Playground link)</em>.</p>
 
 
       </main>
@@ -516,9 +516,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779620053"></script>
+    <script src="./js/index.js?v=1779620688"></script>
     <script>
-      fetch("./search-data.json?v=1779620053")
+      fetch("./search-data.json?v=1779620688")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
