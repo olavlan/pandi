@@ -63,7 +63,8 @@ type OriginalElementAction {
 ///     _ -> filter.keep // ...keep the remaining elements (and filter their children)
 ///   }
 /// }
-/// 
+/// ``` 
+///
 /// Note that children of the kept element will be filtered recursively.
 pub const keep: Action(element) = Action([], KeepOriginal, [])
 
