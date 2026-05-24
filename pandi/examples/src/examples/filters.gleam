@@ -1,3 +1,4 @@
+import gleam/list
 import pandi/doc
 import pandi/filter
 
@@ -24,6 +25,14 @@ pub fn main() {
   let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
     case inline {
       doc.Str("Gleam") -> doc.text("⭐️ ") |> filter.prepend
+      _ -> filter.keep
+    }
+  }
+  let inlcude_link_symbol: filter.InlineFilter = fn(inline, _meta) {
+    case inline {
+      doc.Link(_, content, _) ->
+        [doc.Link(..inline, content: list.append(content, doc.text(" ")))]
+        |> filter.replace
       _ -> filter.keep
     }
   }

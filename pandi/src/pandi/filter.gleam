@@ -3,11 +3,9 @@ import pandi/doc
 
 /// A function that takes a block (and document metadata), and returns an action.
 ///
-/// Define filters as in the examples below, and use `filter_blocks` to apply them to a `Document` object.
+/// Use `apply_inline_filter` to apply it to a `Document` object.
 /// 
 /// Examples:
-///
-/// Note that `pandi` is imported as `doc`.
 ///
 /// ```gleam
 /// let increase_header_level: filter.BlockFilter = fn(block, _meta) {
@@ -23,17 +21,14 @@ pub type BlockFilter =
 
 /// A function that takes in an inline (and the document metadata), and returns an action.
 ///
-/// Define filters as in the examples below, and use `filter_blocks` to apply them to a `Document` object.
+/// Use `apply_inline_filter` to apply it to a `Document` object.
 /// 
 /// Examples:
 ///
-/// Note that `pandi` is imported as `doc`.
-///
-/// Adding a star in front of every ocurrence of "Gleam" in the document:
 /// ```gleam
-/// let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
+/// let capitalize_gleam: filter.InlineFilter = fn(inline, _meta) {
 ///   case inline {
-///     doc.Str("Gleam") -> [doc.Str("⭐️")] |> filter.prepend
+///     doc.Str("gleam") -> [doc.Str("Gleam")] |> filter.replace
 ///     _ -> filter.keep
 ///   }
 /// }
@@ -43,7 +38,7 @@ pub type InlineFilter =
 
 ///The type that a filter function must return.
 ///
-///Use the action constructors `keep`, `remove`, `replace`, `append` and `prepend`.
+///Use the action contructors: `keep`, `remove`, `replace`, `append` and `prepend`.
 pub opaque type Action(element) {
   Action(
     prepend: List(element),
@@ -57,18 +52,27 @@ type OriginalElementAction {
   RemoveOriginal
 }
 
-/// Action to keep an element, but apply the filter function to its children, if any.
+/// Action to keep an element.
 ///
-/// Typically used to match on remaining elements at the end of a filter function.
+/// Note that the children of the element (if any) will be filtered.
+/// If you want to "freeze" the children of an element, use `replace(block)`,
+/// where `block` is the element you're matching on.
+///
+/// This action is typically used to match on remaining elements in a filter function:
+/// ```gleam
+/// let filter: filter.BlockFilter = fn(block, _meta) {
+///   case block {
+///     // match and process specific elements, then... 
+///     _ -> filter.keep // ...keep the remaining elements
+///   }
+/// }
 pub const keep: Action(element) = Action([], KeepOriginal, [])
 
 /// Action to remove an element.
 ///
 /// Examples:
 ///
-/// Note that `pandi` is imported as `doc`.
-///
-/// Filter that removes paragraphs starting with "//":
+/// Remove paragraphs starting with "//":
 /// ```gleam
 /// let remove_comment_lines: filter.BlockFilter = fn(block, _meta) {
 ///   case block {
@@ -79,18 +83,69 @@ pub const keep: Action(element) = Action([], KeepOriginal, [])
 /// ```
 pub const remove: Action(element) = Action([], RemoveOriginal, [])
 
+/// Action to prepend new elements to an element.
+///
+/// Note that the children of the prepended elements (if any) will **not** be filtered.
+/// If you want to process the children of prepended elements, apply a new filter to the document.
+///
+/// Examples:
+///
+/// Prepending a star to every ocurrence of "Gleam":
+/// ```gleam
+/// let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
+///   case inline {
+///     doc.Str("Gleam") -> [doc.Str("⭐️")] |> filter.prepend
+///     _ -> filter.keep
+///   }
+/// }
+/// ```
 pub fn prepend(elements: List(element)) -> Action(element) {
   Action(elements, KeepOriginal, [])
 }
 
+/// Action to append new elements to an element.
+///
+/// Note that the children of the appended elements (if any) will **not** be filtered.
+/// If you want to process the children of appended elements, apply a new filter to the document.
+///
+/// Examples:
+///
+/// Append a link symbol to every link:
+/// ```gleam
+/// let append_link_symbol: filter.InlineFilter = fn(inline, _meta) {
+///   case inline {
+///     doc.Link(_,_,content) -> [doc.doc.Str("⭐️")] |> filter.prepend
+///     _ -> filter.keep
+///   }
+/// }
+/// ```
 pub fn append(elements: List(element)) -> Action(element) {
   Action([], KeepOriginal, elements)
 }
 
+/// Action to replace an element.
+///
+/// Note that the children of the replacements (if any) will **not** be filtered.
+/// If you want to process the children of the replacements, apply a new filter to the document.
+///
+/// This is typically used to modify elements:
+/// ```gleam
+/// let inlcude_link_symbol: filter.InlineFilter = fn(inline, _meta) {
+///   case inline {
+///     doc.Link(_, content, _) ->
+///       [doc.Link(..inline, content: list.append(content, doc.text(" 🔗")))]
+///       |> filter.replace
+///     _ -> filter.keep
+///   }
+/// }
+/// ```
 pub fn replace(elements: List(element)) -> Action(element) {
   Action(elements, RemoveOriginal, [])
 }
 
+/// Apply a block filter to a document.
+///
+/// Example:
 pub fn apply_block_filter(
   document: doc.Document,
   filter: BlockFilter,
