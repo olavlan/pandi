@@ -370,16 +370,10 @@ pub fn main() {
     }
   }
 
-  pandoc.file_to_document(
-    from_file: "example-with-nesting.md",
-    from_format: "markdown",
-  )
+  pandoc.file_to_document(from_file: "example-2.md", from_format: "markdown")
   |&gt; filter.filter_blocks(block_filter)
   |&gt; filter.filter_inlines(inline_filter)
-  |&gt; pandoc.document_to_file(
-    to_file: "example-with-nesting.html",
-    to_format: "html",
-  )
+  |&gt; pandoc.document_to_file(to_file: "example-2.html", to_format: "html")
 }
 </code></pre>
 <p>Note that we separate between block and inline filters for type safety.
@@ -522,9 +516,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779619905"></script>
+    <script src="./js/index.js?v=1779620053"></script>
     <script>
-      fetch("./search-data.json?v=1779619905")
+      fetch("./search-data.json?v=1779620053")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

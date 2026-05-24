@@ -46,7 +46,7 @@ Alternatively, you can convert documents to Pandoc's json separately from your G
 Taking the example a step further, assume we have the following Markdown document:
 
 ````md
-{{./examples/resources/example-with-nesting.md}}
+{{./examples/resources/example-2.md}}
 ````
 
 In addition to adding the Playground link after the (now nested) code block, we'd like to replace `docs:gleam_stdlib` with a link to the Hex documentation.
@@ -65,7 +65,7 @@ Here is the rendered html:
 
 ---
 
-{{./examples/resources/example-with-nesting.html}}
+{{./examples/resources/example-2.html}}
 
 ---
 
