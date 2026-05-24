@@ -88,7 +88,7 @@ pub const remove: Action(element) = Action([], RemoveOriginal, [])
 /// ```gleam
 /// let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
 ///   case inline {
-///     doc.Str("Gleam") -> [doc.Str("⭐️")] |> filter.prepend
+///     doc.Str("Gleam") -> doc.text("⭐️ ") |> filter.prepend
 ///     _ -> filter.keep
 ///   }
 /// }
