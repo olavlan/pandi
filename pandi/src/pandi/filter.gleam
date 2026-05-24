@@ -103,7 +103,7 @@ pub fn prepend(elements: List(element)) -> Action(element) {
 /// Example:
 ///
 /// ```gleam
-/// let run_code = fn(code: String) -> String { todo }
+/// let run_code = fn(code: String) -> String { "mocked code result" }
 /// let append_code_result: filter.BlockFilter = fn(block, _meta) {
 ///   case block {
 ///     doc.CodeBlock(_, code) ->

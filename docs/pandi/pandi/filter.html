@@ -372,7 +372,7 @@
     
     <div class="rendered-markdown"><p>Action to append new elements to an element.</p>
 <p>Example:</p>
-<pre><code class="language-gleam">let run_code = fn(code: String) -&gt; String { todo }
+<pre><code class="language-gleam">let run_code = fn(code: String) -&gt; String { "mocked code result" }
 let append_code_result: filter.BlockFilter = fn(block, _meta) {
   case block {
     doc.CodeBlock(_, code) -&gt;
@@ -657,9 +657,9 @@ document
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779646006"></script>
+    <script src="../js/index.js?v=1779646103"></script>
     <script>
-      fetch("../search-data.json?v=1779646006")
+      fetch("../search-data.json?v=1779646103")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
