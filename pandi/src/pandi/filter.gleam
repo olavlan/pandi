@@ -1,3 +1,12 @@
+//// This module aims to make it easy to define *document filters*,
+//// i.e. element-processing functions that can be applied the whole document tree.
+//// The types `InlineFilter` and `BlockFilter` are used to defined type-safe filters.
+//// They should return an action, which can be constructed easily with the functions `keep`, `remove`, `replace`, `append` and `prepend`.
+//// Finally, a filter can be applied to a document with either `apply_block_filter` or `apply_inline_filter`.
+//// The types guarantee a valid doument at the end; infinite recursion loops will never happen.
+////
+//// Complete example:
+
 import gleam/list
 import pandi/doc
 
