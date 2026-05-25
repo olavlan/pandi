@@ -347,7 +347,7 @@ Gleam is **cool**:
 </code></pre>
 <p>We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of  <code>docs:[package_name]</code> with a link to the Hex docs.</p>
 <p>This can be done with <em>filters</em>, using the <code>pandi/filter</code> module.
-A filter is an element-processing function that can be applied the whole document tree:</p>
+A filter is an element-processing function that can be applied to the whole document tree:</p>
 <pre><code class="language-gleam">import examples/gleam_markdown/element
 import examples/pandoc
 import pandi/doc
@@ -376,7 +376,7 @@ pub fn main() {
   |&gt; pandoc.document_to_file(to_file: "example-2.html", to_format: "html")
 }
 </code></pre>
-<p>Note that we separate between block and inline filters for type safety.
+<p>Note that we distinguish between block and inline filters for type safety.
 Inline filters are typically applied last so they’re not overwritten by block filters.</p>
 <p>Here is the rendered html:</p>
 <hr />
@@ -435,7 +435,7 @@ fn empty_attributes() -&gt; doc.Attributes {
 @external(javascript, "./lz_ffi.mjs", "makeV1Hash")
 fn make_v1_hash(code: String) -&gt; String
 </code></pre>
-<p><em>The complete working examples exists <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you have <code>pandoc</code> installed. These examples targets Javascript because a Javascript library is used to compress the Gleam code (for the Playground link)</em>.</p>
+<p><em>The complete working examples exist <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you have <code>pandoc</code> installed. These examples target Javascript because a Javascript library is used to compress the Gleam code (for the Playground link)</em>.</p>
 
 
       </main>
@@ -516,9 +516,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779727911"></script>
+    <script src="./js/index.js?v=1779728994"></script>
     <script>
-      fetch("./search-data.json?v=1779727911")
+      fetch("./search-data.json?v=1779728994")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

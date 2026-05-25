@@ -1,5 +1,5 @@
 //// This module aims to make it easy to create *document filters*,
-//// i.e. element-processing functions that can be applied the whole document tree.
+//// i.e. element-processing functions that can be applied to the whole document tree.
 //// The types guarantee a valid document at the end; infinite recursion loops will never happen.
 ////
 //// Complete example:
@@ -117,7 +117,7 @@ pub type BlockFilter =
 pub type InlineFilter =
   fn(doc.Inline, doc.Meta) -> Action(doc.Inline)
 
-///The type that a filter function returns.
+/// The type that a filter function returns.
 ///
 /// Use the provided constructors: `keep`, `remove`, `replace`, `append` and `prepend`.
 pub opaque type Action(element) {
@@ -242,7 +242,7 @@ pub fn replace(elements: List(element)) -> Action(element) {
 ///
 /// Note that the children of the inserted div are not filtered,
 /// since this would lead to an infinite recursion loop.
-/// If you need to further process inserted elements, apply a new filter intead. 
+/// If you need to further process inserted elements, apply a new filter instead. 
 pub fn apply_block_filter(
   document: doc.Document,
   filter: BlockFilter,
@@ -283,7 +283,7 @@ pub fn apply_block_filter(
 /// ```
 /// Note that the children of the inserted span are not filtered,
 /// since this would lead to an infinite recursion loop.
-/// If you need to further process inserted elements, apply a new filter intead. 
+/// If you need to further process inserted elements, apply a new filter instead. 
 pub fn apply_inline_filter(
   document: doc.Document,
   filter: InlineFilter,

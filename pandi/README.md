@@ -145,7 +145,7 @@ Gleam is **cool**:
 We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of  `docs:[package_name]` with a link to the Hex docs.
 
 This can be done with *filters*, using the `pandi/filter` module.
-A filter is an element-processing function that can be applied the whole document tree:
+A filter is an element-processing function that can be applied to the whole document tree:
 
 ```gleam
 import examples/gleam_markdown/element
@@ -177,7 +177,7 @@ pub fn main() {
 }
 ```
 
-Note that we separate between block and inline filters for type safety.
+Note that we distinguish between block and inline filters for type safety.
 Inline filters are typically applied last so they're not overwritten by block filters.
 
 Here is the rendered html:
@@ -246,4 +246,4 @@ fn empty_attributes() -> doc.Attributes {
 fn make_v1_hash(code: String) -> String
 ```
 
-*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples targets Javascript because a Javascript library is used to compress the Gleam code (for the Playground link)*.
+*The complete working examples exist [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples target Javascript because a Javascript library is used to compress the Gleam code (for the Playground link)*.

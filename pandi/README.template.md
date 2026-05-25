@@ -52,13 +52,13 @@ Taking the example a step further, assume we have the following Markdown documen
 We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of  `docs:[package_name]` with a link to the Hex docs.
 
 This can be done with *filters*, using the `pandi/filter` module.
-A filter is an element-processing function that can be applied the whole document tree:
+A filter is an element-processing function that can be applied to the whole document tree:
 
 ```gleam
 {{./examples/src/examples/gleam_markdown_with_filter.gleam}}
 ```
 
-Note that we separate between block and inline filters for type safety.
+Note that we distinguish between block and inline filters for type safety.
 Inline filters are typically applied last so they're not overwritten by block filters.
 
 Here is the rendered html:
@@ -80,4 +80,4 @@ The above example defines an `element` module with the following helpers:
 {{./examples/src/examples/gleam_markdown/element.gleam}}
 ```
 
-*The complete working examples exists [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples targets Javascript because a Javascript library is used to compress the Gleam code (for the Playground link)*.
+*The complete working examples exist [here](https://github.com/olavlan/pandi/tree/main/pandi/examples) as a Gleam project, and should work as long as you have `pandoc` installed. These examples target Javascript because a Javascript library is used to compress the Gleam code (for the Playground link)*.

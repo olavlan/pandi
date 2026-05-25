@@ -263,7 +263,7 @@
   <svg class="icon icon-gleam-chasse"><use xlink:href="#icon-gleam-chasse"></use></svg>
 </h1>
 <p>This module aims to make it easy to create <em>document filters</em>,
-i.e. element-processing functions that can be applied the whole document tree.
+i.e. element-processing functions that can be applied to the whole document tree.
 The types guarantee a valid document at the end; infinite recursion loops will never happen.</p>
 <p>Complete example:</p>
 <pre><code class="language-gleam">import gleam/io
@@ -494,7 +494,7 @@ doc.Document([doc.CodeBlock(attributes, "pub const pi = 3.14")], [])
 </code></pre>
 <p>Note that the children of the inserted div are not filtered,
 since this would lead to an infinite recursion loop.
-If you need to further process inserted elements, apply a new filter intead.</p>
+If you need to further process inserted elements, apply a new filter instead.</p>
 </div>
   </div>
   
@@ -543,7 +543,7 @@ doc.Document([doc.Para(doc.text("Gleam is cool!"))], [])
 </code></pre>
 <p>Note that the children of the inserted span are not filtered,
 since this would lead to an infinite recursion loop.
-If you need to further process inserted elements, apply a new filter intead.</p>
+If you need to further process inserted elements, apply a new filter instead.</p>
 </div>
   </div>
   
@@ -727,9 +727,9 @@ If you need to further process inserted elements, apply a new filter intead.</p>
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779727911"></script>
+    <script src="../js/index.js?v=1779728994"></script>
     <script>
-      fetch("../search-data.json?v=1779727911")
+      fetch("../search-data.json?v=1779728994")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
