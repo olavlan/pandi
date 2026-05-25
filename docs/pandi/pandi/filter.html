@@ -403,37 +403,28 @@ let append_code_result: filter.BlockFilter = fn(block, _meta) {
     
     <div class="rendered-markdown"><p>Apply a block filter to a document.</p>
 <p>This recursively applies the filter to every block element in the document.</p>
-<p>Note that new elements are freezed; they cannot be processed by the filter that inserted them.
-To further process new elements, apply a new filter intead.</p>
 <p>Example:</p>
-<pre><code class="language-gleam">let document =
-  doc.Document(
-    blocks: [
-      doc.Header(
-        level: 1,
-        attributes: doc.Attributes("", [], []),
-        content: doc.text("Header"),
-      ),
-    ],
-    meta: [],
-  )
+<pre><code class="language-gleam">let attributes = doc.Attributes(id: "", classes: ["gleam"], keyvalues: [])
 
-let increase_header_level: filter.BlockFilter = fn(block, _meta) {
+let wrap_code_blocks_in_div: filter.BlockFilter = fn(block, _meta) {
   case block {
-    doc.Header(level, attrs, content) -&gt;
-      [doc.Header(level + 1, attrs, content)] |&gt; filter.replace
+    doc.CodeBlock(_, _) -&gt; [doc.Div(attributes, [block])] |&gt; filter.replace
     _ -&gt; filter.keep
   }
 }
 
-document
-|&gt; filter.apply_block_filter(increase_header_level)
+doc.Document([doc.CodeBlock(attributes, "pub const pi = 3.14")], [])
+|&gt; filter.apply_block_filter(wrap_code_blocks_in_div)
 |&gt; doc.to_string
 // [
-//   Header 2 ( "" , [  ] , [  ] ) [ Str "Header" ] ,
-//   Para [ Str "Paragraph" , Space , Str "after" , Space , Str "header." ] ,
+//   Div
+//     ( "" , [ "gleam" ] , [  ] )
+//     [ CodeBlock ( "" , [ "gleam" ] , [  ] ) "pub const pi = 3.14" ] ,
 // ]
 </code></pre>
+<p>Note that the children of the inserted div are not filtered,
+since this would lead to an infinite recursion loop.
+If you need to further process inserted elements, apply a new filter intead.</p>
 </div>
   </div>
   
@@ -456,24 +447,33 @@ document
     
     <div class="rendered-markdown"><p>Apply an inline filter to a document.</p>
 <p>This recursively applies the filter to every inline element in the document.</p>
-<p>Note that new elements are freezed; they cannot be processed by the filter that inserted them.
-To further process new elements, apply a new filter intead.</p>
 <p>Example:</p>
-<pre><code class="language-gleam">let document =
-  doc.Document(blocks: [doc.Para(doc.text("gleam is cool!"))], meta: [])
+<pre><code class="language-gleam">let attributes = doc.Attributes(id: "", classes: ["gleam"], keyvalues: [])
 
-let capitalize_gleam: filter.InlineFilter = fn(inline, _meta) {
+let wrap_gleam_in_span: filter.InlineFilter = fn(inline, _meta) {
   case inline {
-    doc.Str("gleam") -&gt; [doc.Str("Gleam")] |&gt; filter.replace
+    doc.Str("Gleam") -&gt; [doc.Span(attributes, [inline])] |&gt; filter.replace
     _ -&gt; filter.keep
   }
 }
 
-document
-|&gt; filter.apply_inline_filter(capitalize_gleam)
+doc.Document([doc.Para(doc.text("Gleam is cool!"))], [])
+|&gt; filter.apply_inline_filter(wrap_gleam_in_span)
 |&gt; doc.to_string
-// [ Para [ Str "Gleam" , Space , Str "is" , Space , Str "cool!" ] ]
+// [
+//   Para
+//     [
+//       Span ( "" , [ "gleam" ] , [  ] ) [ Str "Gleam" ] ,
+//       Space ,
+//       Str "is" ,
+//       Space ,
+//       Str "cool!" ,
+//     ] ,
+// ]
 </code></pre>
+<p>Note that the children of the inserted span are not filtered,
+since this would lead to an infinite recursion loop.
+If you need to further process inserted elements, apply a new filter intead.</p>
 </div>
   </div>
   
@@ -657,9 +657,9 @@ document
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779646103"></script>
+    <script src="../js/index.js?v=1779712293"></script>
     <script>
-      fetch("../search-data.json?v=1779646103")
+      fetch("../search-data.json?v=1779712293")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

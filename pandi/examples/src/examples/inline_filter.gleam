@@ -1,19 +1,29 @@
+import gleam/io
 import pandi/doc
 import pandi/filter
 
 pub fn main() {
-  let document =
-    doc.Document(blocks: [doc.Para(doc.text("gleam is cool!"))], meta: [])
+  let attributes = doc.Attributes(id: "", classes: ["gleam"], keyvalues: [])
 
-  let capitalize_gleam: filter.InlineFilter = fn(inline, _meta) {
+  let wrap_gleam_in_span: filter.InlineFilter = fn(inline, _meta) {
     case inline {
-      doc.Str("gleam") -> [doc.Str("Gleam")] |> filter.replace
+      doc.Str("Gleam") -> [doc.Span(attributes, [inline])] |> filter.replace
       _ -> filter.keep
     }
   }
 
-  document
-  |> filter.apply_inline_filter(capitalize_gleam)
+  doc.Document([doc.Para(doc.text("Gleam is cool!"))], [])
+  |> filter.apply_inline_filter(wrap_gleam_in_span)
   |> doc.to_string
-  // [ Para [ Str "Gleam" , Space , Str "is" , Space , Str "cool!" ] ]
+  |> io.println
+  // [
+  //   Para
+  //     [
+  //       Span ( "" , [ "gleam" ] , [  ] ) [ Str "Gleam" ] ,
+  //       Space ,
+  //       Str "is" ,
+  //       Space ,
+  //       Str "cool!" ,
+  //     ] ,
+  // ]
 }

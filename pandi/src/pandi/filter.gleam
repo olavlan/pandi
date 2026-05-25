@@ -138,40 +138,31 @@ pub fn replace(elements: List(element)) -> Action(element) {
 ///
 /// This recursively applies the filter to every block element in the document.
 ///
-/// Note that new elements are freezed; they cannot be processed by the filter that inserted them.
-/// To further process new elements, apply a new filter intead. 
-///
 /// Example:
 /// 
 /// ```gleam
-/// let document =
-///   doc.Document(
-///     blocks: [
-///       doc.Header(
-///         level: 1,
-///         attributes: doc.Attributes("", [], []),
-///         content: doc.text("Header"),
-///       ),
-///     ],
-///     meta: [],
-///   )
+/// let attributes = doc.Attributes(id: "", classes: ["gleam"], keyvalues: [])
 /// 
-/// let increase_header_level: filter.BlockFilter = fn(block, _meta) {
+/// let wrap_code_blocks_in_div: filter.BlockFilter = fn(block, _meta) {
 ///   case block {
-///     doc.Header(level, attrs, content) ->
-///       [doc.Header(level + 1, attrs, content)] |> filter.replace
+///     doc.CodeBlock(_, _) -> [doc.Div(attributes, [block])] |> filter.replace
 ///     _ -> filter.keep
 ///   }
 /// }
 /// 
-/// document
-/// |> filter.apply_block_filter(increase_header_level)
+/// doc.Document([doc.CodeBlock(attributes, "pub const pi = 3.14")], [])
+/// |> filter.apply_block_filter(wrap_code_blocks_in_div)
 /// |> doc.to_string
 /// // [
-/// //   Header 2 ( "" , [  ] , [  ] ) [ Str "Header" ] ,
-/// //   Para [ Str "Paragraph" , Space , Str "after" , Space , Str "header." ] ,
+/// //   Div
+/// //     ( "" , [ "gleam" ] , [  ] )
+/// //     [ CodeBlock ( "" , [ "gleam" ] , [  ] ) "pub const pi = 3.14" ] ,
 /// // ]
 /// ```
+///
+/// Note that the children of the inserted div are not filtered,
+/// since this would lead to an infinite recursion loop.
+/// If you need to further process inserted elements, apply a new filter intead. 
 pub fn apply_block_filter(
   document: doc.Document,
   filter: BlockFilter,
@@ -183,28 +174,36 @@ pub fn apply_block_filter(
 /// Apply an inline filter to a document.
 ///
 /// This recursively applies the filter to every inline element in the document.
-/// 
-/// Note that new elements are freezed; they cannot be processed by the filter that inserted them.
-/// To further process new elements, apply a new filter intead. 
 ///
 /// Example:
 ///
 /// ```gleam
-/// let document =
-///   doc.Document(blocks: [doc.Para(doc.text("gleam is cool!"))], meta: [])
+/// let attributes = doc.Attributes(id: "", classes: ["gleam"], keyvalues: [])
 /// 
-/// let capitalize_gleam: filter.InlineFilter = fn(inline, _meta) {
+/// let wrap_gleam_in_span: filter.InlineFilter = fn(inline, _meta) {
 ///   case inline {
-///     doc.Str("gleam") -> [doc.Str("Gleam")] |> filter.replace
+///     doc.Str("Gleam") -> [doc.Span(attributes, [inline])] |> filter.replace
 ///     _ -> filter.keep
 ///   }
 /// }
 /// 
-/// document
-/// |> filter.apply_inline_filter(capitalize_gleam)
+/// doc.Document([doc.Para(doc.text("Gleam is cool!"))], [])
+/// |> filter.apply_inline_filter(wrap_gleam_in_span)
 /// |> doc.to_string
-/// // [ Para [ Str "Gleam" , Space , Str "is" , Space , Str "cool!" ] ]
+/// // [
+/// //   Para
+/// //     [
+/// //       Span ( "" , [ "gleam" ] , [  ] ) [ Str "Gleam" ] ,
+/// //       Space ,
+/// //       Str "is" ,
+/// //       Space ,
+/// //       Str "cool!" ,
+/// //     ] ,
+/// // ]
 /// ```
+/// Note that the children of the inserted span are not filtered,
+/// since this would lead to an infinite recursion loop.
+/// If you need to further process inserted elements, apply a new filter intead. 
 pub fn apply_inline_filter(
   document: doc.Document,
   filter: InlineFilter,
