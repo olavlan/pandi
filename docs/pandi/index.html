@@ -227,7 +227,7 @@
 <h1>pandi</h1>
 <p><a href="https://hex.pm/packages/pandi"><img src="https://img.shields.io/hexpm/v/pandi" alt="Package Version" /></a>
 <a href="https://hexdocs.pm/pandi/"><img src="https://img.shields.io/badge/hex-docs-ffaff3" alt="Hex Docs" /></a></p>
-<p><code>pandi</code>’s goal is to make it easy to create <a href="https://pandoc.org/">Pandoc</a>-backed document processors.</p>
+<p><code>pandi</code> aims to make it easy to create <a href="https://pandoc.org/">Pandoc</a>-backed document processors.</p>
 <p>As an example, consider the following Markdown document:</p>
 <pre><code class="language-md">
 Gleam is **cool** - here is a *Hello world* example:
@@ -399,8 +399,8 @@ Gleam!</p></li>
 <hr />
 <h2>Element construction</h2>
 <p><code>pandi</code> only exposes one convenience function to construct elements; the <code>doc.text</code> function.
-Otherwise, the <code>doc</code> module’s type constructors are used directly.</p>
-<p>The above example defines an <code>element</code> module with the following helpers:</p>
+Otherwise, the type constructors in the <code>doc</code> module are used directly.</p>
+<p>The above example defines the following <code>element</code> module:</p>
 <pre><code class="language-gleam">import pandi/doc
 
 pub fn hex_link(package_name: String) -&gt; doc.Inline {
@@ -516,9 +516,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1779741615"></script>
+    <script src="./js/index.js?v=1779742332"></script>
     <script>
-      fetch("./search-data.json?v=1779741615")
+      fetch("./search-data.json?v=1779742332")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

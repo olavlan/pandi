@@ -3,7 +3,7 @@
 [![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
 
-`pandi`'s goal is to make it easy to create [Pandoc](https://pandoc.org/)-backed document processors.
+`pandi` aims to make it easy to create [Pandoc](https://pandoc.org/)-backed document processors.
 
 As an example, consider the following Markdown document:
 
@@ -206,9 +206,9 @@ Gleam!</p></li>
 ## Element construction
 
 `pandi` only exposes one convenience function to construct elements; the `doc.text` function.
-Otherwise, the `doc` module's type constructors are used directly.
+Otherwise, the type constructors in the `doc` module are used directly.
 
-The above example defines an `element` module with the following helpers:
+The above example defines the following `element` module:
 
 ```gleam
 import pandi/doc
