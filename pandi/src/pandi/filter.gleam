@@ -1,11 +1,70 @@
 //// This module aims to make it easy to define *document filters*,
 //// i.e. element-processing functions that can be applied the whole document tree.
-//// The types `InlineFilter` and `BlockFilter` are used to defined type-safe filters.
-//// They should return an action, which can be constructed easily with the functions `keep`, `remove`, `replace`, `append` and `prepend`.
-//// Finally, a filter can be applied to a document with either `apply_block_filter` or `apply_inline_filter`.
 //// The types guarantee a valid doument at the end; infinite recursion loops will never happen.
 ////
 //// Complete example:
+////
+//// ```gleam 
+//// import gleam/io
+//// import pandi/doc
+//// import pandi/filter
+//// 
+//// pub fn main() {
+////   let change_ordered_to_bullet_list: filter.BlockFilter = fn(block, _meta) {
+////     case block {
+////       doc.OrderedList(_, items) -> [doc.BulletList(items)] |> filter.replace
+////       _ -> filter.keep
+////     }
+////   }
+//// 
+////   let empty_attributes = doc.Attributes(id: "", classes: [], keyvalues: [])
+////   let insert_github_links: filter.InlineFilter = fn(inline, _meta) {
+////     case inline {
+////       doc.Str("gh:" <> repo) ->
+////         [
+////           doc.Link(
+////             attributes: empty_attributes,
+////             content: doc.text(repo <> " 🔗"),
+////             target: doc.Target(
+////               url: "https://github.com/" <> repo,
+////               title: repo <> " at Github",
+////             ),
+////           ),
+////         ]
+////         |> filter.replace
+////       _ -> filter.keep
+////     }
+////   }
+//// 
+////   let list_attributes = doc.ListAttributes(1, doc.Decimal, doc.Period)
+////   let document =
+////     doc.Document(
+////       blocks: [
+////         doc.OrderedList(list_attributes, [
+////           [doc.Plain([doc.Str("gh:lustre-labs/lustre")])],
+////           [doc.Plain([doc.Str("gh:gleam-wisp/wisp")])],
+////           [doc.Plain([doc.Str("gh:giacomocavalieri/squirrel")])],
+////         ]),
+////       ],
+////       meta: [],
+////     )
+//// 
+////   document
+////   |> filter.apply_block_filter(change_ordered_to_bullet_list)
+////   |> filter.apply_inline_filter(insert_github_links)
+////   |> doc.to_json
+////   |> io.println
+//// }
+//// ```
+////
+//// Run it with `pandoc`:
+////
+//// ```conole
+//// > gleam run --no-print-progress | pandoc -f json -t markdown --wrap=preserve
+//// - [lustre-labs/lustre 🔗](https://github.com/lustre-labs/lustre "lustre-labs/lustre at Github")
+//// - [gleam-wisp/wisp 🔗](https://github.com/gleam-wisp/wisp "gleam-wisp/wisp at Github")
+//// - [giacomocavalieri/squirrel 🔗](https://github.com/giacomocavalieri/squirrel "giacomocavalieri/squirrel at Github")
+//// ```
 
 import gleam/list
 import pandi/doc

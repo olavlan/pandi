@@ -1,3 +1,4 @@
+import gleam/io
 import pandi/doc
 import pandi/filter
 
@@ -33,9 +34,9 @@ pub fn main() {
     doc.Document(
       blocks: [
         doc.OrderedList(list_attributes, [
-          [doc.Para([doc.Str("gh:lustre-labs/lustre")])],
-          [doc.Para([doc.Str("gh:gleam-wisp/wisp")])],
-          [doc.Para([doc.Str("gh:giacomocavalieri/squirrel")])],
+          [doc.Plain([doc.Str("gh:lustre-labs/lustre")])],
+          [doc.Plain([doc.Str("gh:gleam-wisp/wisp")])],
+          [doc.Plain([doc.Str("gh:giacomocavalieri/squirrel")])],
         ]),
       ],
       meta: [],
@@ -45,4 +46,5 @@ pub fn main() {
   |> filter.apply_block_filter(change_ordered_to_bullet_list)
   |> filter.apply_inline_filter(insert_github_links)
   |> doc.to_json
+  |> io.println
 }

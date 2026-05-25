@@ -264,11 +264,65 @@
 </h1>
 <p>This module aims to make it easy to define <em>document filters</em>,
 i.e. element-processing functions that can be applied the whole document tree.
-The types <code>InlineFilter</code> and <code>BlockFilter</code> are used to defined type-safe filters.
-They should return an action, which can be constructed easily with the functions <code>keep</code>, <code>remove</code>, <code>replace</code>, <code>append</code> and <code>prepend</code>.
-Finally, a filter can be applied to a document with either <code>apply_block_filter</code> or <code>apply_inline_filter</code>.
 The types guarantee a valid doument at the end; infinite recursion loops will never happen.</p>
 <p>Complete example:</p>
+<pre><code class="language-gleam">import gleam/io
+import pandi/doc
+import pandi/filter
+
+pub fn main() {
+  let change_ordered_to_bullet_list: filter.BlockFilter = fn(block, _meta) {
+    case block {
+      doc.OrderedList(_, items) -&gt; [doc.BulletList(items)] |&gt; filter.replace
+      _ -&gt; filter.keep
+    }
+  }
+
+  let empty_attributes = doc.Attributes(id: "", classes: [], keyvalues: [])
+  let insert_github_links: filter.InlineFilter = fn(inline, _meta) {
+    case inline {
+      doc.Str("gh:" &lt;&gt; repo) -&gt;
+        [
+          doc.Link(
+            attributes: empty_attributes,
+            content: doc.text(repo &lt;&gt; " 🔗"),
+            target: doc.Target(
+              url: "https://github.com/" &lt;&gt; repo,
+              title: repo &lt;&gt; " at Github",
+            ),
+          ),
+        ]
+        |&gt; filter.replace
+      _ -&gt; filter.keep
+    }
+  }
+
+  let list_attributes = doc.ListAttributes(1, doc.Decimal, doc.Period)
+  let document =
+    doc.Document(
+      blocks: [
+        doc.OrderedList(list_attributes, [
+          [doc.Plain([doc.Str("gh:lustre-labs/lustre")])],
+          [doc.Plain([doc.Str("gh:gleam-wisp/wisp")])],
+          [doc.Plain([doc.Str("gh:giacomocavalieri/squirrel")])],
+        ]),
+      ],
+      meta: [],
+    )
+
+  document
+  |&gt; filter.apply_block_filter(change_ordered_to_bullet_list)
+  |&gt; filter.apply_inline_filter(insert_github_links)
+  |&gt; doc.to_json
+  |&gt; io.println
+}
+</code></pre>
+<p>Run it with <code>pandoc</code>:</p>
+<pre><code class="language-conole">&gt; gleam run --no-print-progress | pandoc -f json -t markdown --wrap=preserve
+- [lustre-labs/lustre 🔗](https://github.com/lustre-labs/lustre "lustre-labs/lustre at Github")
+- [gleam-wisp/wisp 🔗](https://github.com/gleam-wisp/wisp "gleam-wisp/wisp at Github")
+- [giacomocavalieri/squirrel 🔗](https://github.com/giacomocavalieri/squirrel "giacomocavalieri/squirrel at Github")
+</code></pre>
 
 
 
@@ -664,9 +718,9 @@ If you need to further process inserted elements, apply a new filter intead.</p>
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779724656"></script>
+    <script src="../js/index.js?v=1779726974"></script>
     <script>
-      fetch("../search-data.json?v=1779724656")
+      fetch("../search-data.json?v=1779726974")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
