@@ -139,10 +139,10 @@ Gleam is **cool**:
   }
   ```
 
-* Visit docs:gleam\_stdlib to learn more about the standard library.
+* Try docs:lustre to make a web application in Gleam!
 ````
 
-We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of  "docs:\[package_name\]" with a link to the Hex docs.
+We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of "docs:\[package name\]" with a link to the Hex docs.
 
 This can be done with *filters*, using the `pandi/filter` module.
 A filter is an element-processing function that can be applied to the whole document tree:
@@ -196,9 +196,9 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 <p><a
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
 title="Gleam playground">Open code in Gleam playground 🔗</a></p></li>
-<li><p>Visit <a href="https://hexdocs.pm/gleam_stdlib/index.html"
-title="gleam_stdlib at Hex Docs">gleam_stdlib 🔗</a> to learn more about
-the standard library.</p></li>
+<li><p>Try <a href="https://hexdocs.pm/lustre/index.html"
+title="lustre at Hex Docs">lustre 🔗</a> to make a web application in
+Gleam!</p></li>
 </ul>
 
 ---

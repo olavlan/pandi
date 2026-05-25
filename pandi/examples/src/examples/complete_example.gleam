@@ -1,5 +1,4 @@
 import examples/pandoc
-import gleam/io
 import pandi/doc
 import pandi/filter
 

@@ -11,4 +11,4 @@ Gleam is **cool**:
   }
   ```
 
-* Visit docs:gleam\_stdlib to learn more about the standard library.
+* Try docs:lustre to make a web application in Gleam!
