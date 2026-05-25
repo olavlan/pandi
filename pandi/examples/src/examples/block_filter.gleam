@@ -6,7 +6,7 @@ pub fn main() {
 
   let wrap_code_blocks_in_div: filter.BlockFilter = fn(block, _meta) {
     case block {
-      doc.CodeBlock(_, _) -> [doc.Div(attributes, [block])] |> filter.replace
+      doc.CodeBlock(..) -> [doc.Div(attributes, [block])] |> filter.replace
       _ -> filter.keep
     }
   }

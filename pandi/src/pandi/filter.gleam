@@ -10,7 +10,7 @@ import pandi/doc
 /// ```gleam
 /// let increase_header_level: filter.BlockFilter = fn(block, _meta) {
 ///   case block {
-///     doc.Header(level, _, _) -> 
+///     doc.Header(level, ..) -> 
 ///       [doc.Header(..block, level: level + 1)] |> filter.replace
 ///     _ -> filter.keep
 ///   }
@@ -145,7 +145,7 @@ pub fn replace(elements: List(element)) -> Action(element) {
 /// 
 /// let wrap_code_blocks_in_div: filter.BlockFilter = fn(block, _meta) {
 ///   case block {
-///     doc.CodeBlock(_, _) -> [doc.Div(attributes, [block])] |> filter.replace
+///     doc.CodeBlock(..) -> [doc.Div(attributes, [block])] |> filter.replace
 ///     _ -> filter.keep
 ///   }
 /// }

@@ -5,8 +5,14 @@ import pandi/filter
 pub fn main() {
   let increase_header_level: filter.BlockFilter = fn(block, _meta) {
     case block {
-      doc.Header(level, _, _) ->
+      doc.Header(level, ..) ->
         [doc.Header(..block, level: level + 1)] |> filter.replace
+      _ -> filter.keep
+    }
+  }
+  let remove_comment_lines: filter.BlockFilter = fn(block, _meta) {
+    case block {
+      doc.Para([doc.Str("//" <> _), ..]) -> filter.remove
       _ -> filter.keep
     }
   }
@@ -45,6 +51,7 @@ pub fn main() {
     }
   }
   #(
+    remove_comment_lines,
     increase_header_level,
     ordered_to_bullet_list,
     remove_comment_divs,
