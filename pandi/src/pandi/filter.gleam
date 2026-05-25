@@ -65,7 +65,8 @@
 //// - [gleam-wisp/wisp 🔗](https://github.com/gleam-wisp/wisp "gleam-wisp/wisp at Github")
 //// - [giacomocavalieri/squirrel 🔗](https://github.com/giacomocavalieri/squirrel "giacomocavalieri/squirrel at Github")
 //// ```
-//// Result rendered as html:
+////
+//// Rendered result:
 ////
 //// <ul>
 //// <li><a href="https://github.com/lustre-labs/lustre"
