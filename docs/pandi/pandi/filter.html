@@ -317,7 +317,7 @@ pub fn main() {
   |&gt; io.println
 }
 </code></pre>
-<p>Run it with <code>pandoc</code>:</p>
+<p>Pipe the result to <code>pandoc</code> to convert to any document format:</p>
 <pre><code class="language-sh">$ gleam run --no-print-progress | pandoc -f json -t markdown --wrap=preserve
 - [lustre-labs/lustre 🔗](https://github.com/lustre-labs/lustre "lustre-labs/lustre at Github")
 - [gleam-wisp/wisp 🔗](https://github.com/gleam-wisp/wisp "gleam-wisp/wisp at Github")
@@ -718,9 +718,9 @@ If you need to further process inserted elements, apply a new filter intead.</p>
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779727143"></script>
+    <script src="../js/index.js?v=1779727325"></script>
     <script>
-      fetch("../search-data.json?v=1779727143")
+      fetch("../search-data.json?v=1779727325")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

@@ -57,7 +57,7 @@
 //// }
 //// ```
 ////
-//// Run it with `pandoc`:
+//// Pipe the result to `pandoc` to convert to any document format:
 ////
 //// ```sh
 //// $ gleam run --no-print-progress | pandoc -f json -t markdown --wrap=preserve
