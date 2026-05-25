@@ -1,6 +1,6 @@
-//// This module aims to make it easy to define *document filters*,
+//// This module aims to make it easy to create *document filters*,
 //// i.e. element-processing functions that can be applied the whole document tree.
-//// The types guarantee a valid doument at the end; infinite recursion loops will never happen.
+//// The types guarantee a valid document at the end; infinite recursion loops will never happen.
 ////
 //// Complete example:
 ////
@@ -189,7 +189,7 @@ pub fn append(elements: List(element)) -> Action(element) {
 /// This action is typically used to modify elements:
 ///
 /// ```gleam
-/// let inlcude_link_symbol: filter.InlineFilter = fn(inline, _meta) {
+/// let include_link_symbol: filter.InlineFilter = fn(inline, _meta) {
 ///   case inline {
 ///     doc.Link(_, content, _) ->
 ///       [doc.Link(..inline, content: list.append(content, doc.text(" 🔗")))]
