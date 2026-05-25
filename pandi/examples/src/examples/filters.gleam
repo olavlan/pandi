@@ -37,7 +37,7 @@ pub fn main() {
   let include_link_symbol: filter.InlineFilter = fn(inline, _meta) {
     case inline {
       doc.Link(_, content, _) ->
-        [doc.Link(..inline, content: list.append(content, doc.text(" ")))]
+        [doc.Link(..inline, content: list.append(content, doc.text(" 🔗")))]
         |> filter.replace
       _ -> filter.keep
     }

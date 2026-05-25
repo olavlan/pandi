@@ -7,7 +7,7 @@ pub fn hex_link(package_name: String) -> doc.Inline {
     attributes: empty_attributes(),
     target: doc.Target(url: url, title: title),
     content: [
-      doc.Code(attributes: empty_attributes(), text: package_name),
+      doc.Str(package_name),
       doc.Space,
       doc.Str("🔗"),
     ],

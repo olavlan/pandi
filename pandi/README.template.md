@@ -49,7 +49,7 @@ Taking the example a step further, assume we have the following Markdown documen
 {{./examples/resources/example-2.md}}
 ````
 
-We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of  `docs:[package_name]` with a link to the Hex docs.
+We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of  "docs:\[package_name\]" with a link to the Hex docs.
 
 This can be done with *filters*, using the `pandi/filter` module.
 A filter is an element-processing function that can be applied to the whole document tree:

@@ -14,7 +14,7 @@ pub fn main() {
 
   let create_hex_docs_links: filter.InlineFilter = fn(inline, _meta) {
     case inline {
-      doc.Code(_, "docs:" <> package_name) ->
+      doc.Str("docs:" <> package_name) ->
         [element.hex_link(package_name)] |> filter.replace
       _ -> filter.keep
     }

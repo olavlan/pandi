@@ -11,4 +11,4 @@ Gleam is **cool**:
   }
   ```
 
-* Visit `docs:gleam_stdlib` to learn more about the standard library.
+* Visit docs:gleam\_stdlib to learn more about the standard library.

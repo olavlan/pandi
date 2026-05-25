@@ -442,7 +442,7 @@ title="giacomocavalieri/squirrel at Github">giacomocavalieri/squirrel
     
     <div class="rendered-markdown"><p>Action to append new elements to an element.</p>
 <p>Example:</p>
-<pre><code class="language-gleam">let run_code = fn(code: String) -&gt; String { "mocked code result" }
+<pre><code class="language-gleam">let run_code = fn(code: String) -&gt; String { todo }
 let append_code_result: filter.BlockFilter = fn(block, _meta) {
   case block {
     doc.CodeBlock(_, code) -&gt;
@@ -727,9 +727,9 @@ If you need to further process inserted elements, apply a new filter instead.</p
     </script>
 
     <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779728994"></script>
+    <script src="../js/index.js?v=1779741157"></script>
     <script>
-      fetch("../search-data.json?v=1779728994")
+      fetch("../search-data.json?v=1779741157")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

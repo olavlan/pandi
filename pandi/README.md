@@ -139,10 +139,10 @@ Gleam is **cool**:
   }
   ```
 
-* Visit `docs:gleam_stdlib` to learn more about the standard library.
+* Visit docs:gleam\_stdlib to learn more about the standard library.
 ````
 
-We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of  `docs:[package_name]` with a link to the Hex docs.
+We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of  "docs:\[package_name\]" with a link to the Hex docs.
 
 This can be done with *filters*, using the `pandi/filter` module.
 A filter is an element-processing function that can be applied to the whole document tree:
@@ -164,7 +164,7 @@ pub fn main() {
 
   let create_hex_docs_links: filter.InlineFilter = fn(inline, _meta) {
     case inline {
-      doc.Code(_, "docs:" <> package_name) ->
+      doc.Str("docs:" <> package_name) ->
         [element.hex_link(package_name)] |> filter.replace
       _ -> filter.keep
     }
@@ -197,8 +197,8 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
 title="Gleam playground">Open code in Gleam playground 🔗</a></p></li>
 <li><p>Visit <a href="https://hexdocs.pm/gleam_stdlib/index.html"
-title="gleam_stdlib at Hex Docs"><code>gleam_stdlib</code> 🔗</a> to
-learn more about the standard library.</p></li>
+title="gleam_stdlib at Hex Docs">gleam_stdlib 🔗</a> to learn more about
+the standard library.</p></li>
 </ul>
 
 ---
@@ -220,7 +220,7 @@ pub fn hex_link(package_name: String) -> doc.Inline {
     attributes: empty_attributes(),
     target: doc.Target(url: url, title: title),
     content: [
-      doc.Code(attributes: empty_attributes(), text: package_name),
+      doc.Str(package_name),
       doc.Space,
       doc.Str("🔗"),
     ],
