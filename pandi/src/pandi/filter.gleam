@@ -65,6 +65,17 @@
 //// - [gleam-wisp/wisp 🔗](https://github.com/gleam-wisp/wisp "gleam-wisp/wisp at Github")
 //// - [giacomocavalieri/squirrel 🔗](https://github.com/giacomocavalieri/squirrel "giacomocavalieri/squirrel at Github")
 //// ```
+//// Result rendered as html:
+////
+//// <ul>
+//// <li><a href="https://github.com/lustre-labs/lustre"
+//// title="lustre-labs/lustre at Github">lustre-labs/lustre 🔗</a></li>
+//// <li><a href="https://github.com/gleam-wisp/wisp"
+//// title="gleam-wisp/wisp at Github">gleam-wisp/wisp 🔗</a></li>
+//// <li><a href="https://github.com/giacomocavalieri/squirrel"
+//// title="giacomocavalieri/squirrel at Github">giacomocavalieri/squirrel
+//// 🔗</a></li>
+//// </ul>
 
 import gleam/list
 import pandi/doc

@@ -1,3 +1,4 @@
+import examples/pandoc
 import gleam/io
 import pandi/doc
 import pandi/filter
@@ -45,6 +46,8 @@ pub fn main() {
   document
   |> filter.apply_block_filter(change_ordered_to_bullet_list)
   |> filter.apply_inline_filter(insert_github_links)
-  |> doc.to_json
-  |> io.println
+  |> pandoc.document_to_file(
+    to_file: "complete_example.html",
+    to_format: "html",
+  )
 }
