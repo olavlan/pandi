@@ -10,7 +10,7 @@ Tasks, pandi:
 
 Tasks, pandoc-lustre-converter:
 
-* improve api
+* improve "Element" naming to avoid confusion with lustre
 * introduction
 * docs
 * ask Discord for feedback
