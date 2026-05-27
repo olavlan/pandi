@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>pandi/filter · pandi · v1.0.0</title>
+    <title>pandoc_lustre_converter · pandoc_lustre_converter · v1.0.0</title>
     <meta name="description" content=""/>
     <meta name="theme-color" content="#ffaff3" media="(prefers-color-scheme: light)"/>
     <meta name="theme-color" content="#33384d" media="(prefers-color-scheme: dark)"/>
-    <link rel="stylesheet" href="../css/index.css?v=1.16.0" type="text/css"/>
+    <link rel="stylesheet" href="./css/index.css?v=1.16.0" type="text/css"/>
     <!-- The docs_config.js file is provided by HexDocs and shared
          between multiple versions of the same package. -->
-    <script src="../docs_config.js"></script>
-    <link id="syntax-theme" rel="stylesheet" href="../css/atom-one-light.min.css?v=1.16.0"/>
+    <script src="./docs_config.js"></script>
+    <link id="syntax-theme" rel="stylesheet" href="./css/atom-one-light.min.css?v=1.16.0"/>
     
   </head>
   <body class="prewrap-off theme-light drawer-closed">
@@ -38,7 +38,7 @@
        *   callback: (value) => {...},
        * }, ...};
        */
-      window.unnest = '..';
+      window.unnest = '.';
       const gleamConfig = {
         theme: {
           values: (() => {
@@ -143,7 +143,7 @@
       </button>
 
       <h2>
-        <a href="../">pandi</a>
+        <a href="./">pandoc_lustre_converter</a>
         <span id="project-version">
           <span> - v1.0.0 </span>
         </span>
@@ -181,7 +181,7 @@
       </h2>
       <div class="search">
         <div class="search-input-wrap">
-          <input type="text" id="search-input" class="search-input" tabindex="0" aria-label="Search pandi" autocomplete="off">
+          <input type="text" id="search-input" class="search-input" tabindex="0" aria-label="Search pandoc_lustre_converter" autocomplete="off">
           <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"><use xlink:href="#icon-svg-search"></use></svg></label>
         </div>
         <div id="search-results" class="search-results"></div>
@@ -203,7 +203,7 @@
         <h2>Pages</h2>
         <ul>
         
-          <li><a href="../index.html">README</a></li>
+          <li><a href="./index.html">README</a></li>
         
         </ul>
         
@@ -213,9 +213,7 @@
         <h2>Modules</h2>
         <ul>
         
-          <li><a href="../pandi/doc.html" class="module-link">pandi<wbr />/doc</a></li>
-        
-          <li><a href="../pandi/filter.html" class="module-link">pandi<wbr />/filter</a></li>
+          <li><a href="./pandoc_lustre_converter.html" class="module-link">pandoc_lustre_converter</a></li>
         
         </ul>
 
@@ -224,11 +222,11 @@
 <h2>Types</h2>
 <ul>
   
-  <li><a href="#Action">Action</a></li>
+  <li><a href="#BlockConverter">BlockConverter</a></li>
   
-  <li><a href="#BlockFilter">BlockFilter</a></li>
+  <li><a href="#Element">Element</a></li>
   
-  <li><a href="#InlineFilter">InlineFilter</a></li>
+  <li><a href="#InlineConverter">InlineConverter</a></li>
   
 </ul>
 
@@ -237,19 +235,17 @@
 <h2>Values</h2>
 <ul>
   
-  <li><a href="#append">append</a></li>
+  <li><a href="#convert_blocks">convert_blocks</a></li>
   
-  <li><a href="#apply_block_filter">apply_block_filter</a></li>
+  <li><a href="#convert_blocks_with">convert_blocks_with</a></li>
   
-  <li><a href="#apply_inline_filter">apply_inline_filter</a></li>
+  <li><a href="#convert_document">convert_document</a></li>
   
-  <li><a href="#keep">keep</a></li>
+  <li><a href="#convert_document_with">convert_document_with</a></li>
   
-  <li><a href="#prepend">prepend</a></li>
+  <li><a href="#convert_inlines">convert_inlines</a></li>
   
-  <li><a href="#remove">remove</a></li>
-  
-  <li><a href="#replace">replace</a></li>
+  <li><a href="#convert_inlines_with">convert_inlines_with</a></li>
   
 </ul>
 
@@ -259,80 +255,10 @@
       <main class="content">
         
 <h1 id="module-name" class="module-name">
-  <a href="#module-name">pandi/filter</a>
+  <a href="#module-name">pandoc_lustre_converter</a>
   <svg class="icon icon-gleam-chasse"><use xlink:href="#icon-gleam-chasse"></use></svg>
 </h1>
-<p>This module aims to make it easy to create <em>document filters</em>,
-i.e. element-processing functions that can be applied to the whole document tree.
-The types guarantee a valid document at the end; infinite recursion loops will never happen.</p>
-<p>Complete example:</p>
-<pre><code class="language-gleam">import gleam/io
-import pandi/doc
-import pandi/filter
 
-pub fn main() {
-  let change_ordered_to_bullet_list: filter.BlockFilter = fn(block, _meta) {
-    case block {
-      doc.OrderedList(_, items) -&gt; [doc.BulletList(items)] |&gt; filter.replace
-      _ -&gt; filter.keep
-    }
-  }
-
-  let empty_attributes = doc.Attributes(id: "", classes: [], keyvalues: [])
-  let insert_github_links: filter.InlineFilter = fn(inline, _meta) {
-    case inline {
-      doc.Str("gh:" &lt;&gt; repo) -&gt;
-        [
-          doc.Link(
-            attributes: empty_attributes,
-            content: doc.text(repo &lt;&gt; " 🔗"),
-            target: doc.Target(
-              url: "https://github.com/" &lt;&gt; repo,
-              title: repo &lt;&gt; " at Github",
-            ),
-          ),
-        ]
-        |&gt; filter.replace
-      _ -&gt; filter.keep
-    }
-  }
-
-  let list_attributes = doc.ListAttributes(1, doc.Decimal, doc.Period)
-  let document =
-    doc.Document(
-      blocks: [
-        doc.OrderedList(list_attributes, [
-          [doc.Plain([doc.Str("gh:lustre-labs/lustre")])],
-          [doc.Plain([doc.Str("gh:gleam-wisp/wisp")])],
-          [doc.Plain([doc.Str("gh:giacomocavalieri/squirrel")])],
-        ]),
-      ],
-      meta: [],
-    )
-
-  document
-  |&gt; filter.apply_block_filter(change_ordered_to_bullet_list)
-  |&gt; filter.apply_inline_filter(insert_github_links)
-  |&gt; doc.to_json
-  |&gt; io.println
-}
-</code></pre>
-<p>Pipe the result to <code>pandoc</code> to convert to any document format:</p>
-<pre><code class="language-sh">$ gleam run --no-print-progress | pandoc -f json -t markdown --wrap=preserve
-- [lustre-labs/lustre 🔗](https://github.com/lustre-labs/lustre "lustre-labs/lustre at Github")
-- [gleam-wisp/wisp 🔗](https://github.com/gleam-wisp/wisp "gleam-wisp/wisp at Github")
-- [giacomocavalieri/squirrel 🔗](https://github.com/giacomocavalieri/squirrel "giacomocavalieri/squirrel at Github")
-</code></pre>
-<p>Rendered result:</p>
-<ul>
-<li><a href="https://github.com/lustre-labs/lustre"
-title="lustre-labs/lustre at Github">lustre-labs/lustre 🔗</a></li>
-<li><a href="https://github.com/gleam-wisp/wisp"
-title="gleam-wisp/wisp at Github">gleam-wisp/wisp 🔗</a></li>
-<li><a href="https://github.com/giacomocavalieri/squirrel"
-title="giacomocavalieri/squirrel at Github">giacomocavalieri/squirrel
-🔗</a></li>
-</ul>
 
 
 <section class="module-members">
@@ -344,76 +270,89 @@ title="giacomocavalieri/squirrel at Github">giacomocavalieri/squirrel
   
   <div class="member">
     <div class="member-name">
-      <h2 id="Action">
-        <a href="#Action">
-          Action
-        </a>
-      </h2> <span class="visibility-tag">opaque</span> 
-      
-    </div>
-    
-    <div class="custom-type-constructors">
-      <div class="rendered-markdown"><p>The type that a filter function returns.</p>
-<p>Use the provided constructors: <code>keep</code>, <code>remove</code>, <code>replace</code>, <code>append</code> and <code>prepend</code>.</p>
-</div>
-      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub opaque type </span><span class="hljs-title">Action</span>(<span class="hljs-variable">element</span>)</code></pre>
-      
-    </div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="BlockFilter">
-        <a href="#BlockFilter">
-          BlockFilter
+      <h2 id="BlockConverter">
+        <a href="#BlockConverter">
+          BlockConverter
         </a>
       </h2>
       
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"><p>A function that takes a block (and the document metadata) and returns an action.</p>
-<p>Use <code>apply_block_filter</code> to apply it to a document.</p>
-<p>Example:</p>
-<pre><code class="language-gleam">let increase_header_level: filter.BlockFilter = fn(block, _meta) {
-  case block {
-    doc.Header(level, ..) -&gt; 
-      [doc.Header(..block, level: level + 1)] |&gt; filter.replace
-    _ -&gt; filter.keep
-  }
-}
-</code></pre>
-</div>
-      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockFilter</span> =
-  <span class="hljs-keyword">fn</span>(<a href="doc.html#Block" title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<a href="doc.html#Block" title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></a>)</code></pre>
+      <div class="rendered-markdown"></div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockConverter</span>(<span class="hljs-variable">msg</span>) =
+  <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
       
     </div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="InlineFilter">
-        <a href="#InlineFilter">
-          InlineFilter
+      <h2 id="Element">
+        <a href="#Element">
+          Element
         </a>
       </h2>
       
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"><p>A function that takes an inline (and the document metadata) and returns an action.</p>
-<p>Use <code>apply_inline_filter</code> to apply it to a document.</p>
-<p>Example:</p>
-<pre><code class="language-gleam">let capitalize_gleam: filter.InlineFilter = fn(inline, _meta) {
-  case inline {
-    doc.Str("gleam") -&gt; [doc.Str("Gleam")] |&gt; filter.replace
-    _ -&gt; filter.keep
-  }
-}
-</code></pre>
-</div>
-      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineFilter</span> =
-  <span class="hljs-keyword">fn</span>(<a href="doc.html#Inline" title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<a href="doc.html#Inline" title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></a>)</code></pre>
+      <div class="rendered-markdown"></div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">Element</span>(<span class="hljs-variable">msg</span>) {
+  <span class="hljs-title">Default</span>
+  <span class="hljs-title">Custom</span>(<span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>))
+}</code></pre>
+      
+      <h3>
+        Constructors
+      </h3>
+      <ul class="constructor-list">
+        
+        <li class="constructor-item">
+          <div class="constructor-row">
+            <svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
+            <pre class="constructor-name"><code class="hljs hljs-ignore"><span class="hljs-title">Default</span></code></pre>
+          </div>
+
+          <div class="constructor-item-docs">
+            
+
+            
+          </div>
+        </li>
+        
+        <li class="constructor-item">
+          <div class="constructor-row">
+            <svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
+            <pre class="constructor-name"><code class="hljs hljs-ignore"><span class="hljs-title">Custom</span>(<span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
+          </div>
+
+          <div class="constructor-item-docs">
+            
+
+            
+          </div>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="InlineConverter">
+        <a href="#InlineConverter">
+          InlineConverter
+        </a>
+      </h2>
+      
+    </div>
+    
+    <div class="custom-type-constructors">
+      <div class="rendered-markdown"></div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineConverter</span>(<span class="hljs-variable">msg</span>) =
+  <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
       
     </div>
   </div>
@@ -430,220 +369,121 @@ title="giacomocavalieri/squirrel at Github">giacomocavalieri/squirrel
   
   <div class="member">
     <div class="member-name">
-      <h2 id="append">
-        <a href="#append">
-          append
+      <h2 id="convert_blocks">
+        <a href="#convert_blocks">
+          convert_blocks
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">append</span>(<span class="hljs-variable">elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">element</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_blocks</span>(
+  <span class="hljs-variable">blocks</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>),
+) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"><p>Action to append new elements to an element.</p>
-<p>Example:</p>
-<pre><code class="language-gleam">let run_code = fn(code: String) -&gt; String { todo }
-let append_code_result: filter.BlockFilter = fn(block, _meta) {
-  case block {
-    doc.CodeBlock(_, code) -&gt;
-      [doc.Para(doc.text(run_code(code)))] |&gt; filter.append
-    _ -&gt; filter.keep
-  }
-}
-</code></pre>
-</div>
+    <div class="rendered-markdown"></div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="apply_block_filter">
-        <a href="#apply_block_filter">
-          apply_block_filter
+      <h2 id="convert_blocks_with">
+        <a href="#convert_blocks_with">
+          convert_blocks_with
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">apply_block_filter</span>(
-  <span class="hljs-variable">document</span>: <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a>,
-  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="doc.html#Block" title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
-    <a href="doc.html#Block" title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></a>,
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_blocks_with</span>(
+  <span class="hljs-variable">blocks</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>),
+  <span class="hljs-variable">block_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+    <span class="hljs-variable">msg</span>,
   ),
-) -> <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a></code></pre>
-    
-    <div class="rendered-markdown"><p>Apply a block filter to a document.</p>
-<p>This recursively applies the filter to every block element in the document.</p>
-<p>Example:</p>
-<pre><code class="language-gleam">let attributes = doc.Attributes(id: "", classes: ["gleam"], keyvalues: [])
-
-let wrap_code_blocks_in_div: filter.BlockFilter = fn(block, _meta) {
-  case block {
-    doc.CodeBlock(..) -&gt; [doc.Div(attributes, [block])] |&gt; filter.replace
-    _ -&gt; filter.keep
-  }
-}
-
-doc.Document([doc.CodeBlock(attributes, "pub const pi = 3.14")], [])
-|&gt; filter.apply_block_filter(wrap_code_blocks_in_div)
-|&gt; doc.to_string
-// [
-//   Div
-//     ( "" , [ "gleam" ] , [  ] )
-//     [ CodeBlock ( "" , [ "gleam" ] , [  ] ) "pub const pi = 3.14" ] ,
-// ]
-</code></pre>
-<p>Note that the children of the inserted div are not filtered,
-since this would lead to an infinite recursion loop.
-If you need to further process inserted elements, apply a new filter instead.</p>
-</div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="apply_inline_filter">
-        <a href="#apply_inline_filter">
-          apply_inline_filter
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">apply_inline_filter</span>(
-  <span class="hljs-variable">document</span>: <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a>,
-  <span class="hljs-variable">filter</span>: <span class="hljs-keyword">fn</span>(<a href="doc.html#Inline" title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></a>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
-    <a href="doc.html#Inline" title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></a>,
+  <span class="hljs-variable">inline_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+    <span class="hljs-variable">msg</span>,
   ),
-) -> <a href="doc.html#Document" title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></a></code></pre>
+  <span class="hljs-variable">meta</span>: <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>)),
+) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"><p>Apply an inline filter to a document.</p>
-<p>This recursively applies the filter to every inline element in the document.</p>
-<p>Example:</p>
-<pre><code class="language-gleam">let attributes = doc.Attributes(id: "", classes: ["gleam"], keyvalues: [])
-
-let wrap_gleam_in_span: filter.InlineFilter = fn(inline, _meta) {
-  case inline {
-    doc.Str("Gleam") -&gt; [doc.Span(attributes, [inline])] |&gt; filter.replace
-    _ -&gt; filter.keep
-  }
-}
-
-doc.Document([doc.Para(doc.text("Gleam is cool!"))], [])
-|&gt; filter.apply_inline_filter(wrap_gleam_in_span)
-|&gt; doc.to_string
-// [
-//   Para
-//     [
-//       Span ( "" , [ "gleam" ] , [  ] ) [ Str "Gleam" ] ,
-//       Space ,
-//       Str "is" ,
-//       Space ,
-//       Str "cool!" ,
-//     ] ,
-// ]
-</code></pre>
-<p>Note that the children of the inserted span are not filtered,
-since this would lead to an infinite recursion loop.
-If you need to further process inserted elements, apply a new filter instead.</p>
-</div>
+    <div class="rendered-markdown"></div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="keep">
-        <a href="#keep">
-          keep
+      <h2 id="convert_document">
+        <a href="#convert_document">
+          convert_document
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">keep</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_document</span>(
+  <span class="hljs-variable">document</span>: <span title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></span>,
+) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"><p>Action to keep an element.</p>
-<p>This action is typically used to match on remaining elements in a filter function:</p>
-<pre><code class="language-gleam">let filter: filter.BlockFilter = fn(block, _meta) {
-  case block {
-    // match and process specific elements, then... 
-    _ -&gt; filter.keep // ...keep the remaining elements (and filter their children)
-  }
-}
-</code></pre>
-<p>Note that children of the kept element will be filtered recursively.</p>
-</div>
+    <div class="rendered-markdown"></div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="prepend">
-        <a href="#prepend">
-          prepend
+      <h2 id="convert_document_with">
+        <a href="#convert_document_with">
+          convert_document_with
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">prepend</span>(<span class="hljs-variable">elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">element</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_document_with</span>(
+  <span class="hljs-variable">document</span>: <span title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></span>,
+  <span class="hljs-variable">block_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+    <span class="hljs-variable">msg</span>,
+  ),
+  <span class="hljs-variable">inline_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+    <span class="hljs-variable">msg</span>,
+  ),
+) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"><p>Action to prepend new elements to an element.</p>
-<p>Example:</p>
-<pre><code class="language-gleam">let prepend_gleam_star: filter.InlineFilter = fn(inline, _meta) {
-  case inline {
-    doc.Str("Gleam") -&gt; doc.text("⭐️ ") |&gt; filter.prepend
-    _ -&gt; filter.keep
-  }
-}
-</code></pre>
-</div>
+    <div class="rendered-markdown"></div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="remove">
-        <a href="#remove">
-          remove
+      <h2 id="convert_inlines">
+        <a href="#convert_inlines">
+          convert_inlines
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">remove</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_inlines</span>(
+  <span class="hljs-variable">inlines</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>),
+) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"><p>Action to remove an element.</p>
-<p>Example:</p>
-<pre><code class="language-gleam">let remove_comment_lines: filter.BlockFilter = fn(block, _meta) {
-  case block {
-    doc.Para([doc.Str("//" &lt;&gt; _), ..]) -&gt; filter.remove
-    _ -&gt; filter.keep
-  }
-}
-</code></pre>
-</div>
+    <div class="rendered-markdown"></div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="replace">
-        <a href="#replace">
-          replace
+      <h2 id="convert_inlines_with">
+        <a href="#convert_inlines_with">
+          convert_inlines_with
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">replace</span>(<span class="hljs-variable">elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">element</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">element</span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_inlines_with</span>(
+  <span class="hljs-variable">inlines</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>),
+  <span class="hljs-variable">inline_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+    <span class="hljs-variable">msg</span>,
+  ),
+  <span class="hljs-variable">meta</span>: <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>)),
+) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"><p>Action to replace an element with new elements.</p>
-<p>This action is typically used to modify elements:</p>
-<pre><code class="language-gleam">let include_link_symbol: filter.InlineFilter = fn(inline, _meta) {
-  case inline {
-    doc.Link(_, content, _) -&gt;
-      [doc.Link(..inline, content: list.append(content, doc.text(" 🔗")))]
-      |&gt; filter.replace
-    _ -&gt; filter.keep
-  }
-}
-</code></pre>
-</div>
+    <div class="rendered-markdown"></div>
   </div>
   
 </section>
@@ -708,12 +548,12 @@ If you need to further process inserted elements, apply a new filter instead.</p
       </defs>
     </svg>
 
-    <script src="../js/highlight.min.js?v=1.16.0"></script>
-    <script src="../js/highlightjs-gleam.js?v=1.16.0"></script>
-    <script src="../js/highlightjs-erlang.min.js?v=1.16.0"></script>
-    <script src="../js/highlightjs-elixir.min.js?v=1.16.0"></script>
-    <script src="../js/highlightjs-javascript.min.js?v=1.16.0"></script>
-    <script src="../js/highlightjs-typescript.min.js?v=1.16.0"></script>
+    <script src="./js/highlight.min.js?v=1.16.0"></script>
+    <script src="./js/highlightjs-gleam.js?v=1.16.0"></script>
+    <script src="./js/highlightjs-erlang.min.js?v=1.16.0"></script>
+    <script src="./js/highlightjs-elixir.min.js?v=1.16.0"></script>
+    <script src="./js/highlightjs-javascript.min.js?v=1.16.0"></script>
+    <script src="./js/highlightjs-typescript.min.js?v=1.16.0"></script>
     <script>
       document.querySelectorAll("pre code").forEach((elem) => {
         if (elem.className === "") {
@@ -726,10 +566,10 @@ If you need to further process inserted elements, apply a new filter instead.</p
       hljs.highlightAll();
     </script>
 
-    <script src="../js/lunr.min.js?v=1.16.0"></script>
-    <script src="../js/index.js?v=1779902931"></script>
+    <script src="./js/lunr.min.js?v=1.16.0"></script>
+    <script src="./js/index.js?v=1779902932"></script>
     <script>
-      fetch("../search-data.json?v=1779902931")
+      fetch("./search-data.json?v=1779902932")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

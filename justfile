@@ -1,7 +1,7 @@
 default:
     @just --list
 
-packages := "pandi"
+packages := "pandi pandoc_lustre_converter"
 published := "pandi"
 
 # installs the pre-commit hook 
