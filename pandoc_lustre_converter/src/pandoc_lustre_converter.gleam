@@ -1,92 +1,86 @@
 import gleam/int
 import gleam/list
-import gleam/option.{type Option, None, Some}
 import gleam/string
 import lustre/attribute
-import lustre/element.{type Element}
+import lustre/element as lustre
 import lustre/element/html
-import pandi as pd
+import pandi/doc
 
-pub type BlockRenderer(msg) =
-  fn(pd.Block, pd.Meta) -> Option(Element(msg))
-
-pub type InlineRenderer(msg) =
-  fn(pd.Inline, pd.Meta) -> Option(Element(msg))
-
-pub fn convert_document(document: pd.Document) -> Element(msg) {
-  convert_blocks(document.blocks)
+pub opaque type Element(msg) {
+  Default
+  Custom(element: lustre.Element(msg))
 }
 
-pub fn convert_blocks(blocks: List(pd.Block)) -> Element(msg) {
-  let elements = list.map(blocks, block_to_lustre)
-  element.fragment(elements)
-}
+pub type BlockConverter(msg) =
+  fn(doc.Block, doc.Meta) -> Element(msg)
 
-fn block_to_lustre(block: pd.Block) -> Element(msg) {
-  convert_block_with(block, fn(_, _) { None }, fn(_, _) { None }, [])
-}
+pub type InlineConverter(msg) =
+  fn(doc.Inline, doc.Meta) -> Element(msg)
 
-pub fn convert_inlines(inlines: List(pd.Inline)) -> Element(msg) {
-  let elements = list.map(inlines, inline_to_lustre)
-  element.fragment(elements)
-}
-
-fn inline_to_lustre(inline: pd.Inline) -> Element(msg) {
-  convert_inline_with(inline, fn(_, _) { None }, [])
+pub fn convert_document(document: doc.Document) -> lustre.Element(msg) {
+  convert_document_with(document, fn(_, _) { Default }, fn(_, _) { Default })
 }
 
 pub fn convert_document_with(
-  document: pd.Document,
-  block_renderer: BlockRenderer(msg),
-  inline_renderer: InlineRenderer(msg),
-) -> Element(msg) {
+  document: doc.Document,
+  block_converter: BlockConverter(msg),
+  inline_converter: InlineConverter(msg),
+) -> lustre.Element(msg) {
   convert_blocks_with(
     document.blocks,
-    block_renderer,
-    inline_renderer,
+    block_converter,
+    inline_converter,
     document.meta,
   )
 }
 
+pub fn convert_blocks(blocks: List(doc.Block)) -> lustre.Element(msg) {
+  convert_blocks_with(blocks, fn(_, _) { Default }, fn(_, _) { Default }, [])
+}
+
 pub fn convert_blocks_with(
-  blocks: List(pd.Block),
-  block_renderer: BlockRenderer(msg),
-  inline_renderer: InlineRenderer(msg),
-  meta: pd.Meta,
-) -> Element(msg) {
+  blocks: List(doc.Block),
+  block_converter: BlockConverter(msg),
+  inline_converter: InlineConverter(msg),
+  meta: doc.Meta,
+) -> lustre.Element(msg) {
   let elements =
     list.map(blocks, convert_block_with(
       _,
-      block_renderer,
-      inline_renderer,
+      block_converter,
+      inline_converter,
       meta,
     ))
-  element.fragment(elements)
+  lustre.fragment(elements)
+}
+
+pub fn convert_inlines(inlines: List(doc.Inline)) -> lustre.Element(msg) {
+  convert_inlines_with(inlines, fn(_, _) { Default }, [])
 }
 
 pub fn convert_inlines_with(
-  inlines: List(pd.Inline),
-  inline_remderer: InlineRenderer(msg),
-  meta: pd.Meta,
-) -> Element(msg) {
+  inlines: List(doc.Inline),
+  inline_converter: InlineConverter(msg),
+  meta: doc.Meta,
+) -> lustre.Element(msg) {
   let elements =
-    list.map(inlines, convert_inline_with(_, inline_remderer, meta))
-  element.fragment(elements)
+    list.map(inlines, convert_inline_with(_, inline_converter, meta))
+  lustre.fragment(elements)
 }
 
 fn convert_block_with(
-  block: pd.Block,
-  block_renderer: BlockRenderer(msg),
-  inline_renderer: InlineRenderer(msg),
-  meta: pd.Meta,
-) -> Element(msg) {
-  case block_renderer(block, meta) {
-    Some(el) -> el
-    None ->
+  block: doc.Block,
+  block_converter: BlockConverter(msg),
+  inline_converter: InlineConverter(msg),
+  meta: doc.Meta,
+) -> lustre.Element(msg) {
+  case block_converter(block, meta) {
+    Custom(element) -> element
+    Default ->
       case block {
-        pd.Header(level, attrs, content) -> {
+        doc.Header(level, attrs, content) -> {
           let inlines =
-            list.map(content, convert_inline_with(_, inline_renderer, meta))
+            list.map(content, convert_inline_with(_, inline_converter, meta))
           let attrs = convert_attributes(attrs)
           case level {
             1 -> html.h1(attrs, inlines)
@@ -98,48 +92,48 @@ fn convert_block_with(
             _ -> html.h1(attrs, inlines)
           }
         }
-        pd.Para(content) -> {
+        doc.Para(content) -> {
           let inlines =
-            list.map(content, convert_inline_with(_, inline_renderer, meta))
+            list.map(content, convert_inline_with(_, inline_converter, meta))
           html.p([], inlines)
         }
-        pd.Plain(content) -> {
+        doc.Plain(content) -> {
           let inlines =
-            list.map(content, convert_inline_with(_, inline_renderer, meta))
-          element.fragment(inlines)
+            list.map(content, convert_inline_with(_, inline_converter, meta))
+          lustre.fragment(inlines)
         }
-        pd.Div(attrs, content) -> {
+        doc.Div(attrs, content) -> {
           let blocks =
             list.map(content, convert_block_with(
               _,
-              block_renderer,
-              inline_renderer,
+              block_converter,
+              inline_converter,
               meta,
             ))
           let attributes = convert_attributes(attrs)
           html.div(attributes, blocks)
         }
-        pd.BulletList(items) -> {
+        doc.BulletList(items) -> {
           let list_items =
-            convert_list_items(items, block_renderer, inline_renderer, meta)
+            convert_list_items(items, block_converter, inline_converter, meta)
           html.ul([], list_items)
         }
-        pd.CodeBlock(attrs, text) -> {
+        doc.CodeBlock(attrs, text) -> {
           let attributes = convert_attributes(attrs)
           html.pre(attributes, [html.code([], [html.text(text)])])
         }
-        pd.OrderedList(attrs, items) -> {
+        doc.OrderedList(attrs, items) -> {
           let list_items =
-            convert_list_items(items, block_renderer, inline_renderer, meta)
+            convert_list_items(items, block_converter, inline_converter, meta)
           let attributes = convert_list_attributes(attrs)
           html.ol(attributes, list_items)
         }
-        pd.BlockQuote(content) -> {
+        doc.BlockQuote(content) -> {
           let blocks =
             list.map(content, convert_block_with(
               _,
-              block_renderer,
-              inline_renderer,
+              block_converter,
+              inline_converter,
               meta,
             ))
           html.blockquote([], blocks)
@@ -149,44 +143,44 @@ fn convert_block_with(
 }
 
 fn convert_inline_with(
-  inline: pd.Inline,
-  inline_renderer: InlineRenderer(msg),
-  meta: pd.Meta,
-) -> Element(msg) {
+  inline: doc.Inline,
+  inline_renderer: InlineConverter(msg),
+  meta: doc.Meta,
+) -> lustre.Element(msg) {
   case inline_renderer(inline, meta) {
-    Some(el) -> el
-    None ->
+    Custom(element) -> element
+    Default ->
       case inline {
-        pd.Str(content) -> html.text(content)
-        pd.Space -> html.text(" ")
-        pd.LineBreak -> html.br([])
-        pd.SoftBreak -> html.text(" ")
-        pd.Emph(content) -> {
+        doc.Str(content) -> html.text(content)
+        doc.Space -> html.text(" ")
+        doc.LineBreak -> html.br([])
+        doc.SoftBreak -> html.text(" ")
+        doc.Emph(content) -> {
           let inlines =
             list.map(content, convert_inline_with(_, inline_renderer, meta))
           html.em([], inlines)
         }
-        pd.Strong(content) -> {
+        doc.Strong(content) -> {
           let inlines =
             list.map(content, convert_inline_with(_, inline_renderer, meta))
           html.strong([], inlines)
         }
-        pd.Strikeout(content) -> {
+        doc.Strikeout(content) -> {
           let inlines =
             list.map(content, convert_inline_with(_, inline_renderer, meta))
           html.del([], inlines)
         }
-        pd.Code(attrs, text) -> {
+        doc.Code(attrs, text) -> {
           let attributes = convert_attributes(attrs)
           html.code(attributes, [html.text(text)])
         }
-        pd.Span(attrs, content) -> {
+        doc.Span(attrs, content) -> {
           let inlines =
             list.map(content, convert_inline_with(_, inline_renderer, meta))
           let attributes = convert_attributes(attrs)
           html.span(attributes, inlines)
         }
-        pd.Link(attrs, content, target) -> {
+        doc.Link(attrs, content, target) -> {
           let inlines =
             list.map(content, convert_inline_with(_, inline_renderer, meta))
           let attributes = convert_attributes(attrs)
@@ -201,7 +195,7 @@ fn convert_inline_with(
   }
 }
 
-fn convert_attributes(attrs: pd.Attributes) -> List(attribute.Attribute(msg)) {
+fn convert_attributes(attrs: doc.Attributes) -> List(attribute.Attribute(msg)) {
   let id = case attrs.id {
     "" -> []
     id -> [attribute.id(id)]
@@ -216,31 +210,31 @@ fn convert_attributes(attrs: pd.Attributes) -> List(attribute.Attribute(msg)) {
 }
 
 fn convert_list_attributes(
-  attrs: pd.ListAttributes,
+  attrs: doc.ListAttributes,
 ) -> List(attribute.Attribute(msg)) {
   let start = attribute.attribute("start", int.to_string(attrs.start))
   let type_ = case attrs.style {
-    pd.Decimal -> attribute.attribute("type", "1")
-    pd.LowerAlpha -> attribute.attribute("type", "a")
-    pd.UpperAlpha -> attribute.attribute("type", "A")
-    pd.LowerRoman -> attribute.attribute("type", "i")
-    pd.UpperRoman -> attribute.attribute("type", "I")
+    doc.Decimal -> attribute.attribute("type", "1")
+    doc.LowerAlpha -> attribute.attribute("type", "a")
+    doc.UpperAlpha -> attribute.attribute("type", "A")
+    doc.LowerRoman -> attribute.attribute("type", "i")
+    doc.UpperRoman -> attribute.attribute("type", "I")
   }
   [start, type_]
 }
 
 fn convert_list_items(
-  items: List(List(pd.Block)),
-  block_renderer: BlockRenderer(msg),
-  inline_renderer: InlineRenderer(msg),
-  meta: pd.Meta,
-) -> List(Element(msg)) {
+  items: List(List(doc.Block)),
+  block_converter: BlockConverter(msg),
+  inline_converter: InlineConverter(msg),
+  meta: doc.Meta,
+) -> List(lustre.Element(msg)) {
   list.map(items, fn(item) {
     let blocks =
       list.map(item, convert_block_with(
         _,
-        block_renderer,
-        inline_renderer,
+        block_converter,
+        inline_converter,
         meta,
       ))
     html.li([], blocks)

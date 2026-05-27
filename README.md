@@ -6,13 +6,7 @@ Gleam packages for working with Pandoc-compatible documents:
 
 Tasks, pandi:
 
-* document module?
-* add docs
-
-Tasks, pandi/filter
-
-* add docs
-* ask discord for feedback
+* add docs to pandi/doc
 
 Tasks, pandoc-lustre-converter:
 
@@ -23,6 +17,11 @@ Tasks, pandoc-lustre-converter:
 
 Tasks, other:
 
-* adhere to Gleam conventions
+* adhere to all Gleam conventions
 * test both targets in justfile
 * support all element types
+
+Future plans:
+
+* to_string_outline
+* structural diff?
