@@ -4,14 +4,12 @@ title: [convert_blocks] ordered list starting at 1
 ---
 <ol start="1" type="1">
   <li>
-    <p>
-      First
-    </p>
+    First
+
   </li>
   <li>
-    <p>
-      Second
-    </p>
+    Second
+
   </li>
 </ol>
 

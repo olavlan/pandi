@@ -1,48 +1,47 @@
 import birdie
-import gleam/option.{None, Some}
 import lustre/attribute.{href}
 import lustre/element
 import lustre/element/html
-import pandi as pd
-import pandoc_lustre_converter.{
-  type BlockFilter, type InlineFilter, convert_with_filter,
-}
+import pandi/doc
+import pandoc_lustre_converter as converter
 
 fn snapshot(
-  blocks: List(pd.Block),
-  block_filter: BlockFilter(msg),
-  inline_filter: InlineFilter(msg),
+  blocks: List(doc.Block),
+  block_filter: converter.BlockConverter(msg),
+  inline_filter: converter.InlineConverter(msg),
   title: String,
 ) {
-  pd.Document(blocks, [])
-  |> convert_with_filter(block_filter, inline_filter)
+  doc.Document(blocks, [])
+  |> converter.convert_document_with(block_filter, inline_filter)
   |> element.to_readable_string
-  |> birdie.snap(title: "[convert_with_filter] " <> title)
+  |> birdie.snap(title: "[convert_document_with] " <> title)
 }
 
 pub fn increase_header_level_test() {
   let blocks = [
-    pd.Header(1, pd.Attributes("", [], []), [
-      pd.Str("Header"),
-      pd.Space,
-      pd.Str("with"),
-      pd.Space,
-      pd.Str("#tag"),
+    doc.Header(1, doc.Attributes("", [], []), [
+      doc.Str("Header"),
+      doc.Space,
+      doc.Str("with"),
+      doc.Space,
+      doc.Str("#tag"),
     ]),
-    pd.Para([
-      pd.Str("Paragraph"),
-      pd.Space,
-      pd.Str("with"),
-      pd.Space,
-      pd.Str("#another-tag"),
+    doc.Para([
+      doc.Str("Paragraph"),
+      doc.Space,
+      doc.Str("with"),
+      doc.Space,
+      doc.Str("#another-tag"),
     ]),
   ]
-  let block_filter: BlockFilter(msg) = fn(_, _) { None }
-  let inline_filter: InlineFilter(msg) = fn(inline, _meta) {
+  let block_filter: converter.BlockConverter(msg) = fn(_, _) {
+    converter.Default
+  }
+  let inline_filter: converter.InlineConverter(msg) = fn(inline, _meta) {
     case inline {
-      pd.Str("#" <> tag) ->
-        Some(html.a([href("/tags/" <> tag)], [html.text(tag)]))
-      _ -> None
+      doc.Str("#" <> tag) ->
+        html.a([href("/tags/" <> tag)], [html.text(tag)]) |> converter.Custom
+      _ -> converter.Default
     }
   }
   snapshot(

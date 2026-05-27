@@ -1,6 +1,6 @@
 ---
 version: 2.0.0
-title: [convert_with_filter] put all #tags in link element pointing to /tags/[tagname]
+title: [convert_document_with] put all #tags in link element pointing to /tags/[tagname]
 ---
 <h1>
   Header with 

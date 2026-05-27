@@ -6,7 +6,7 @@ import lustre/element as lustre
 import lustre/element/html
 import pandi/doc
 
-pub opaque type Element(msg) {
+pub type Element(msg) {
   Default
   Custom(element: lustre.Element(msg))
 }

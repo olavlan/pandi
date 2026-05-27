@@ -4,14 +4,12 @@ title: [convert_blocks] bullet list with two items
 ---
 <ul>
   <li>
-    <p>
-      Item 1
-    </p>
+    Item 1
+
   </li>
   <li>
-    <p>
-      Item 2
-    </p>
+    Item 2
+
   </li>
 </ul>
 
