@@ -26,15 +26,17 @@ pub fn convert_document_with(
   block_converter: BlockConverter(msg),
   inline_converter: InlineConverter(msg),
 ) -> lustre.Element(msg) {
-  convert_blocks_with(
-    document.blocks,
-    block_converter,
-    inline_converter,
-    document.meta,
-  )
+  let blocks =
+    convert_blocks_with(
+      document.blocks,
+      block_converter,
+      inline_converter,
+      document.meta,
+    )
+  lustre.fragment(blocks)
 }
 
-pub fn convert_blocks(blocks: List(doc.Block)) -> lustre.Element(msg) {
+pub fn convert_blocks(blocks: List(doc.Block)) -> List(lustre.Element(msg)) {
   convert_blocks_with(blocks, fn(_, _) { Default }, fn(_, _) { Default }, [])
 }
 
@@ -43,18 +45,16 @@ pub fn convert_blocks_with(
   block_converter: BlockConverter(msg),
   inline_converter: InlineConverter(msg),
   meta: doc.Meta,
-) -> lustre.Element(msg) {
-  let elements =
-    list.map(blocks, convert_block_with(
-      _,
-      block_converter,
-      inline_converter,
-      meta,
-    ))
-  lustre.fragment(elements)
+) -> List(lustre.Element(msg)) {
+  list.map(blocks, convert_block_with(
+    _,
+    block_converter,
+    inline_converter,
+    meta,
+  ))
 }
 
-pub fn convert_inlines(inlines: List(doc.Inline)) -> lustre.Element(msg) {
+pub fn convert_inlines(inlines: List(doc.Inline)) -> List(lustre.Element(msg)) {
   convert_inlines_with(inlines, fn(_, _) { Default }, [])
 }
 
@@ -62,10 +62,8 @@ pub fn convert_inlines_with(
   inlines: List(doc.Inline),
   inline_converter: InlineConverter(msg),
   meta: doc.Meta,
-) -> lustre.Element(msg) {
-  let elements =
-    list.map(inlines, convert_inline_with(_, inline_converter, meta))
-  lustre.fragment(elements)
+) -> List(lustre.Element(msg)) {
+  list.map(inlines, convert_inline_with(_, inline_converter, meta))
 }
 
 fn convert_block_with(

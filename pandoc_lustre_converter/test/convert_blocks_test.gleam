@@ -1,11 +1,12 @@
 import birdie
-import lustre/element.{to_readable_string}
+import lustre/element
 import pandi/doc
-import pandoc_lustre_converter.{convert_blocks}
+import pandoc_lustre_converter as pl
 
 fn snapshot(block: doc.Block, title: String) {
-  convert_blocks([block])
-  |> to_readable_string
+  doc.Document([block], [])
+  |> pl.convert_document
+  |> element.to_readable_string
   |> birdie.snap(title: "[convert_blocks] " <> title)
 }
 

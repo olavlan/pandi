@@ -1,11 +1,12 @@
 import birdie
-import lustre/element.{to_readable_string}
+import lustre/element
 import pandi/doc
-import pandoc_lustre_converter.{convert_inlines}
+import pandoc_lustre_converter as pl
 
 fn snapshot(inline: doc.Inline, title: String) {
-  convert_inlines([inline])
-  |> to_readable_string
+  doc.Document([doc.Plain([inline])], [])
+  |> pl.convert_document
+  |> element.to_readable_string
   |> birdie.snap(title: "[convert_inlines] " <> title)
 }
 
