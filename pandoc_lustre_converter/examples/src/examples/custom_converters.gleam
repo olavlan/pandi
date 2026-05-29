@@ -10,6 +10,7 @@ pub fn main() {
     case block {
       doc.Div(doc.Attributes(_, ["collapse"], [#("summary", summary)]), blocks) ->
         html.div([], pl.convert_blocks(blocks)) |> pl.Custom
+      //need a better way to insert default blocks
       _ -> pl.Default
     }
   }
