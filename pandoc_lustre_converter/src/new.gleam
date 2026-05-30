@@ -4,130 +4,101 @@ import lustre/element/html
 import pandi/doc
 
 pub fn main() {
-  let block_converter: BlockConverter(msg) = fn(block, _meta) {
-    case block {
-      doc.Div(_, content) -> {
-        use children <- default_blocks(content)
-        use copy <- default_blocks(content)
-        html.div([], [children, copy]) |> custom
+  let converter: Converter(msg) = fn(element, _meta) {
+    case element {
+      BlockElement(block) -> {
+        case block {
+          doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -> {
+            use details <- default_blocks(rest)
+            use summary <- default_inlines(inlines)
+            html.div([], [summary, details]) |> custom
+          }
+          _ -> default
+        }
       }
       _ -> default
     }
   }
+
+  converter
 }
 
 pub fn default_blocks(
   blocks: List(doc.Block),
-  callback: fn(lustre.Element(msg)) -> Element(doc.Block, msg),
-) -> Element(doc.Block, msg) {
-  WithDefault(blocks, callback)
+  callback: fn(lustre.Element(msg)) -> Element(msg),
+) -> Element(msg) {
+  WithDefault(list.map(blocks, BlockElement), callback)
 }
 
 pub fn default_inlines(
   inlines: List(doc.Inline),
-  callback: fn(lustre.Element(msg)) -> Element(doc.Inline, msg),
-) -> Element(doc.Inline, msg) {
-  WithDefault(inlines, callback)
+  callback: fn(lustre.Element(msg)) -> Element(msg),
+) -> Element(msg) {
+  WithDefault(list.map(inlines, InlineElement), callback)
 }
 
-pub fn custom(element: lustre.Element(msg)) -> Element(kind, msg) {
+pub fn custom(element: lustre.Element(msg)) -> Element(msg) {
   Custom(element)
 }
 
-const default: Element(kind, msg) = Default
+const default: Element(msg) = Default
 
-pub type Element(kind, msg) {
+pub type DocumentElement {
+  BlockElement(block: doc.Block)
+  InlineElement(inline: doc.Inline)
+}
+
+pub opaque type Element(msg) {
   Custom(element: lustre.Element(msg))
   WithDefault(
-    document_elements: List(kind),
-    callback: fn(lustre.Element(msg)) -> Element(kind, msg),
+    document_elements: List(DocumentElement),
+    callback: fn(lustre.Element(msg)) -> Element(msg),
   )
   Default
 }
 
-pub type BlockConverter(msg) =
-  fn(doc.Block, doc.Meta) -> Element(doc.Block, msg)
+pub type Converter(msg) =
+  fn(DocumentElement, doc.Meta) -> Element(msg)
 
-pub type InlineConverter(msg) =
-  fn(doc.Inline, doc.Meta) -> Element(doc.Inline, msg)
+pub fn public() {
+  convert_document_elements([], fn(_, _) { Default }, [])
+}
 
-pub fn convert_blocks(
-  blocks: List(doc.Block),
-  block_converter: BlockConverter(msg),
-  inline_converter: InlineConverter(msg),
+fn convert_document_elements(
+  document_elements: List(DocumentElement),
+  converter: Converter(msg),
   meta: doc.Meta,
 ) -> lustre.Element(msg) {
-  list.map(blocks, convert_block(_, block_converter, inline_converter, meta))
+  list.map(document_elements, convert_document_element(_, converter, meta))
   |> lustre.fragment
 }
 
-fn convert_block(
-  block: doc.Block,
-  block_converter: BlockConverter(msg),
-  inline_converter: InlineConverter(msg),
+fn convert_document_element(
+  document_element: DocumentElement,
+  converter: Converter(msg),
   meta: doc.Meta,
 ) -> lustre.Element(msg) {
-  block_converter(block, meta)
-  |> convert_block_element(block, block_converter, inline_converter, meta)
+  converter(document_element, meta)
+  |> convert_element(document_element, converter, meta)
 }
 
-fn convert_block_element(
-  element: Element(doc.Block, msg),
-  original_block: doc.Block,
-  block_converter: BlockConverter(msg),
-  inline_converter: InlineConverter(msg),
+fn convert_element(
+  element: Element(msg),
+  original_document_element: DocumentElement,
+  converter: Converter(msg),
   meta: doc.Meta,
 ) -> lustre.Element(msg) {
   case element {
-    WithDefault(blocks, callback) ->
-      convert_blocks(blocks, block_converter, inline_converter, meta)
+    WithDefault(document_elements, callback) ->
+      document_elements
+      |> list.map(convert_document_element(_, converter, meta))
+      |> lustre.fragment
       |> callback
-      |> convert_block_element(
-        original_block,
-        block_converter,
-        inline_converter,
-        meta,
-      )
+      |> convert_element(original_document_element, converter, meta)
+
     Custom(element) -> element
     Default ->
-      case original_block {
-        _ -> lustre.none()
-      }
-  }
-}
-
-pub fn convert_inlines(
-  inlines: List(doc.Inline),
-  inline_converter: InlineConverter(msg),
-  meta: doc.Meta,
-) -> lustre.Element(msg) {
-  list.map(inlines, convert_inline(_, inline_converter, meta))
-  |> lustre.fragment
-}
-
-fn convert_inline(
-  inline: doc.Inline,
-  inline_converter: InlineConverter(msg),
-  meta: doc.Meta,
-) -> lustre.Element(msg) {
-  inline_converter(inline, meta)
-  |> convert_inline_element(inline, inline_converter, meta)
-}
-
-fn convert_inline_element(
-  element: Element(doc.Inline, msg),
-  original_inline: doc.Inline,
-  inline_converter: InlineConverter(msg),
-  meta: doc.Meta,
-) -> lustre.Element(msg) {
-  case element {
-    WithDefault(inlines, callback) ->
-      convert_inlines(inlines, inline_converter, meta)
-      |> callback
-      |> convert_inline_element(original_inline, inline_converter, meta)
-    Custom(element) -> element
-    Default ->
-      case original_inline {
+      case original_document_element {
         _ -> lustre.none()
       }
   }
