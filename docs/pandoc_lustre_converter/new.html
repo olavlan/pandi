@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>pandi · v1.0.0</title>
+    <title>new · pandoc_lustre_converter · v1.0.0</title>
     <meta name="description" content=""/>
     <meta name="theme-color" content="#ffaff3" media="(prefers-color-scheme: light)"/>
     <meta name="theme-color" content="#33384d" media="(prefers-color-scheme: dark)"/>
@@ -143,7 +143,7 @@
       </button>
 
       <h2>
-        <a href="./">pandi</a>
+        <a href="./">pandoc_lustre_converter</a>
         <span id="project-version">
           <span> - v1.0.0 </span>
         </span>
@@ -181,7 +181,7 @@
       </h2>
       <div class="search">
         <div class="search-input-wrap">
-          <input type="text" id="search-input" class="search-input" tabindex="0" aria-label="Search pandi" autocomplete="off">
+          <input type="text" id="search-input" class="search-input" tabindex="0" aria-label="Search pandoc_lustre_converter" autocomplete="off">
           <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"><use xlink:href="#icon-svg-search"></use></svg></label>
         </div>
         <div id="search-results" class="search-results"></div>
@@ -213,229 +213,308 @@
         <h2>Modules</h2>
         <ul>
         
-          <li><a href="./pandi/doc.html" class="module-link">pandi<wbr />/doc</a></li>
+          <li><a href="./new.html" class="module-link">new</a></li>
         
-          <li><a href="./pandi/filter.html" class="module-link">pandi<wbr />/filter</a></li>
+          <li><a href="./pandoc_lustre_converter.html" class="module-link">pandoc_lustre_converter</a></li>
         
         </ul>
 
         
+
+<h2>Types</h2>
+<ul>
+  
+  <li><a href="#BlockConverter">BlockConverter</a></li>
+  
+  <li><a href="#Element">Element</a></li>
+  
+  <li><a href="#InlineConverter">InlineConverter</a></li>
+  
+</ul>
+
+
+
+<h2>Values</h2>
+<ul>
+  
+  <li><a href="#convert_blocks">convert_blocks</a></li>
+  
+  <li><a href="#convert_inlines">convert_inlines</a></li>
+  
+  <li><a href="#custom">custom</a></li>
+  
+  <li><a href="#default_blocks">default_blocks</a></li>
+  
+  <li><a href="#default_inlines">default_inlines</a></li>
+  
+  <li><a href="#main">main</a></li>
+  
+</ul>
+
+
       </nav>
 
       <main class="content">
         
-<h1>pandi</h1>
-<p><a href="https://hex.pm/packages/pandi"><img src="https://img.shields.io/hexpm/v/pandi" alt="Package Version" /></a>
-<a href="https://hexdocs.pm/pandi/"><img src="https://img.shields.io/badge/hex-docs-ffaff3" alt="Hex Docs" /></a></p>
-<p><code>pandi</code> aims to make it easy to create <a href="https://pandoc.org/">Pandoc</a>-backed document processors.</p>
-<p>As an example, consider the following Markdown document:</p>
-<pre><code class="language-md">
-Gleam is **cool** - here is a *Hello world* example:
+<h1 id="module-name" class="module-name">
+  <a href="#module-name">new</a>
+  <svg class="icon icon-gleam-chasse"><use xlink:href="#icon-gleam-chasse"></use></svg>
+</h1>
 
-```gleam
-import gleam/io
 
-pub fn main() {
-  io.println("Hello, world!")
-}
-```
-</code></pre>
-<p>Let’s say we want to add a link to the <a href="https://playground.gleam.run/">Gleam playground</a> after each code block, and then convert the document to html.
-We can achieve this with Pandoc and <code>pandi</code>:</p>
-<pre><code class="language-gleam">import examples/gleam_markdown/element
-import examples/pandoc
-import gleam/list
-import pandi/doc
 
-fn process_block(block: doc.Block) -&gt; List(doc.Block) {
-  case block {
-    doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -&gt; [
-      block,
-      element.gleam_playground_link(code),
-    ]
-    _ -&gt; [block]
-  }
-}
+<section class="module-members">
+  <h1 id="module-types" class="module-member-kind">
+    <a href="#module-types">Types</a>
+    <svg class="icon icon-gleam-chasse-2"><use xlink:href="#icon-gleam-chasse-2"></use></svg>
+  </h1>
 
-fn process_top_level_blocks(document: doc.Document) -&gt; doc.Document {
-  let new_blocks = list.flat_map(document.blocks, process_block)
-  doc.Document(..document, blocks: new_blocks)
-}
-
-pub fn main() {
-  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
-  |&gt; process_top_level_blocks
-  |&gt; pandoc.document_to_file(to_file: "example.html", to_format: "html")
-}
-</code></pre>
-<p>We’ll explain the imported <code>pandoc</code> and <code>element</code> modules in the next sections.
-For now, here is the rendered html:</p>
-<hr />
-<p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
-example:</p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  io<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hello, world!&quot;</span><span class="op">)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p><a
-href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
-title="Gleam playground">Open code in Gleam playground 🔗</a></p>
-<hr />
-<h2>Adding a Pandoc wrapper</h2>
-<p><code>pandi</code> deliberately doesn’t try to run Pandoc, but works with its json output format instead.
-That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.</p>
-<p>The example defines the following <code>pandoc</code> module for working with files:</p>
-<pre><code class="language-gleam">import pandi/doc
-import shellout
-import simplifile
-
-const folder = "resources/"
-
-pub fn file_to_document(
-  from_file filename: String,
-  from_format from_format: String,
-) -&gt; doc.Document {
-  let assert Ok(result) =
-    shellout.command(
-      run: "pandoc",
-      with: ["-f", from_format, "-t", "json", folder &lt;&gt; filename],
-      in: ".",
-      opt: [shellout.LetBeStderr],
-    )
-  let assert Ok(document) = doc.from_json(result)
-  document
-}
-
-pub fn document_to_file(
-  document: doc.Document,
-  to_file filename: String,
-  to_format to_format,
-) {
-  let json_file = folder &lt;&gt; filename &lt;&gt; ".json"
-  let assert Ok(_) =
-    simplifile.write(to: json_file, contents: doc.to_json(document))
-  let assert Ok(_) =
-    shellout.command(
-      run: "pandoc",
-      with: ["-f", "json", "-t", to_format, "-o", folder &lt;&gt; filename, json_file],
-      in: ".",
-      opt: [],
-    )
-  let assert Ok(_) = simplifile.delete(json_file)
-}
-</code></pre>
-<p>This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
-Alternatively, you can convert documents to json separately from your Gleam application.</p>
-<h2>More advanced processing with filters</h2>
-<p>Taking the example a step further, assume we have the following Markdown document:</p>
-<pre><code class="language-md">
-Gleam is **cool**:
-
-* *Hello world* example:
-
-  ```gleam
-  import gleam/io
-
-  pub fn main() {
-    io.println("Hello, world!")
-  }
-  ```
-
-* Try docs:lustre to make a web application in Gleam!
-</code></pre>
-<p>We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of “docs:[package name]” with a link to the Hex docs.</p>
-<p>This can be done with <em>filters</em>, using the <code>pandi/filter</code> module.
-A filter is an element-processing function that can be applied to the whole document tree:</p>
-<pre><code class="language-gleam">import examples/gleam_markdown/element
-import examples/pandoc
-import pandi/doc
-import pandi/filter
-
-pub fn main() {
-  let add_playground_link_to_codeblocks: filter.BlockFilter = fn(block, _meta) {
-    case block {
-      doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -&gt;
-        [element.gleam_playground_link(code)] |&gt; filter.append
-      _ -&gt; filter.keep
-    }
-  }
-
-  let create_hex_docs_links: filter.InlineFilter = fn(inline, _meta) {
-    case inline {
-      doc.Str("docs:" &lt;&gt; package_name) -&gt;
-        [element.hex_link(package_name)] |&gt; filter.replace
-      _ -&gt; filter.keep
-    }
-  }
-
-  pandoc.file_to_document(from_file: "example-2.md", from_format: "markdown")
-  |&gt; filter.apply_block_filter(add_playground_link_to_codeblocks)
-  |&gt; filter.apply_inline_filter(create_hex_docs_links)
-  |&gt; pandoc.document_to_file(to_file: "example-2.html", to_format: "html")
-}
-</code></pre>
-<p>Note that we distinguish between block and inline filters for type safety.
-Inline filters are typically applied last so they’re not overwritten by block filters.</p>
-<p>Here is the rendered html:</p>
-<hr />
-<p>Gleam is <strong>cool</strong>:</p>
-<ul>
-<li><p><em>Hello world</em> example:</p>
-<div class="sourceCode" id="cb1"><pre
-class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">pub</span> <span class="kw">fn</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  io<span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;Hello, world!&quot;</span><span class="op">)</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
-<p><a
-href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
-title="Gleam playground">Open code in Gleam playground 🔗</a></p></li>
-<li><p>Try <a href="https://hexdocs.pm/lustre/index.html"
-title="lustre at Hex Docs">lustre 🔗</a> to make a web application in
-Gleam!</p></li>
-</ul>
-<hr />
-<h2>Element construction</h2>
-<p><code>pandi</code> only exposes one convenience function to construct elements; the <code>doc.text</code> function.
-Otherwise, the type constructors in the <code>doc</code> module are used directly.</p>
-<p>The above example defines the following <code>element</code> module:</p>
-<pre><code class="language-gleam">import pandi/doc
-
-pub fn hex_link(package_name: String) -&gt; doc.Inline {
-  let url = "https://hexdocs.pm/" &lt;&gt; package_name &lt;&gt; "/index.html"
-  let title = package_name &lt;&gt; " at Hex Docs"
-  doc.Link(
-    attributes: empty_attributes(),
-    target: doc.Target(url: url, title: title),
-    content: [
-      doc.Str(package_name),
-      doc.Space,
-      doc.Str("🔗"),
-    ],
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="BlockConverter">
+        <a href="#BlockConverter">
+          BlockConverter
+        </a>
+      </h2>
+      
+    </div>
+    
+    <div class="custom-type-constructors">
+      <div class="rendered-markdown"></div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockConverter</span>(<span class="hljs-variable">msg</span>) =
+  <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+    <span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>,
+    <span class="hljs-variable">msg</span>,
+  )</code></pre>
+      
+    </div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="Element">
+        <a href="#Element">
+          Element
+        </a>
+      </h2>
+      
+    </div>
+    
+    <div class="custom-type-constructors">
+      <div class="rendered-markdown"></div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">Element</span>(<span class="hljs-variable">kind</span>, <span class="hljs-variable">msg</span>) {
+  <span class="hljs-title">Custom</span>(<span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>))
+  <span class="hljs-title">WithDefault</span>(
+    <span class="hljs-variable">document_elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">kind</span>),
+    <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span class="hljs-variable">kind</span>, <span class="hljs-variable">msg</span>),
   )
-}
+  <span class="hljs-title">Default</span>
+}</code></pre>
+      
+      <h3>
+        Constructors
+      </h3>
+      <ul class="constructor-list">
+        
+        <li class="constructor-item">
+          <div class="constructor-row">
+            <svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
+            <pre class="constructor-name"><code class="hljs hljs-ignore"><span class="hljs-title">Custom</span>(<span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
+          </div>
 
-pub fn gleam_playground_link(gleam_code: String) -&gt; doc.Block {
-  let url = "https://playground.gleam.run/#" &lt;&gt; make_v1_hash(gleam_code)
-  doc.Para(content: [
-    doc.Link(
-      attributes: empty_attributes(),
-      target: doc.Target(url: url, title: "Gleam playground"),
-      content: doc.text("Open code in Gleam playground 🔗"),
-    ),
-  ])
-}
+          <div class="constructor-item-docs">
+            
 
-fn empty_attributes() -&gt; doc.Attributes {
-  doc.Attributes(id: "", classes: [], keyvalues: [])
-}
+            
+          </div>
+        </li>
+        
+        <li class="constructor-item">
+          <div class="constructor-row">
+            <svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
+            <pre class="constructor-name"><code class="hljs hljs-ignore"><span class="hljs-title">WithDefault</span>(
+  <span class="hljs-variable">document_elements</span>: <span class="hljs-title">List</span>(<span class="hljs-variable">kind</span>),
+  <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span class="hljs-variable">kind</span>, <span class="hljs-variable">msg</span>),
+)</code></pre>
+          </div>
 
-@external(javascript, "./lz_ffi.mjs", "makeV1Hash")
-fn make_v1_hash(code: String) -&gt; String
-</code></pre>
-<p><em>The complete working examples exist <a href="https://github.com/olavlan/pandi/tree/main/pandi/examples">here</a> as a Gleam project, and should work as long as you have <code>pandoc</code> installed. These examples target Javascript because a Javascript library is used to compress the Gleam code (for the Playground link)</em>.</p>
+          <div class="constructor-item-docs">
+            
+
+            
+          </div>
+        </li>
+        
+        <li class="constructor-item">
+          <div class="constructor-row">
+            <svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
+            <pre class="constructor-name"><code class="hljs hljs-ignore"><span class="hljs-title">Default</span></code></pre>
+          </div>
+
+          <div class="constructor-item-docs">
+            
+
+            
+          </div>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="InlineConverter">
+        <a href="#InlineConverter">
+          InlineConverter
+        </a>
+      </h2>
+      
+    </div>
+    
+    <div class="custom-type-constructors">
+      <div class="rendered-markdown"></div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineConverter</span>(<span class="hljs-variable">msg</span>) =
+  <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+    <span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>,
+    <span class="hljs-variable">msg</span>,
+  )</code></pre>
+      
+    </div>
+  </div>
+  
+</section>
+
+
+
+<section class="module-members">
+  <h1 id="module-values" class="module-member-kind">
+    <a href="#module-values">Values</a>
+    <svg class="icon icon-gleam-chasse"><use xlink:href="#icon-gleam-chasse"></use></svg>
+  </h1>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="convert_blocks">
+        <a href="#convert_blocks">
+          convert_blocks
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_blocks</span>(
+  <span class="hljs-variable">blocks</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>),
+  <span class="hljs-variable">block_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+    <span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>,
+    <span class="hljs-variable">msg</span>,
+  ),
+  <span class="hljs-variable">inline_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+    <span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>,
+    <span class="hljs-variable">msg</span>,
+  ),
+  <span class="hljs-variable">meta</span>: <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>)),
+) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="convert_inlines">
+        <a href="#convert_inlines">
+          convert_inlines
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_inlines</span>(
+  <span class="hljs-variable">inlines</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>),
+  <span class="hljs-variable">inline_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+    <span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>,
+    <span class="hljs-variable">msg</span>,
+  ),
+  <span class="hljs-variable">meta</span>: <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>)),
+) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="custom">
+        <a href="#custom">
+          custom
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">custom</span>(
+  <span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>),
+) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span class="hljs-variable">kind</span>, <span class="hljs-variable">msg</span>)</code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="default_blocks">
+        <a href="#default_blocks">
+          default_blocks
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">default_blocks</span>(
+  <span class="hljs-variable">blocks</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>),
+  <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-variable">msg</span>),
+) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-variable">msg</span>)</code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="default_inlines">
+        <a href="#default_inlines">
+          default_inlines
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">default_inlines</span>(
+  <span class="hljs-variable">inlines</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>),
+  <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-variable">msg</span>),
+) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-variable">msg</span>)</code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="main">
+        <a href="#main">
+          main
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">main</span>() -> <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+  <span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>,
+  <span class="hljs-variable">msg</span>,
+)</code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+</section>
 
 
       </main>
