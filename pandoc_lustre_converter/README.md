@@ -86,6 +86,66 @@ pub fn main() {
 }
 ```
 
-See the Hex Docs for details.
+See the Hex Docs for more details on custom conversion. See the next section for how to integrate your application with Pandoc.
 
-One thing to note is that you need a wrapper TODO
+## Adding a Pandoc wrapper
+
+For importing Pandoc documents, `pandoc_lustre_converter` depends on [`pandi`]() (link coming), which deliberately doesn't try to run Pandoc, but works with its json output format instead.
+That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.
+
+The above example defines the following `pandoc` module for importing a document from file:
+
+```gleam
+import pandi/doc
+import shellout
+
+const folder = "resources/"
+
+pub fn file_to_document(
+  from_file filename: String,
+  from_format from_format: String,
+) -> doc.Document {
+  let assert Ok(result) =
+    shellout.command(
+      run: "pandoc",
+      with: ["-f", from_format, "-t", "json", folder <> filename],
+      in: ".",
+      opt: [shellout.LetBeStderr],
+    )
+  let assert Ok(document) = doc.from_json(result)
+  document
+}
+```
+
+This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
+Alternatively, you can convert documents to json separately from your Gleam/Lustre application.
+
+`pandi` deliberately doesn't try to run Pandoc, but works with its json output format instead.
+That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.
+
+The example defines the following `pandoc` module for working with files:
+
+```gleam
+import pandi/doc
+import shellout
+
+const folder = "resources/"
+
+pub fn file_to_document(
+  from_file filename: String,
+  from_format from_format: String,
+) -> doc.Document {
+  let assert Ok(result) =
+    shellout.command(
+      run: "pandoc",
+      with: ["-f", from_format, "-t", "json", folder <> filename],
+      in: ".",
+      opt: [shellout.LetBeStderr],
+    )
+  let assert Ok(document) = doc.from_json(result)
+  document
+}
+```
+
+This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
+Alternatively, you can convert documents to json separately from your Gleam application.

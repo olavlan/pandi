@@ -302,8 +302,58 @@ pub fn main() {
   // &lt;/details&gt;
 }
 </code></pre>
-<p>See the Hex Docs for details.</p>
-<p>One thing to note is that you need a wrapper TODO</p>
+<p>See the Hex Docs for more details on custom conversion. See the next section for how to integrate your application with Pandoc.</p>
+<h2>Adding a Pandoc wrapper</h2>
+<p>For importing Pandoc documents, <code>pandoc_lustre_converter</code> depends on <a href=""><code>pandi</code></a> (link coming), which deliberately doesn’t try to run Pandoc, but works with its json output format instead.
+That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.</p>
+<p>The above example defines the following <code>pandoc</code> module for importing a document from file:</p>
+<pre><code class="language-gleam">import pandi/doc
+import shellout
+
+const folder = "resources/"
+
+pub fn file_to_document(
+  from_file filename: String,
+  from_format from_format: String,
+) -&gt; doc.Document {
+  let assert Ok(result) =
+    shellout.command(
+      run: "pandoc",
+      with: ["-f", from_format, "-t", "json", folder &lt;&gt; filename],
+      in: ".",
+      opt: [shellout.LetBeStderr],
+    )
+  let assert Ok(document) = doc.from_json(result)
+  document
+}
+</code></pre>
+<p>This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
+Alternatively, you can convert documents to json separately from your Gleam/Lustre application.</p>
+<p><code>pandi</code> deliberately doesn’t try to run Pandoc, but works with its json output format instead.
+That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.</p>
+<p>The example defines the following <code>pandoc</code> module for working with files:</p>
+<pre><code class="language-gleam">import pandi/doc
+import shellout
+
+const folder = "resources/"
+
+pub fn file_to_document(
+  from_file filename: String,
+  from_format from_format: String,
+) -&gt; doc.Document {
+  let assert Ok(result) =
+    shellout.command(
+      run: "pandoc",
+      with: ["-f", from_format, "-t", "json", folder &lt;&gt; filename],
+      in: ".",
+      opt: [shellout.LetBeStderr],
+    )
+  let assert Ok(document) = doc.from_json(result)
+  document
+}
+</code></pre>
+<p>This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
+Alternatively, you can convert documents to json separately from your Gleam application.</p>
 
 
       </main>
@@ -384,9 +434,9 @@ pub fn main() {
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780234308"></script>
+    <script src="./js/index.js?v=1780239767"></script>
     <script>
-      fetch("./search-data.json?v=1780234308")
+      fetch("./search-data.json?v=1780239767")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
