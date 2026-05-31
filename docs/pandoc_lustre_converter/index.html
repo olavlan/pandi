@@ -302,13 +302,8 @@ pub fn main() {
   // &lt;/details&gt;
 }
 </code></pre>
-<p>Some things to note are:</p>
-<ul>
-<li>A block or inline converter should return either <code>custom(element)</code> or <code>default</code>.
-In practice, the former is used for custom conversion rules, and the latter is used for the remaining patterns.</li>
-<li>When using <code>default</code>, the element’s children are subject to custom conversion rules.</li>
-<li>When using <code>default_blocks</code> and <code>default_inlines</code>, the blocks/inlines are subject to custom conversion rules.</li>
-</ul>
+<p>See the Hex Docs for details.</p>
+<p>One thing to note is that you need a wrapper TODO</p>
 
 
       </main>
@@ -389,9 +384,9 @@ In practice, the former is used for custom conversion rules, and the latter is u
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780234090"></script>
+    <script src="./js/index.js?v=1780234308"></script>
     <script>
-      fetch("./search-data.json?v=1780234090")
+      fetch("./search-data.json?v=1780234308")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

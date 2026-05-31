@@ -20,9 +20,6 @@ This is how we can convert the document to Lustre html with custom conversion ru
 {{./examples/src/examples/custom_converters_with_file.gleam}}
 ```
 
-Some things to note are:
+See the Hex Docs for details.
 
-* A block or inline converter should return either `custom(element)` or `default`.
-  In practice, the former is used for custom conversion rules, and the latter is used for the remaining patterns.
-* When using `default`, the element's children are subject to custom conversion rules.
-* When using `default_blocks` and `default_inlines`, the blocks/inlines are subject to custom conversion rules.  
+One thing to note is that you need a wrapper TODO
