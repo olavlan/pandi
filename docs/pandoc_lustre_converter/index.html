@@ -231,12 +231,11 @@
 <li>Allow custom conversion rules (through pattern matching on document elements)</li>
 </ul>
 <p>As an example, consider the following Markdown document:</p>
-<pre><code class="language-md">There is a #gleam tag this paragraph,
-which should be converted to a link to /tags/gleam.
+<pre><code class="language-md">Here is a #gleam tag, which should be converted to a link pointing to /tags/gleam.
 
 The following should be converted to a details element:
 
-::: details
+::: my-class
 
 # This is the summary
 
@@ -245,6 +244,7 @@ There is #lustre tag in the details.
 </code></pre>
 <p>This is how we can convert the document to Lustre html with custom conversion rules:</p>
 <pre><code class="language-gleam">import examples/pandoc
+import gleam/io
 import lustre/attribute as attr
 import lustre/element
 import lustre/element/html
@@ -270,7 +270,8 @@ pub fn main() {
   let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
     case inline {
       doc.Str("#" &lt;&gt; tag) -&gt;
-        html.a([attr.href("/tags/" &lt;&gt; tag)], [html.text(tag)]) |&gt; pl.custom
+        html.a([attr.href("/tags/" &lt;&gt; tag)], [html.text("#" &lt;&gt; tag)])
+        |&gt; pl.custom
       _ -&gt; pl.default
     }
   }
@@ -278,12 +279,13 @@ pub fn main() {
   pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
   |&gt; pl.convert_document(block_converter, inline_converter)
   |&gt; element.to_readable_string
+  |&gt; io.println
   // &lt;p&gt;
-  //   There is a
+  //   Here is a
   //   &lt;a href="/tags/gleam"&gt;
-  //     gleam
+  //     #gleam
   //   &lt;/a&gt;
-  //   tag this paragraph, which should be converted to a link to /tags/gleam.
+  //   tag, which should be converted to a link pointing to /tags/gleam.
   // &lt;/p&gt;
   // &lt;p&gt;
   //   The following should be converted to a details element:
@@ -295,7 +297,7 @@ pub fn main() {
   //   &lt;p&gt;
   //     There is
   //     &lt;a href="/tags/lustre"&gt;
-  //       lustre
+  //       #lustre
   //     &lt;/a&gt;
   //     tag in the details.
   //   &lt;/p&gt;
@@ -434,9 +436,9 @@ Alternatively, you can convert documents to json separately from your Gleam appl
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780240399"></script>
+    <script src="./js/index.js?v=1780240858"></script>
     <script>
-      fetch("./search-data.json?v=1780240399")
+      fetch("./search-data.json?v=1780240858")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

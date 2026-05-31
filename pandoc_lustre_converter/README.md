@@ -11,12 +11,11 @@ This package aims to:
 As an example, consider the following Markdown document:
 
 ````md
-There is a #gleam tag this paragraph,
-which should be converted to a link to /tags/gleam.
+Here is a #gleam tag, which should be converted to a link pointing to /tags/gleam.
 
 The following should be converted to a details element:
 
-::: details
+::: my-class
 
 # This is the summary
 
@@ -28,6 +27,7 @@ This is how we can convert the document to Lustre html with custom conversion ru
 
 ```gleam
 import examples/pandoc
+import gleam/io
 import lustre/attribute as attr
 import lustre/element
 import lustre/element/html
@@ -53,7 +53,8 @@ pub fn main() {
   let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
     case inline {
       doc.Str("#" <> tag) ->
-        html.a([attr.href("/tags/" <> tag)], [html.text(tag)]) |> pl.custom
+        html.a([attr.href("/tags/" <> tag)], [html.text("#" <> tag)])
+        |> pl.custom
       _ -> pl.default
     }
   }
@@ -61,12 +62,13 @@ pub fn main() {
   pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
   |> pl.convert_document(block_converter, inline_converter)
   |> element.to_readable_string
+  |> io.println
   // <p>
-  //   There is a
+  //   Here is a
   //   <a href="/tags/gleam">
-  //     gleam
+  //     #gleam
   //   </a>
-  //   tag this paragraph, which should be converted to a link to /tags/gleam.
+  //   tag, which should be converted to a link pointing to /tags/gleam.
   // </p>
   // <p>
   //   The following should be converted to a details element:
@@ -78,7 +80,7 @@ pub fn main() {
   //   <p>
   //     There is
   //     <a href="/tags/lustre">
-  //       lustre
+  //       #lustre
   //     </a>
   //     tag in the details.
   //   </p>

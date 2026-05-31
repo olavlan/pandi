@@ -1,9 +1,8 @@
-There is a #gleam tag this paragraph,
-which should be converted to a link to /tags/gleam.
+Here is a #gleam tag, which should be converted to a link pointing to /tags/gleam.
 
 The following should be converted to a details element:
 
-::: details
+::: my-class
 
 # This is the summary
 
