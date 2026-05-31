@@ -5,7 +5,7 @@ import pandoc_lustre_converter as pl
 
 fn snapshot(inline: doc.Inline, title: String) {
   doc.Document([doc.Plain([inline])], [])
-  |> pl.convert_document
+  |> pl.convert_document(fn(_, _) { pl.default }, fn(_, _) { pl.default })
   |> element.to_readable_string
   |> birdie.snap(title: "[convert_inlines] " <> title)
 }

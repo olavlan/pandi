@@ -5,6 +5,8 @@ title: [convert_blocks] block quote with paragraph
 <blockquote>
   <p>
     Quoted text
+
   </p>
+
 </blockquote>
 

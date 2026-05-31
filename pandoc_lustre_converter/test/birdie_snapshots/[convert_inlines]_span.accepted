@@ -4,6 +4,7 @@ title: [convert_inlines] span
 ---
 <span class="class1" id="my-id" key="value">
   span text
+
 </span>
 
 

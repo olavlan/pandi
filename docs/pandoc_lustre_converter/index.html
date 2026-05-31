@@ -213,8 +213,6 @@
         <h2>Modules</h2>
         <ul>
         
-          <li><a href="./new.html" class="module-link">new</a></li>
-        
           <li><a href="./pandoc_lustre_converter.html" class="module-link">pandoc_lustre_converter</a></li>
         
         </ul>
@@ -234,18 +232,7 @@
 <li>Allow custom rendering by pattern matching on document elements</li>
 </ul>
 <p>Example:</p>
-<pre><code class="language-gleam">import examples/pandoc
-import lustre/element
-import pandoc_lustre_converter as converter
-
-pub fn main() {
-  let header =
-    "# Header"
-    |&gt; pandoc.parse("markdown")
-    |&gt; converter.convert_document
-    |&gt; element.to_readable_string
-  assert header == "&lt;h1 id=\"header\"&gt;\n  Header\n&lt;/h1&gt;\n"
-}
+<pre><code class="language-gleam">
 </code></pre>
 <p>Note that the package only works with Pandoc’s JSON output, so your application will need to call <code>pandoc</code>  in order to work with specific document formats:</p>
 <pre><code class="language-gleam">import pandi/doc
@@ -339,9 +326,9 @@ pub fn parse(raw_document: String, format: String) -&gt; doc.Document {
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780216221"></script>
+    <script src="./js/index.js?v=1780230800"></script>
     <script>
-      fetch("./search-data.json?v=1780216221")
+      fetch("./search-data.json?v=1780230800")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

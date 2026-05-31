@@ -213,8 +213,6 @@
         <h2>Modules</h2>
         <ul>
         
-          <li><a href="./new.html" class="module-link">new</a></li>
-        
           <li><a href="./pandoc_lustre_converter.html" class="module-link">pandoc_lustre_converter</a></li>
         
         </ul>
@@ -224,9 +222,9 @@
 <h2>Types</h2>
 <ul>
   
-  <li><a href="#BlockConverter">BlockConverter</a></li>
+  <li><a href="#Action">Action</a></li>
   
-  <li><a href="#Element">Element</a></li>
+  <li><a href="#BlockConverter">BlockConverter</a></li>
   
   <li><a href="#InlineConverter">InlineConverter</a></li>
   
@@ -237,17 +235,17 @@
 <h2>Values</h2>
 <ul>
   
-  <li><a href="#convert_blocks">convert_blocks</a></li>
-  
-  <li><a href="#convert_blocks_with">convert_blocks_with</a></li>
+  <li><a href="#convert_attributes">convert_attributes</a></li>
   
   <li><a href="#convert_document">convert_document</a></li>
   
-  <li><a href="#convert_document_with">convert_document_with</a></li>
+  <li><a href="#custom">custom</a></li>
   
-  <li><a href="#convert_inlines">convert_inlines</a></li>
+  <li><a href="#default">default</a></li>
   
-  <li><a href="#convert_inlines_with">convert_inlines_with</a></li>
+  <li><a href="#default_blocks">default_blocks</a></li>
+  
+  <li><a href="#default_inlines">default_inlines</a></li>
   
 </ul>
 
@@ -272,6 +270,25 @@
   
   <div class="member">
     <div class="member-name">
+      <h2 id="Action">
+        <a href="#Action">
+          Action
+        </a>
+      </h2> <span class="visibility-tag">opaque</span> 
+      
+    </div>
+    
+    <div class="custom-type-constructors">
+      <div class="rendered-markdown"><p>The type that converters should return.
+Use the provided constructors <code>default</code> and <code>custom</code>.</p>
+</div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub opaque type </span><span class="hljs-title">Action</span>(<span class="hljs-variable">msg</span>)</code></pre>
+      
+    </div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
       <h2 id="BlockConverter">
         <a href="#BlockConverter">
           BlockConverter
@@ -281,62 +298,14 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
+      <div class="rendered-markdown"><p>A block converter is a function that takes a block
+and returns and action, where an action is constructed using
+either <code>default</code> (converting the element in the default way)
+or <code>custom</code> (giving a custom lustre element instead).</p>
+<p>Example:</p>
+</div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockConverter</span>(<span class="hljs-variable">msg</span>) =
-  <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
-      
-    </div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="Element">
-        <a href="#Element">
-          Element
-        </a>
-      </h2>
-      
-    </div>
-    
-    <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
-      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">Element</span>(<span class="hljs-variable">msg</span>) {
-  <span class="hljs-title">Default</span>
-  <span class="hljs-title">Custom</span>(<span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>))
-}</code></pre>
-      
-      <h3>
-        Constructors
-      </h3>
-      <ul class="constructor-list">
-        
-        <li class="constructor-item">
-          <div class="constructor-row">
-            <svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
-            <pre class="constructor-name"><code class="hljs hljs-ignore"><span class="hljs-title">Default</span></code></pre>
-          </div>
-
-          <div class="constructor-item-docs">
-            
-
-            
-          </div>
-        </li>
-        
-        <li class="constructor-item">
-          <div class="constructor-row">
-            <svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
-            <pre class="constructor-name"><code class="hljs hljs-ignore"><span class="hljs-title">Custom</span>(<span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
-          </div>
-
-          <div class="constructor-item-docs">
-            
-
-            
-          </div>
-        </li>
-        
-      </ul>
+  <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
       
     </div>
   </div>
@@ -352,9 +321,13 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
+      <div class="rendered-markdown"><p>A block converter is a function that takes an inline
+and produces and action, where an action is constructed using
+either <code>default</code> (converting the element in the default way)
+or <code>custom</code> (giving a custom lustre element instead).</p>
+</div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineConverter</span>(<span class="hljs-variable">msg</span>) =
-  <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
+  <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
       
     </div>
   </div>
@@ -371,41 +344,17 @@
   
   <div class="member">
     <div class="member-name">
-      <h2 id="convert_blocks">
-        <a href="#convert_blocks">
-          convert_blocks
+      <h2 id="convert_attributes">
+        <a href="#convert_attributes">
+          convert_attributes
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_blocks</span>(
-  <span class="hljs-variable">blocks</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>),
-) -> <span class="hljs-title">List</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
-    
-    <div class="rendered-markdown"></div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="convert_blocks_with">
-        <a href="#convert_blocks_with">
-          convert_blocks_with
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_blocks_with</span>(
-  <span class="hljs-variable">blocks</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>),
-  <span class="hljs-variable">block_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
-    <span class="hljs-variable">msg</span>,
-  ),
-  <span class="hljs-variable">inline_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
-    <span class="hljs-variable">msg</span>,
-  ),
-  <span class="hljs-variable">meta</span>: <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>)),
-) -> <span class="hljs-title">List</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_attributes</span>(
+  <span class="hljs-variable">attrs</span>: <span title="pandi/doc.{type Attributes}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Attributes</span></span>,
+) -> <span class="hljs-title">List</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/attribute.html#Attribute" title="lustre/attribute.{type Attribute}"><span class="hljs-variable">attribute</span>.<span class="hljs-title">Attribute</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
@@ -422,27 +371,10 @@
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_document</span>(
   <span class="hljs-variable">document</span>: <span title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></span>,
-) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
-    
-    <div class="rendered-markdown"></div>
-  </div>
-  
-  <div class="member">
-    <div class="member-name">
-      <h2 id="convert_document_with">
-        <a href="#convert_document_with">
-          convert_document_with
-        </a>
-      </h2>
-      
-    </div>
-
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_document_with</span>(
-  <span class="hljs-variable">document</span>: <span title="pandi/doc.{type Document}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Document</span></span>,
-  <span class="hljs-variable">block_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+  <span class="hljs-variable">block_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
     <span class="hljs-variable">msg</span>,
   ),
-  <span class="hljs-variable">inline_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
+  <span class="hljs-variable">inline_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
     <span class="hljs-variable">msg</span>,
   ),
 ) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
@@ -452,38 +384,66 @@
   
   <div class="member">
     <div class="member-name">
-      <h2 id="convert_inlines">
-        <a href="#convert_inlines">
-          convert_inlines
+      <h2 id="custom">
+        <a href="#custom">
+          custom
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_inlines</span>(
-  <span class="hljs-variable">inlines</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>),
-) -> <span class="hljs-title">List</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">custom</span>(<span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
   
   <div class="member">
     <div class="member-name">
-      <h2 id="convert_inlines_with">
-        <a href="#convert_inlines_with">
-          convert_inlines_with
+      <h2 id="default">
+        <a href="#default">
+          default
         </a>
       </h2>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_inlines_with</span>(
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">default</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="default_blocks">
+        <a href="#default_blocks">
+          default_blocks
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">default_blocks</span>(
+  <span class="hljs-variable">blocks</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>),
+  <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>),
+) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="default_inlines">
+        <a href="#default_inlines">
+          default_inlines
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">default_inlines</span>(
   <span class="hljs-variable">inlines</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>),
-  <span class="hljs-variable">inline_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Element"><span class="hljs-title">Element</span></a>(
-    <span class="hljs-variable">msg</span>,
-  ),
-  <span class="hljs-variable">meta</span>: <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>)),
-) -> <span class="hljs-title">List</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
+  <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>),
+) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
     <div class="rendered-markdown"></div>
   </div>
@@ -569,9 +529,9 @@
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780216221"></script>
+    <script src="./js/index.js?v=1780230800"></script>
     <script>
-      fetch("./search-data.json?v=1780216221")
+      fetch("./search-data.json?v=1780230800")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

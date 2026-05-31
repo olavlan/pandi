@@ -5,6 +5,8 @@ title: [convert_blocks] div with paragraph
 <div class="class1" id="my-id" key="value">
   <p>
     Inside div
+
   </p>
+
 </div>
 

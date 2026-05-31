@@ -1,0 +1,23 @@
+---
+version: 2.0.0
+title: [convert_document] convert all div's starting with a header to details element
+---
+<details>
+  <summary>
+    This should be the summary of the details element.
+
+  </summary>
+  This should be the details of the details element.
+
+
+</details>
+<p>
+  A normal top-level paragraph.
+
+</p>
+<div>
+  This div does not start with a header and should therefore not be converted to a details element.
+
+
+</div>
+

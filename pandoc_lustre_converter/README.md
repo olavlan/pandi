@@ -13,18 +13,7 @@ This package's goal is to:
 Example:
 
 ```gleam
-import examples/pandoc
-import lustre/element
-import pandoc_lustre_converter as converter
 
-pub fn main() {
-  let header =
-    "# Header"
-    |> pandoc.parse("markdown")
-    |> converter.convert_document
-    |> element.to_readable_string
-  assert header == "<h1 id=\"header\">\n  Header\n</h1>\n"
-}
 ```
 
 Note that the package only works with Pandoc's JSON output, so your application will need to call `pandoc`  in order to work with specific document formats:

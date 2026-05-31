@@ -1,17 +1,19 @@
 ---
 version: 2.0.0
-title: [convert_document_with] put all #tags in link element pointing to /tags/[tagname]
+title: [convert_document] convert all #tags to links pointing to /tags/[tagname]
 ---
 <h1>
   Header with 
   <a href="/tags/tag">
     tag
   </a>
+
 </h1>
 <p>
   Paragraph with 
   <a href="/tags/another-tag">
     another-tag
   </a>
+
 </p>
 
