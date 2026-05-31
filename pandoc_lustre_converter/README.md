@@ -6,7 +6,7 @@
 This package aims to:
 
 * Convert Pandoc documents to Lustre html
-* Allow custom conversion rules (through pattern matching on document elements)
+* Allow custom conversion rules through pattern matching on document elements
 
 As an example, consider the following Markdown document:
 
@@ -23,7 +23,7 @@ This is the summary with a #lustre tag.
 :::
 ````
 
-This is how we can convert the document to Lustre html with custom conversion rules:
+Let's convert this to Lustre html with custom conversion rules:
 
 ```gleam
 import examples/pandoc
@@ -88,14 +88,15 @@ pub fn main() {
 }
 ```
 
-See the Hex Docs for more details on custom conversion. See the next section for how to integrate your application with Pandoc.
+See the [Hex Docs]() (link coming) for more details on custom conversion.
+See the next section for how to integrate your Gleam/Lustre application with Pandoc.
 
-## Adding a Pandoc wrapper
+## Integrating with Pandoc
 
-For importing Pandoc documents, `pandoc_lustre_converter` depends on [`pandi`]() (link coming), which deliberately doesn't try to run Pandoc, but works with its json output format instead.
+For importing Pandoc documents, `pandoc_lustre_converter` depends on [`pandi`]() (link coming), which does not try to run Pandoc, but works with its json output format instead.
 That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.
 
-The above example defines the following `pandoc` module for importing a document from file:
+The above example defines the following `pandoc` module that import documents from files:
 
 ```gleam
 import pandi/doc
@@ -121,33 +122,3 @@ pub fn file_to_document(
 
 This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
 Alternatively, you can convert documents to json separately from your Gleam/Lustre application.
-
-`pandi` deliberately doesn't try to run Pandoc, but works with its json output format instead.
-That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.
-
-The example defines the following `pandoc` module for working with files:
-
-```gleam
-import pandi/doc
-import shellout
-
-const folder = "resources/"
-
-pub fn file_to_document(
-  from_file filename: String,
-  from_format from_format: String,
-) -> doc.Document {
-  let assert Ok(result) =
-    shellout.command(
-      run: "pandoc",
-      with: ["-f", from_format, "-t", "json", folder <> filename],
-      in: ".",
-      opt: [shellout.LetBeStderr],
-    )
-  let assert Ok(document) = doc.from_json(result)
-  document
-}
-```
-
-This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
-Alternatively, you can convert documents to json separately from your Gleam application.

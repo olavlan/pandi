@@ -228,7 +228,7 @@
 <p>This package aims to:</p>
 <ul>
 <li>Convert Pandoc documents to Lustre html</li>
-<li>Allow custom conversion rules (through pattern matching on document elements)</li>
+<li>Allow custom conversion rules through pattern matching on document elements</li>
 </ul>
 <p>As an example, consider the following Markdown document:</p>
 <pre><code class="language-md">Here is a #gleam tag, which should be converted to a link pointing to /tags/gleam.
@@ -242,7 +242,7 @@ The following should be converted to a details element:
 This is the summary with a #lustre tag.
 :::
 </code></pre>
-<p>This is how we can convert the document to Lustre html with custom conversion rules:</p>
+<p>Let’s convert this to Lustre html with custom conversion rules:</p>
 <pre><code class="language-gleam">import examples/pandoc
 import gleam/io
 import lustre/attribute as attr
@@ -304,11 +304,12 @@ pub fn main() {
   // &lt;/details&gt;
 }
 </code></pre>
-<p>See the Hex Docs for more details on custom conversion. See the next section for how to integrate your application with Pandoc.</p>
-<h2>Adding a Pandoc wrapper</h2>
-<p>For importing Pandoc documents, <code>pandoc_lustre_converter</code> depends on <a href=""><code>pandi</code></a> (link coming), which deliberately doesn’t try to run Pandoc, but works with its json output format instead.
+<p>See the <a href="">Hex Docs</a> (link coming) for more details on custom conversion.
+See the next section for how to integrate your Gleam/Lustre application with Pandoc.</p>
+<h2>Integrating with Pandoc</h2>
+<p>For importing Pandoc documents, <code>pandoc_lustre_converter</code> depends on <a href=""><code>pandi</code></a> (link coming), which does not try to run Pandoc, but works with its json output format instead.
 That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.</p>
-<p>The above example defines the following <code>pandoc</code> module for importing a document from file:</p>
+<p>The above example defines the following <code>pandoc</code> module that import documents from files:</p>
 <pre><code class="language-gleam">import pandi/doc
 import shellout
 
@@ -331,31 +332,6 @@ pub fn file_to_document(
 </code></pre>
 <p>This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
 Alternatively, you can convert documents to json separately from your Gleam/Lustre application.</p>
-<p><code>pandi</code> deliberately doesn’t try to run Pandoc, but works with its json output format instead.
-That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.</p>
-<p>The example defines the following <code>pandoc</code> module for working with files:</p>
-<pre><code class="language-gleam">import pandi/doc
-import shellout
-
-const folder = "resources/"
-
-pub fn file_to_document(
-  from_file filename: String,
-  from_format from_format: String,
-) -&gt; doc.Document {
-  let assert Ok(result) =
-    shellout.command(
-      run: "pandoc",
-      with: ["-f", from_format, "-t", "json", folder &lt;&gt; filename],
-      in: ".",
-      opt: [shellout.LetBeStderr],
-    )
-  let assert Ok(document) = doc.from_json(result)
-  document
-}
-</code></pre>
-<p>This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
-Alternatively, you can convert documents to json separately from your Gleam application.</p>
 
 
       </main>
@@ -436,9 +412,9 @@ Alternatively, you can convert documents to json separately from your Gleam appl
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780241109"></script>
+    <script src="./js/index.js?v=1780241392"></script>
     <script>
-      fetch("./search-data.json?v=1780241109")
+      fetch("./search-data.json?v=1780241392")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
