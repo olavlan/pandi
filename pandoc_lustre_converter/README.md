@@ -94,8 +94,8 @@ See the next section on how to integrate your Gleam/Lustre application with Pand
 ## Integrating with Pandoc
 
 `pandoc_lustre_converter` uses the document type defined in the [`pandi`]() package.
-`pandi` can only import a document from Pandoc's generic json format.
-That means your application must run Pandoc in order to bridge the gap between json and specific document formats.
+`pandi` can only import a document from Pandoc's json format.
+To import from a Markdown file, your application must run Pandoc to convert it to json first.
 
 The above example uses the following `pandoc` module to import documents from files:
 
