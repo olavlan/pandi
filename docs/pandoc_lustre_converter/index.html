@@ -228,7 +228,7 @@
 <p>This package’s goal is to:</p>
 <ul>
 <li>Convert Pandoc documents to Lustre html</li>
-<li>Allow defining a custom conversion rules by pattern matching on document elements</li>
+<li>Allow custom conversion rules through pattern matching on document elements</li>
 </ul>
 <p>As an example, consider the following Markdown document:</p>
 <pre><code class="language-md">There is a #gleam tag this paragraph,
@@ -389,9 +389,9 @@ In practice, the former is used for custom conversion rules, and the latter is u
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780233988"></script>
+    <script src="./js/index.js?v=1780234090"></script>
     <script>
-      fetch("./search-data.json?v=1780233988")
+      fetch("./search-data.json?v=1780234090")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

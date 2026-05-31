@@ -6,7 +6,7 @@
 This package's goal is to:
 
 * Convert Pandoc documents to Lustre html
-* Allow defining a custom conversion rules by pattern matching on document elements
+* Allow custom conversion rules through pattern matching on document elements
 
 As an example, consider the following Markdown document:
 
