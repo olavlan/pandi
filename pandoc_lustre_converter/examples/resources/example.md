@@ -6,5 +6,5 @@ The following should be converted to a details element:
 
 # This is the summary
 
-There is #lustre tag in the details.
+This is the summary with a #lustre tag.
 :::

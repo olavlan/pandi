@@ -239,7 +239,7 @@ The following should be converted to a details element:
 
 # This is the summary
 
-There is #lustre tag in the details.
+This is the summary with a #lustre tag.
 :::
 </code></pre>
 <p>This is how we can convert the document to Lustre html with custom conversion rules:</p>
@@ -254,10 +254,10 @@ import pandoc_lustre_converter as pl
 pub fn main() {
   let block_converter: pl.BlockConverter(msg) = fn(block, _meta) {
     case block {
-      doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -&gt; {
+      doc.Div(attributes, [doc.Header(_, _, inlines), ..rest]) -&gt; {
         use details &lt;- pl.default_blocks(rest)
         use summary &lt;- pl.default_inlines(inlines)
-        html.details([], [
+        html.details(pl.convert_attributes(attributes), [
           html.summary([], [summary]),
           details,
         ])
@@ -290,7 +290,7 @@ pub fn main() {
   // &lt;p&gt;
   //   The following should be converted to a details element:
   // &lt;/p&gt;
-  // &lt;details&gt;
+  // &lt;details class="my-class"&gt;
   //   &lt;summary&gt;
   //     This is the summary
   //   &lt;/summary&gt;
@@ -436,9 +436,9 @@ Alternatively, you can convert documents to json separately from your Gleam appl
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780240858"></script>
+    <script src="./js/index.js?v=1780241109"></script>
     <script>
-      fetch("./search-data.json?v=1780240858")
+      fetch("./search-data.json?v=1780241109")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

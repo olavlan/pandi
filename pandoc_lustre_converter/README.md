@@ -19,7 +19,7 @@ The following should be converted to a details element:
 
 # This is the summary
 
-There is #lustre tag in the details.
+This is the summary with a #lustre tag.
 :::
 ````
 
@@ -37,10 +37,10 @@ import pandoc_lustre_converter as pl
 pub fn main() {
   let block_converter: pl.BlockConverter(msg) = fn(block, _meta) {
     case block {
-      doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -> {
+      doc.Div(attributes, [doc.Header(_, _, inlines), ..rest]) -> {
         use details <- pl.default_blocks(rest)
         use summary <- pl.default_inlines(inlines)
-        html.details([], [
+        html.details(pl.convert_attributes(attributes), [
           html.summary([], [summary]),
           details,
         ])
@@ -73,7 +73,7 @@ pub fn main() {
   // <p>
   //   The following should be converted to a details element:
   // </p>
-  // <details>
+  // <details class="my-class">
   //   <summary>
   //     This is the summary
   //   </summary>
