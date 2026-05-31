@@ -97,7 +97,7 @@ See the next section on how to integrate your Gleam/Lustre application with Pand
 `pandi` can only import a document from Pandoc's generic json format.
 That means your application must run Pandoc in order to bridge the gap between json and specific document formats.
 
-The above example defines the following `pandoc` module to import documents from files:
+The above example uses the following `pandoc` module to import documents from files:
 
 ```gleam
 import pandi/doc
