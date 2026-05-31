@@ -50,11 +50,11 @@ pub fn main() {
   //     This is the summary
   //   </summary>
   //   <p>
-  //     There is
+  //     These are the details, including a
   //     <a href="/tags/lustre">
   //       #lustre
   //     </a>
-  //     tag in the details.
+  //     tag.
   //   </p>
   // </details>
 }

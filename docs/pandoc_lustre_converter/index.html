@@ -227,7 +227,7 @@
 <a href="https://hexdocs.pm/pandi/"><img src="https://img.shields.io/badge/hex-docs-ffaff3" alt="Hex Docs" /></a></p>
 <p>This package aims to:</p>
 <ul>
-<li>Convert <a href="pandoc.org/">Pandoc</a> documents to Lustre html</li>
+<li>Convert <a href="https://www.pandoc.org/">Pandoc</a> documents to Lustre html</li>
 <li>Allow custom conversion rules through pattern matching on document elements</li>
 </ul>
 <p>As an example, consider the following Markdown document:</p>
@@ -239,7 +239,7 @@ The following should be converted to a details element:
 
 # This is the summary
 
-This is the summary with a #lustre tag.
+These are the details, including a #lustre tag.
 :::
 </code></pre>
 <p>Let’s convert this to Lustre html with some custom conversion rules:</p>
@@ -295,11 +295,11 @@ pub fn main() {
   //     This is the summary
   //   &lt;/summary&gt;
   //   &lt;p&gt;
-  //     There is
+  //     These are the details, including a
   //     &lt;a href="/tags/lustre"&gt;
   //       #lustre
   //     &lt;/a&gt;
-  //     tag in the details.
+  //     tag.
   //   &lt;/p&gt;
   // &lt;/details&gt;
 }
@@ -414,9 +414,9 @@ Alternatively, you can convert documents to json separately from your Gleam/Lust
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780243951"></script>
+    <script src="./js/index.js?v=1780250854"></script>
     <script>
-      fetch("./search-data.json?v=1780243951")
+      fetch("./search-data.json?v=1780250854")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

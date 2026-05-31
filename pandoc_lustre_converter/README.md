@@ -5,7 +5,7 @@
 
 This package aims to:
 
-* Convert [Pandoc](pandoc.org/) documents to Lustre html
+* Convert [Pandoc](https://www.pandoc.org/) documents to Lustre html
 * Allow custom conversion rules through pattern matching on document elements
 
 As an example, consider the following Markdown document:
@@ -19,7 +19,7 @@ The following should be converted to a details element:
 
 # This is the summary
 
-This is the summary with a #lustre tag.
+These are the details, including a #lustre tag.
 :::
 ````
 
@@ -78,11 +78,11 @@ pub fn main() {
   //     This is the summary
   //   </summary>
   //   <p>
-  //     There is
+  //     These are the details, including a
   //     <a href="/tags/lustre">
   //       #lustre
   //     </a>
-  //     tag in the details.
+  //     tag.
   //   </p>
   // </details>
 }
