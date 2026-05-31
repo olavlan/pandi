@@ -46,27 +46,12 @@ pub opaque type Action(msg) {
   )
 }
 
-///An action to convert a document element in the default way.
-///
-///Typically used to convert the remaining document elements
-///after defining the custom conversion patterns:
 pub const default: Action(msg) = Default
 
-///An action to convert a document element to a given Lustre element.
-///
-///This gives full flexibility to convert certain document elements
-///in a specific way:
 pub fn custom(element: lustre.Element(msg)) -> Action(msg) {
   Custom(element)
 }
 
-///Provides a way to convert a list of blocks in the default way,
-///and use the result to construct a custom Lustre element.
-///
-///Useful when you need a custom conversion rule for an element,
-///but its block children should be converted in the default way:
-///
-///
 pub fn default_blocks(
   blocks: List(doc.Block),
   callback: fn(lustre.Element(msg)) -> Action(msg),
@@ -74,12 +59,6 @@ pub fn default_blocks(
   WithDefaults(list.map(blocks, BlockElement), callback)
 }
 
-///Provides a way to convert a list of inlines in the default way,
-///and use the result to construct a custom Lustre element.
-///
-///Useful when you need a custom conversion rule for an element,
-///but its inline children should be converted in the default way:
-///
 pub fn default_inlines(
   inlines: List(doc.Inline),
   callback: fn(lustre.Element(msg)) -> Action(msg),
