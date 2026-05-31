@@ -237,6 +237,8 @@
 <h2>Values</h2>
 <ul>
   
+  <li><a href="#convert_attributes">convert_attributes</a></li>
+  
   <li><a href="#convert_document">convert_document</a></li>
   
   <li><a href="#custom">custom</a></li>
@@ -281,7 +283,9 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
+      <div class="rendered-markdown"><p>The type that converters should return.
+Use the provided constructors <code>default</code> and <code>custom</code>.</p>
+</div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub opaque type </span><span class="hljs-title">Action</span>(<span class="hljs-variable">msg</span>)</code></pre>
       
     </div>
@@ -298,7 +302,11 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
+      <div class="rendered-markdown"><p>A block converter is a function that takes a block
+and returns and action, where an action is constructed using
+either <code>default</code> (converting the element in the default way)
+or <code>custom</code> (giving a custom lustre element instead).</p>
+</div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockConverter</span>(<span class="hljs-variable">msg</span>) =
   <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
       
@@ -316,7 +324,11 @@
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"></div>
+      <div class="rendered-markdown"><p>A block converter is a function that takes an inline
+and produces and action, where an action is constructed using
+either <code>default</code> (converting the element in the default way)
+or <code>custom</code> (giving a custom lustre element instead).</p>
+</div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineConverter</span>(<span class="hljs-variable">msg</span>) =
   <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
       
@@ -332,6 +344,23 @@
     <a href="#module-values">Values</a>
     <svg class="icon icon-gleam-chasse"><use xlink:href="#icon-gleam-chasse"></use></svg>
   </h1>
+  
+  <div class="member">
+    <div class="member-name">
+      <h2 id="convert_attributes">
+        <a href="#convert_attributes">
+          convert_attributes
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_attributes</span>(
+  <span class="hljs-variable">attrs</span>: <span title="pandi/doc.{type Attributes}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Attributes</span></span>,
+) -> <span class="hljs-title">List</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/attribute.html#Attribute" title="lustre/attribute.{type Attribute}"><span class="hljs-variable">attribute</span>.<span class="hljs-title">Attribute</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
   
   <div class="member">
     <div class="member-name">
@@ -518,9 +547,9 @@
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780214954"></script>
+    <script src="./js/index.js?v=1780216221"></script>
     <script>
-      fetch("./search-data.json?v=1780214954")
+      fetch("./search-data.json?v=1780216221")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

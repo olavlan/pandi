@@ -39,28 +39,48 @@ pub fn main() {
   |> lustre.to_readable_string
 }
 
+///A block converter is a function that takes a block
+///and returns and action, where an action is constructed using 
+///either `default` (converting the element in the default way)
+///or `custom` (giving a custom lustre element instead).
+pub type BlockConverter(msg) =
+  fn(doc.Block, doc.Meta) -> Action(msg)
+
+///A block converter is a function that takes an inline
+///and produces and action, where an action is constructed using 
+///either `default` (converting the element in the default way)
+///or `custom` (giving a custom lustre element instead).
+pub type InlineConverter(msg) =
+  fn(doc.Inline, doc.Meta) -> Action(msg)
+
+///The type that converters should return.
+///Use the provided constructors `default` and `custom`.
 pub opaque type Action(msg) {
   //The base cases are to either convert an element
   //in the default way.. 
   Default
   //..or give a custom element:
   Custom(element: lustre.Element(msg))
-  //The recursive case is best explained with an example:
-  //if we have a div whose children we 
+  //The recursive case is used to create an action 
+  //based on first converting some document elements
+  //in the default way (e.g. convert the children
+  //of a div to insert them in a new element):
   WithDefaults(
     document_elements: List(DocumentElement),
     callback: fn(lustre.Element(msg)) -> Action(msg),
   )
 }
 
-pub type BlockConverter(msg) =
-  fn(doc.Block, doc.Meta) -> Action(msg)
-
-pub type InlineConverter(msg) =
-  fn(doc.Inline, doc.Meta) -> Action(msg)
-
+//An action to convert a document element in the default way.
+//
+//Typically used to convert the remaining document elements
+//after defining the custom conversion patterns:
 pub const default: Action(msg) = Default
 
+//An action to convert a document element to a given Lustre element.
+//
+//This gives full flexibility to convert certain document elements
+//in a specific way:
 pub fn custom(element: lustre.Element(msg)) -> Action(msg) {
   Custom(element)
 }
@@ -276,7 +296,9 @@ fn convert_inline(
   }
 }
 
-fn convert_attributes(attrs: doc.Attributes) -> List(attribute.Attribute(msg)) {
+pub fn convert_attributes(
+  attrs: doc.Attributes,
+) -> List(attribute.Attribute(msg)) {
   let id = case attrs.id {
     "" -> []
     id -> [attribute.id(id)]
