@@ -5,7 +5,7 @@
 
 This package aims to:
 
-* Convert Pandoc documents to Lustre html
+* Convert [Pandoc](pandoc.org/) documents to Lustre html
 * Allow custom conversion rules through pattern matching on document elements
 
 As an example, consider the following Markdown document:
@@ -37,3 +37,5 @@ The above example uses the following `pandoc` module to import documents from fi
 
 This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
 Alternatively, you can convert documents to json separately from your Gleam/Lustre application.
+
+*The complete example exists as a Gleam project [here](https://github.com/olavlan/pandi/tree/main/pandoc_lustre_converter/examples) along with other examples. Running it requires Pandoc to be installed.*
