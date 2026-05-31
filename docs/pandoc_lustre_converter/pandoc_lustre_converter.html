@@ -325,6 +325,7 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
 and produces and action, where an action is constructed using
 either <code>default</code> (converting the element in the default way)
 or <code>custom</code> (giving a custom lustre element instead).</p>
+<p>Example:</p>
 </div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineConverter</span>(<span class="hljs-variable">msg</span>) =
   <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
@@ -394,7 +395,10 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">custom</span>(<span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>An action to convert a document element to a given Lustre element.</p>
+<p>This gives full flexibility to convert certain document elements
+in a specific way:</p>
+</div>
   </div>
   
   <div class="member">
@@ -409,7 +413,10 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">default</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>An action to convert a document element in the default way.</p>
+<p>Typically used to convert the remaining document elements
+after defining the custom conversion patterns:</p>
+</div>
   </div>
   
   <div class="member">
@@ -427,7 +434,11 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
   <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>),
 ) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Provides a way to convert a list of blocks in the default way,
+and use the result to construct a custom Lustre element.</p>
+<p>Useful when you need a custom conversion rule for an element,
+but its block children should be converted in the default way:</p>
+</div>
   </div>
   
   <div class="member">
@@ -445,7 +456,11 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
   <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>),
 ) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Provides a way to convert a list of inlines in the default way,
+and use the result to construct a custom Lustre element.</p>
+<p>Useful when you need a custom conversion rule for an element,
+but its inline children should be converted in the default way:</p>
+</div>
   </div>
   
 </section>
@@ -529,9 +544,9 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780242406"></script>
+    <script src="./js/index.js?v=1780243058"></script>
     <script>
-      fetch("./search-data.json?v=1780242406")
+      fetch("./search-data.json?v=1780243058")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
