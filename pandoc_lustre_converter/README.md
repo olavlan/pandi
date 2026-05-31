@@ -95,9 +95,9 @@ See the next section on how to integrate your Gleam/Lustre application with Pand
 
 `pandoc_lustre_converter` uses the document type defined in the [`pandi`]() package.
 `pandi` can only import a document from Pandoc's json format.
-To import from a Markdown file, your application must run Pandoc to convert it to json first.
+Your application must call Pandoc to convert from Markdown (and other formats) into json.
 
-The above example defines a helper module `pandoc` import documents from files:
+As a starting point, the above example uses the following `pandoc` module:
 
 ```gleam
 import pandi/doc
@@ -121,7 +121,7 @@ pub fn file_to_document(
 }
 ```
 
-This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
+This can be extended with proper file and error handling.
 Alternatively, you can convert documents to json separately from your Gleam/Lustre application.
 
 *The complete example exists as a Gleam project [here](https://github.com/olavlan/pandi/tree/main/pandoc_lustre_converter/examples) along with other examples. Running it requires Pandoc to be installed.*
