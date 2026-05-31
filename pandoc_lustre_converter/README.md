@@ -23,7 +23,7 @@ This is the summary with a #lustre tag.
 :::
 ````
 
-Let's convert this to Lustre html with custom conversion rules:
+Let's convert this to Lustre html with some custom conversion rules:
 
 ```gleam
 import examples/pandoc
@@ -89,14 +89,15 @@ pub fn main() {
 ```
 
 See the [Hex Docs]() (link coming) for more details on custom conversion.
-See the next section for how to integrate your Gleam/Lustre application with Pandoc.
+See the next section on how to integrate your Gleam/Lustre application with Pandoc.
 
 ## Integrating with Pandoc
 
-For importing Pandoc documents, `pandoc_lustre_converter` depends on [`pandi`]() (link coming), which does not try to run Pandoc, but works with its json output format instead.
-That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.
+`pandoc_lustre_converter` uses the document type defined in the [`pandi`]() package.
+`pandi` can only import a document from Pandoc's generic json format.
+That means your application must run Pandoc in order to bridge the gap between json and specific document formats.
 
-The above example defines the following `pandoc` module that import documents from files:
+The above example defines the following `pandoc` module to import documents from files:
 
 ```gleam
 import pandi/doc

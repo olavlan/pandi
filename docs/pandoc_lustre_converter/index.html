@@ -242,7 +242,7 @@ The following should be converted to a details element:
 This is the summary with a #lustre tag.
 :::
 </code></pre>
-<p>Let’s convert this to Lustre html with custom conversion rules:</p>
+<p>Let’s convert this to Lustre html with some custom conversion rules:</p>
 <pre><code class="language-gleam">import examples/pandoc
 import gleam/io
 import lustre/attribute as attr
@@ -305,11 +305,12 @@ pub fn main() {
 }
 </code></pre>
 <p>See the <a href="">Hex Docs</a> (link coming) for more details on custom conversion.
-See the next section for how to integrate your Gleam/Lustre application with Pandoc.</p>
+See the next section on how to integrate your Gleam/Lustre application with Pandoc.</p>
 <h2>Integrating with Pandoc</h2>
-<p>For importing Pandoc documents, <code>pandoc_lustre_converter</code> depends on <a href=""><code>pandi</code></a> (link coming), which does not try to run Pandoc, but works with its json output format instead.
-That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.</p>
-<p>The above example defines the following <code>pandoc</code> module that import documents from files:</p>
+<p><code>pandoc_lustre_converter</code> uses the document type defined in the <a href=""><code>pandi</code></a> package.
+<code>pandi</code> can only import a document from Pandoc’s generic json format.
+That means your application must run Pandoc in order to bridge the gap between json and specific document formats.</p>
+<p>The above example defines the following <code>pandoc</code> module to import documents from files:</p>
 <pre><code class="language-gleam">import pandi/doc
 import shellout
 
@@ -412,9 +413,9 @@ Alternatively, you can convert documents to json separately from your Gleam/Lust
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780241392"></script>
+    <script src="./js/index.js?v=1780241895"></script>
     <script>
-      fetch("./search-data.json?v=1780241392")
+      fetch("./search-data.json?v=1780241895")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
