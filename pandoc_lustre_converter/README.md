@@ -3,10 +3,10 @@
 [![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
 
-This package's goal is to:
+This package aims to:
 
 * Convert Pandoc documents to Lustre html
-* Allow custom conversion rules through pattern matching on document elements
+* Allow custom conversion rules (through pattern matching on document elements)
 
 As an example, consider the following Markdown document:
 
