@@ -29,7 +29,7 @@ See the next section on how to integrate your Gleam/Lustre application with Pand
 `pandi` can only import a document from Pandoc's json format.
 To import from a Markdown file, your application must run Pandoc to convert it to json first.
 
-The above example uses the following `pandoc` module to import documents from files:
+The above example defines a helper module `pandoc` import documents from files:
 
 ```gleam
 {{./examples/src/examples/pandoc.gleam}}
