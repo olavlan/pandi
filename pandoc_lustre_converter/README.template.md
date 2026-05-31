@@ -3,21 +3,26 @@
 [![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
 
-Pandoc allows you to work with documents in a format-independent way.
-
 This package's goal is to:
 
 * Convert Pandoc documents to Lustre html
-* Allow custom rendering by pattern matching on document elements
+* Allow defining a custom conversion rules by pattern matching on document elements
 
-Example:
+As an example, consider the following Markdown document:
+
+````md
+{{./examples/resources/example.md}}
+````
+
+This is how we can convert the document to Lustre html with custom conversion rules:
 
 ```gleam
-{{examples/src/examples/convert_header.gleam}}
+{{./examples/src/examples/custom_converters_with_file.gleam}}
 ```
 
-Note that the package only works with Pandoc's JSON output, so your application will need to call `pandoc`  in order to work with specific document formats:
+Some things to note are:
 
-```gleam
-{{examples/src/examples/pandoc.gleam}}
-```
+* A block or inline converter should return either `custom(element)` or `default`.
+  In practice, the former is used for custom conversion rules, and the latter is used for the remaining patterns.
+* When using `default`, the element's children are subject to custom conversion rules.
+* When using `default_blocks` and `default_inlines`, the blocks/inlines are subject to custom conversion rules.  

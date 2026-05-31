@@ -1,32 +1,3 @@
-# pandoc-lustre-converter
-
-[![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
-
-This package's goal is to:
-
-* Convert Pandoc documents to Lustre html
-* Allow defining a custom conversion rules by pattern matching on document elements
-
-As an example, consider the following Markdown document:
-
-````md
-There is a #gleam tag this paragraph,
-which should be converted to a link to /tags/gleam.
-
-The following should be converted to a details element:
-
-::: details
-
-# This is the summary
-
-There is #lustre tag in the details.
-:::
-````
-
-This is how we can convert the document to Lustre html with custom conversion rules:
-
-```gleam
 import examples/pandoc
 import lustre/attribute as attr
 import lustre/element
@@ -84,11 +55,3 @@ pub fn main() {
   //   </p>
   // </details>
 }
-```
-
-Some things to note are:
-
-* A block or inline converter should return either `custom(element)` or `default`.
-  In practice, the former is used for custom conversion rules, and the latter is used for the remaining patterns.
-* When using `default`, the element's children are subject to custom conversion rules.
-* When using `default_blocks` and `default_inlines`, the blocks/inlines are subject to custom conversion rules.  

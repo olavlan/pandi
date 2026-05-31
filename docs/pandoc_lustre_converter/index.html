@@ -225,27 +225,90 @@
 <h1>pandoc-lustre-converter</h1>
 <p><a href="https://hex.pm/packages/pandi"><img src="https://img.shields.io/hexpm/v/pandi" alt="Package Version" /></a>
 <a href="https://hexdocs.pm/pandi/"><img src="https://img.shields.io/badge/hex-docs-ffaff3" alt="Hex Docs" /></a></p>
-<p>Pandoc allows you to work with documents in a format-independent way.</p>
 <p>This package’s goal is to:</p>
 <ul>
 <li>Convert Pandoc documents to Lustre html</li>
-<li>Allow custom rendering by pattern matching on document elements</li>
+<li>Allow defining a custom conversion rules by pattern matching on document elements</li>
 </ul>
-<p>Example:</p>
-<pre><code class="language-gleam">
-</code></pre>
-<p>Note that the package only works with Pandoc’s JSON output, so your application will need to call <code>pandoc</code>  in order to work with specific document formats:</p>
-<pre><code class="language-gleam">import pandi/doc
-import shellout
+<p>As an example, consider the following Markdown document:</p>
+<pre><code class="language-md">There is a #gleam tag this paragraph,
+which should be converted to a link to /tags/gleam.
 
-pub fn parse(raw_document: String, format: String) -&gt; doc.Document {
-  let cmd = "echo '" &lt;&gt; raw_document &lt;&gt; "' | pandoc -f " &lt;&gt; format &lt;&gt; " -t json"
-  let assert Ok(result) =
-    shellout.command(run: "sh", with: ["-c", cmd], in: ".", opt: [])
-  let assert Ok(document) = doc.from_json(result)
-  document
+The following should be converted to a details element:
+
+::: details
+
+# This is the summary
+
+There is #lustre tag in the details.
+:::
+</code></pre>
+<p>This is how we can convert the document to Lustre html with custom conversion rules:</p>
+<pre><code class="language-gleam">import examples/pandoc
+import lustre/attribute as attr
+import lustre/element
+import lustre/element/html
+import pandi/doc
+import pandoc_lustre_converter as pl
+
+pub fn main() {
+  let block_converter: pl.BlockConverter(msg) = fn(block, _meta) {
+    case block {
+      doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -&gt; {
+        use details &lt;- pl.default_blocks(rest)
+        use summary &lt;- pl.default_inlines(inlines)
+        html.details([], [
+          html.summary([], [summary]),
+          details,
+        ])
+        |&gt; pl.custom
+      }
+      _ -&gt; pl.default
+    }
+  }
+
+  let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
+    case inline {
+      doc.Str("#" &lt;&gt; tag) -&gt;
+        html.a([attr.href("/tags/" &lt;&gt; tag)], [html.text(tag)]) |&gt; pl.custom
+      _ -&gt; pl.default
+    }
+  }
+
+  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
+  |&gt; pl.convert_document(block_converter, inline_converter)
+  |&gt; element.to_readable_string
+  // &lt;p&gt;
+  //   There is a
+  //   &lt;a href="/tags/gleam"&gt;
+  //     gleam
+  //   &lt;/a&gt;
+  //   tag this paragraph, which should be converted to a link to /tags/gleam.
+  // &lt;/p&gt;
+  // &lt;p&gt;
+  //   The following should be converted to a details element:
+  // &lt;/p&gt;
+  // &lt;details&gt;
+  //   &lt;summary&gt;
+  //     This is the summary
+  //   &lt;/summary&gt;
+  //   &lt;p&gt;
+  //     There is
+  //     &lt;a href="/tags/lustre"&gt;
+  //       lustre
+  //     &lt;/a&gt;
+  //     tag in the details.
+  //   &lt;/p&gt;
+  // &lt;/details&gt;
 }
 </code></pre>
+<p>Some things to note are:</p>
+<ul>
+<li>A block or inline converter should return either <code>custom(element)</code> or <code>default</code>.
+In practice, the former is used for custom conversion rules, and the latter is used for the remaining patterns.</li>
+<li>When using <code>default</code>, the element’s children are subject to custom conversion rules.</li>
+<li>When using <code>default_blocks</code> and <code>default_inlines</code>, the blocks/inlines are subject to custom conversion rules.</li>
+</ul>
 
 
       </main>
@@ -326,9 +389,9 @@ pub fn parse(raw_document: String, format: String) -&gt; doc.Document {
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780230800"></script>
+    <script src="./js/index.js?v=1780233988"></script>
     <script>
-      fetch("./search-data.json?v=1780230800")
+      fetch("./search-data.json?v=1780233988")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
