@@ -308,7 +308,7 @@ pub fn main() {
 See the next section on how to integrate your Gleam/Lustre application with Pandoc.</p>
 <h2>Integrating with Pandoc</h2>
 <p><code>pandoc_lustre_converter</code> uses the document type defined in the <a href=""><code>pandi</code></a> package.
-<code>pandi</code> can only import a document from Pandoc’s json format.
+<code>pandi</code> can only import a document from Pandoc’s generic json format.
 Your application must call Pandoc to convert from Markdown (and other formats) into json.</p>
 <p>As a starting point, the above example uses the following <code>pandoc</code> module:</p>
 <pre><code class="language-gleam">import pandi/doc
@@ -414,9 +414,9 @@ Alternatively, you can convert documents to json separately from your Gleam/Lust
     </script>
 
     <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780251168"></script>
+    <script src="./js/index.js?v=1780251288"></script>
     <script>
-      fetch("./search-data.json?v=1780251168")
+      fetch("./search-data.json?v=1780251288")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
