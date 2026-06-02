@@ -31,27 +31,24 @@ pub type InlineConverter(msg) =
 ///The type that converters should return.
 ///Use the provided constructors `default` and `custom`.
 pub opaque type Action(msg) {
-  //The base cases are to either convert an element
-  //in the default way.. 
-  Default
-  //..or give a custom element:
-  Custom(element: lustre.Element(msg))
-  //The recursive case is used to create an action 
-  //based on first converting some document elements
-  //in the default way (e.g. convert the children
-  //of a div to insert them in a new element):
   WithDefaults(
     document_elements: List(DocumentElement),
     callback: fn(lustre.Element(msg)) -> Action(msg),
   )
+  Default
+  Custom(element: lustre.Element(msg))
 }
 
+///Action to convert a document element the default way.
 pub const default: Action(msg) = Default
 
+///Action to convert a document element to a custom Lustre element.
 pub fn custom(element: lustre.Element(msg)) -> Action(msg) {
   Custom(element)
 }
 
+///Action to convert some (block) children of a document element in the default way,
+///and use the result to contruct a new action.
 pub fn default_blocks(
   blocks: List(doc.Block),
   callback: fn(lustre.Element(msg)) -> Action(msg),
@@ -59,6 +56,8 @@ pub fn default_blocks(
   WithDefaults(list.map(blocks, BlockElement), callback)
 }
 
+///Action to convert some (inline) children of a document element in the default way,
+///and use the result to contruct a new action.
 pub fn default_inlines(
   inlines: List(doc.Inline),
   callback: fn(lustre.Element(msg)) -> Action(msg),
@@ -66,28 +65,32 @@ pub fn default_inlines(
   WithDefaults(list.map(inlines, InlineElement), callback)
 }
 
+///Converts a document with the given block and inline converters.
 pub fn convert_document(
   document: doc.Document,
   block_converter: BlockConverter(msg),
   inline_converter: InlineConverter(msg),
 ) -> lustre.Element(msg) {
+  //Since we don't care about blocks and inlines
+  //when converting to Lustre elements,
+  //we simplify by constructing a single generic converter..
   let converter = combine_converters(block_converter, inline_converter)
+  //..that we use to convert the document block:
   convert_blocks(document.blocks, converter, document.meta)
 }
 
-// Whether we convert from a block or inline does not matter
-// for the Lustre output element, so in the implementation
-// we will work with a general document element:
+//A generic converter...
+type Converter(msg) =
+  fn(DocumentElement, doc.Meta) -> Action(msg)
+
+//..works on any document element:
 type DocumentElement {
   BlockElement(block: doc.Block)
   InlineElement(inline: doc.Inline)
 }
 
-// Thus we will also work with a general converter..
-type Converter(msg) =
-  fn(DocumentElement, doc.Meta) -> Action(msg)
-
-//..that can be contructed from the user's block and inline converter: 
+//The generic converter is contructed by dispatching
+//to either the block or inline converter:
 fn combine_converters(
   block_converter: BlockConverter(msg),
   inline_converter: InlineConverter(msg),
@@ -100,8 +103,8 @@ fn combine_converters(
   }
 }
 
-// When converting a list of blocks, we simply map each block to
-// a general document element first...
+// When converting a list of blocks, we start by mapping each block to
+// a generic document element...
 fn convert_blocks(
   blocks: List(doc.Block),
   converter: Converter(msg),
@@ -121,8 +124,8 @@ fn convert_inlines(
   |> convert_document_elements(converter, meta)
 }
 
-// Now we can convert a general list of document elements
-// by converting each separately and putting the results
+// We then convert a generic list of document elements
+// by converting each element separately and putting the results
 // into a Lustre fragment:
 fn convert_document_elements(
   document_elements: List(DocumentElement),
@@ -133,8 +136,8 @@ fn convert_document_elements(
   |> lustre.fragment
 }
 
-// When converting a document element we need to firt apply
-// the user-provided converter to it to see what action we should use...
+// When converting a document element we first need to apply
+// the user-provided converter to it to see what action to use...
 fn convert_document_element(
   document_element: DocumentElement,
   converter: Converter(msg),
@@ -144,7 +147,39 @@ fn convert_document_element(
   |> convert_document_element_with_action(document_element, converter, meta)
 }
 
-// ..and then convert it based on the action.  
+// ..and then convert it using that action in the next function.
+
+/// The flow of this function is best explained with an example.
+/// The following block converter...
+/// ```gleam
+/// let block_converter: pl.BlockConverter(msg) = fn(block, _meta) {
+///   case block {
+///     doc.Para(content) -> {
+///       use text <- pl.default_inlines(content)
+///       html.div([], [text])
+///       |> pl.custom
+///     }
+///     _ -> pl.default
+///   }
+/// }
+/// ```
+/// ...will resolve to:
+/// ```gleam
+/// let block_converter: BlockConverter(msg) = fn(block, _meta) {
+///   case block {
+///     doc.Para(content) -> {
+///       WithDefaults(list.map(content, InlineElement), fn(text) {
+///         Custom(html.div([], [text]))
+///       })
+///     }
+///     _ -> Default
+///   }
+/// }
+/// ```
+/// When we convert a paragraph, the first action will be of type `WithDefaults`.
+/// We "unwrap" that action by converting the inline elements and using the callback on the result.
+/// The unwrapped action is then processed recursively
+/// and this time we will match on the `Custom` branch.
 fn convert_document_element_with_action(
   action: Action(msg),
   document_element: DocumentElement,
@@ -152,22 +187,26 @@ fn convert_document_element_with_action(
   meta: doc.Meta,
 ) -> lustre.Element(msg) {
   case action {
+    //Unwrap`WithDefaults` until we get to a `Custom` action:
     WithDefaults(document_elements, callback) ->
       document_elements
       |> list.map(convert_document_element(_, converter, meta))
       |> lustre.fragment
       |> callback
+      //In practice, the callback will eventually produce a `Custom` action,
+      //and the recursion will stop (see example above):
       |> convert_document_element_with_action(document_element, converter, meta)
-
-    Custom(element) -> element
+    //Convertan element using the default rules (children still subject to custom rules):
     Default ->
       case document_element {
         BlockElement(block) -> convert_block(block, converter, meta)
         InlineElement(inline) -> convert_inline(inline, converter, meta)
       }
+    Custom(element) -> element
   }
 }
 
+//Convert a block with the default rules (children still subject to custom rules):
 fn convert_block(
   block: doc.Block,
   converter: Converter(msg),
@@ -219,6 +258,7 @@ fn convert_block(
   }
 }
 
+//Convert an inline with the default rules (children still subject to custom rules):
 fn convert_inline(
   inline: doc.Inline,
   converter: Converter(msg),
@@ -263,6 +303,7 @@ fn convert_inline(
   }
 }
 
+/// Convert document attributes to a list of Lustre attributes.
 pub fn convert_attributes(
   attrs: doc.Attributes,
 ) -> List(attribute.Attribute(msg)) {
@@ -279,6 +320,7 @@ pub fn convert_attributes(
   list.flatten([id, classes, keyvalues])
 }
 
+/// Convert document list attributes to a list of Lustre attributes.
 fn convert_list_attributes(
   attrs: doc.ListAttributes,
 ) -> List(attribute.Attribute(msg)) {

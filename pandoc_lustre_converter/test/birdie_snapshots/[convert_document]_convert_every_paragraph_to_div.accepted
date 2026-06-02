@@ -1,0 +1,19 @@
+---
+version: 2.0.0
+title: [convert_document] convert every paragraph to div
+---
+<div>
+  <em>
+    This text should be
+
+  </em>
+   
+  <strong>
+    inside a div
+
+  </strong>
+
+</div>
+This text should not be in a div.
+
+

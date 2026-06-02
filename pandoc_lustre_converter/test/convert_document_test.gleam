@@ -79,3 +79,31 @@ pub fn convert_div_with_header_to_details_test() {
     "convert all div's starting with a header to details element",
   )
 }
+
+pub fn convert_paragraph_to_div_test() {
+  let block_converter: pl.BlockConverter(msg) = fn(block, _meta) {
+    case block {
+      doc.Para(content) -> {
+        use text <- pl.default_inlines(content)
+        html.div([], [text])
+        |> pl.custom
+      }
+      _ -> pl.default
+    }
+  }
+
+  let blocks = [
+    doc.Para([
+      doc.Emph(doc.text("This text should be")),
+      doc.Space,
+      doc.Strong(doc.text("inside a div")),
+    ]),
+    doc.Plain(doc.text("This text should not be in a div.")),
+  ]
+  snapshot(
+    blocks,
+    block_converter,
+    fn(_, _) { pl.default },
+    "convert every paragraph to div",
+  )
+}

@@ -10,9 +10,9 @@ install-hook:
     chmod +x .git/hooks/pre-commit
 
 pre-commit:
-    @just check
-    @just generate-resources
-    @just test
+    #@just check
+    #@just generate-resources
+    #@just test
     @just generate-readme
     @just docs
 

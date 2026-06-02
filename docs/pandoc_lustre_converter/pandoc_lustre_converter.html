@@ -7,11 +7,11 @@
     <meta name="description" content=""/>
     <meta name="theme-color" content="#ffaff3" media="(prefers-color-scheme: light)"/>
     <meta name="theme-color" content="#33384d" media="(prefers-color-scheme: dark)"/>
-    <link rel="stylesheet" href="./css/index.css?v=1.16.0" type="text/css"/>
+    <link rel="stylesheet" href="./css/index.css?v=1.17.0-rc2" type="text/css"/>
     <!-- The docs_config.js file is provided by HexDocs and shared
          between multiple versions of the same package. -->
     <script src="./docs_config.js"></script>
-    <link id="syntax-theme" rel="stylesheet" href="./css/atom-one-light.min.css?v=1.16.0"/>
+    <link id="syntax-theme" rel="stylesheet" href="./css/atom-one-light.min.css?v=1.17.0-rc2"/>
     
   </head>
   <body class="prewrap-off theme-light drawer-closed">
@@ -357,7 +357,8 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
   <span class="hljs-variable">attrs</span>: <span title="pandi/doc.{type Attributes}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Attributes</span></span>,
 ) -> <span class="hljs-title">List</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/attribute.html#Attribute" title="lustre/attribute.{type Attribute}"><span class="hljs-variable">attribute</span>.<span class="hljs-title">Attribute</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Convert document attributes to a list of Lustre attributes.</p>
+</div>
   </div>
   
   <div class="member">
@@ -380,7 +381,8 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
   ),
 ) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Converts a document with the given block and inline converters.</p>
+</div>
   </div>
   
   <div class="member">
@@ -395,7 +397,8 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">custom</span>(<span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Action to convert a document element to a custom Lustre element.</p>
+</div>
   </div>
   
   <div class="member">
@@ -410,7 +413,8 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">default</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Action to convert a document element the default way.</p>
+</div>
   </div>
   
   <div class="member">
@@ -428,7 +432,9 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
   <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>),
 ) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Action to convert some (block) children of a document element in the default way,
+and use the result to contruct a new action.</p>
+</div>
   </div>
   
   <div class="member">
@@ -446,7 +452,9 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
   <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>),
 ) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Action to convert some (inline) children of a document element in the default way,
+and use the result to contruct a new action.</p>
+</div>
   </div>
   
 </section>
@@ -511,12 +519,12 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
       </defs>
     </svg>
 
-    <script src="./js/highlight.min.js?v=1.16.0"></script>
-    <script src="./js/highlightjs-gleam.js?v=1.16.0"></script>
-    <script src="./js/highlightjs-erlang.min.js?v=1.16.0"></script>
-    <script src="./js/highlightjs-elixir.min.js?v=1.16.0"></script>
-    <script src="./js/highlightjs-javascript.min.js?v=1.16.0"></script>
-    <script src="./js/highlightjs-typescript.min.js?v=1.16.0"></script>
+    <script src="./js/highlight.min.js?v=1.17.0-rc2"></script>
+    <script src="./js/highlightjs-gleam.js?v=1.17.0-rc2"></script>
+    <script src="./js/highlightjs-erlang.min.js?v=1.17.0-rc2"></script>
+    <script src="./js/highlightjs-elixir.min.js?v=1.17.0-rc2"></script>
+    <script src="./js/highlightjs-javascript.min.js?v=1.17.0-rc2"></script>
+    <script src="./js/highlightjs-typescript.min.js?v=1.17.0-rc2"></script>
     <script>
       document.querySelectorAll("pre code").forEach((elem) => {
         if (elem.className === "") {
@@ -529,10 +537,10 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
       hljs.highlightAll();
     </script>
 
-    <script src="./js/lunr.min.js?v=1.16.0"></script>
-    <script src="./js/index.js?v=1780251769"></script>
+    <script src="./js/lunr.min.js?v=1.17.0-rc2"></script>
+    <script src="./js/index.js?v=1780419812"></script>
     <script>
-      fetch("./search-data.json?v=1780251769")
+      fetch("./search-data.json?v=1780419812")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
