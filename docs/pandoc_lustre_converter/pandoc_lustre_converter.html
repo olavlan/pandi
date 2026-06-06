@@ -367,7 +367,7 @@ Use the provided constructors <code>default</code> and <code>custom</code>.</p>
     <div class="custom-type-constructors">
       <div class="rendered-markdown"><p>A block converter is a function that takes a block
 and returns and action, where an action is constructed using
-either <code>default</code> (to convert the element in the default way)
+either <code>default</code> (to convert to the default Lutre element)
 or <code>custom</code> (to convert to a custom Lustre element element.).</p>
 <p>Example:</p>
 <pre><code class="language-gleam">import lustre/element
@@ -408,9 +408,9 @@ let block_converter: BlockConverter(msg) = fn(block, _meta) {
     </div>
     
     <div class="custom-type-constructors">
-      <div class="rendered-markdown"><p>A block converter is a function that takes an inline
+      <div class="rendered-markdown"><p>An inline converter is a function that takes an inline
 and produces and action, where an action is constructed using
-either <code>default</code> (converting the element in the default way)
+either <code>default</code> (to convert to the default Lutre element)
 or <code>custom</code> (to convert to a custom Lustre element element.).</p>
 <p>Example:</p>
 <pre><code class="language-gleam">import lustre/attribute
@@ -514,7 +514,7 @@ let inline_converter: InlineConverter(msg) = fn(inline, _meta) {
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">default</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"><p>Action to convert a document element the default way.</p>
+    <div class="rendered-markdown"><p>Action to convert a document element to the default Lutre element.</p>
 </div>
   </div>
   
@@ -534,8 +534,8 @@ let inline_converter: InlineConverter(msg) = fn(inline, _meta) {
 ) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Use this when you need a custom conversion rule for a document element,
-but you want some children of the document element to be
-converted in the default way:</p>
+but you want some block children of the element to be
+converted to the default Lustre element:</p>
 <pre><code class="language-gleam">import lustre/element
 import pandi/doc
 
@@ -576,8 +576,8 @@ let block_converter: BlockConverter(msg) = fn(block, _meta) {
 ) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Use this when you need a custom conversion rule for a document element,
-but you want some children of the document element to be
-converted in the default way:</p>
+but you want some inline children of the element to be
+converted to the default Lustre element:</p>
 <pre><code class="language-gleam">import lustre/element
 import pandi/doc
 
@@ -683,9 +683,9 @@ let block_converter: BlockConverter(msg) = fn(block, _meta) {
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1780770311"></script>
+    <script src="./js/index.js?v=1780770887"></script>
     <script>
-      fetch("./search-data.json?v=1780770311")
+      fetch("./search-data.json?v=1780770887")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
