@@ -79,7 +79,7 @@ import pandi/doc
 
 ///A block converter is a function that takes a block
 ///and returns and action, where an action is constructed using 
-///either `default` (to convert to the default Lutre element)
+///either `default` (to convert to the default Lustre element)
 ///or `custom` (to convert to a custom Lustre element element.).
 ///
 ///Example:
@@ -109,7 +109,7 @@ pub type BlockConverter(msg) =
 
 ///An inline converter is a function that takes an inline
 ///and produces and action, where an action is constructed using 
-///either `default` (to convert to the default Lutre element)
+///either `default` (to convert to the default Lustre element)
 ///or `custom` (to convert to a custom Lustre element element.).
 ///
 ///Example:
@@ -143,7 +143,7 @@ pub opaque type Action(msg) {
   Custom(element: lustre.Element(msg))
 }
 
-///Action to convert a document element to the default Lutre element.
+///Action to convert a document element to the default Lustre element.
 pub const default: Action(msg) = Default
 
 ///Action to convert a document element to a custom Lustre element.

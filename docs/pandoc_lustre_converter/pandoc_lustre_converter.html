@@ -367,7 +367,7 @@ Use the provided constructors <code>default</code> and <code>custom</code>.</p>
     <div class="custom-type-constructors">
       <div class="rendered-markdown"><p>A block converter is a function that takes a block
 and returns and action, where an action is constructed using
-either <code>default</code> (to convert to the default Lutre element)
+either <code>default</code> (to convert to the default Lustre element)
 or <code>custom</code> (to convert to a custom Lustre element element.).</p>
 <p>Example:</p>
 <pre><code class="language-gleam">import lustre/element
@@ -410,7 +410,7 @@ let block_converter: BlockConverter(msg) = fn(block, _meta) {
     <div class="custom-type-constructors">
       <div class="rendered-markdown"><p>An inline converter is a function that takes an inline
 and produces and action, where an action is constructed using
-either <code>default</code> (to convert to the default Lutre element)
+either <code>default</code> (to convert to the default Lustre element)
 or <code>custom</code> (to convert to a custom Lustre element element.).</p>
 <p>Example:</p>
 <pre><code class="language-gleam">import lustre/attribute
@@ -514,7 +514,7 @@ let inline_converter: InlineConverter(msg) = fn(inline, _meta) {
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub const </span><span class="hljs-title">default</span>: <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"><p>Action to convert a document element to the default Lutre element.</p>
+    <div class="rendered-markdown"><p>Action to convert a document element to the default Lustre element.</p>
 </div>
   </div>
   
@@ -683,9 +683,9 @@ let block_converter: BlockConverter(msg) = fn(block, _meta) {
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1780770962"></script>
+    <script src="./js/index.js?v=1780771200"></script>
     <script>
-      fetch("./search-data.json?v=1780770962")
+      fetch("./search-data.json?v=1780771200")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
