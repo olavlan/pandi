@@ -3,10 +3,10 @@
 [![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
 
-This package aims to:
+This package builds on [pandi] and aims to support:
 
-* Convert [Pandoc](https://www.pandoc.org/) documents to Lustre html
-* Allow custom conversion rules through pattern matching on document elements
+* Converting a [Pandoc document] to a [Lustre element](https://lustre.hexdocs.pm/lustre/element.html#Element)
+* Allowing custom conversion rules through pattern matching on [document elements].
 
 As an example, consider the following Markdown document:
 
@@ -14,22 +14,21 @@ As an example, consider the following Markdown document:
 {{./examples/resources/example.md}}
 ````
 
-Let's convert this to Lustre html with some custom conversion rules:
+Here is how we can convert it using a mix of default and custom conversion:
 
 ```gleam
 {{./examples/src/examples/custom_converters_with_file.gleam}}
 ```
 
-See the [Hex Docs]() (link coming) for more details on custom conversion.
+See the [Hex Docs] for more details on custom conversion.
 See the next section on how to integrate your Gleam/Lustre application with Pandoc.
 
-## Integrating with Pandoc
+## Integrating with [Pandoc](https://pandoc.org/)
 
-`pandoc_lustre_converter` uses the document type defined in the [`pandi`]() package.
-`pandi` can only import a document from Pandoc's generic json format.
-Your application must call Pandoc to convert from Markdown (and other formats) to json.
+`pandoc_lustre_converter` depends on `pandi`, which can only import Pandoc's generic json format.
+For your application to import specific document formats, you must call Pandoc to convert them into json first.
 
-As a starting point, the above example uses the following `pandoc` module:
+As a starting point, here is the `pandoc` helper module used by the above example:
 
 ```gleam
 {{./examples/src/examples/pandoc.gleam}}

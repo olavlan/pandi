@@ -225,10 +225,10 @@
 <h1>pandoc-lustre-converter</h1>
 <p><a href="https://hex.pm/packages/pandi"><img src="https://img.shields.io/hexpm/v/pandi" alt="Package Version" /></a>
 <a href="https://hexdocs.pm/pandi/"><img src="https://img.shields.io/badge/hex-docs-ffaff3" alt="Hex Docs" /></a></p>
-<p>This package aims to:</p>
+<p>This package builds on [pandi] and aims to support:</p>
 <ul>
-<li>Convert <a href="https://www.pandoc.org/">Pandoc</a> documents to Lustre html</li>
-<li>Allow custom conversion rules through pattern matching on document elements</li>
+<li>Converting a [Pandoc document] to a <a href="https://lustre.hexdocs.pm/lustre/element.html#Element">Lustre element</a></li>
+<li>Allowing custom conversion rules through pattern matching on [document elements].</li>
 </ul>
 <p>As an example, consider the following Markdown document:</p>
 <pre><code class="language-md">Here is a #gleam tag, which should be converted to a link pointing to /tags/gleam.
@@ -242,7 +242,7 @@ The following should be converted to a details element:
 These are the details, including a #lustre tag.
 :::
 </code></pre>
-<p>Let’s convert this to Lustre html with some custom conversion rules:</p>
+<p>Here is how we can convert it using a mix of default and custom conversion:</p>
 <pre><code class="language-gleam">import examples/pandoc
 import gleam/io
 import lustre/attribute as attr
@@ -304,13 +304,12 @@ pub fn main() {
   // &lt;/details&gt;
 }
 </code></pre>
-<p>See the <a href="">Hex Docs</a> (link coming) for more details on custom conversion.
+<p>See the [Hex Docs] for more details on custom conversion.
 See the next section on how to integrate your Gleam/Lustre application with Pandoc.</p>
-<h2>Integrating with Pandoc</h2>
-<p><code>pandoc_lustre_converter</code> uses the document type defined in the <a href=""><code>pandi</code></a> package.
-<code>pandi</code> can only import a document from Pandoc’s generic json format.
-Your application must call Pandoc to convert from Markdown (and other formats) to json.</p>
-<p>As a starting point, the above example uses the following <code>pandoc</code> module:</p>
+<h2>Integrating with <a href="https://pandoc.org/">Pandoc</a></h2>
+<p><code>pandoc_lustre_converter</code> depends on <code>pandi</code>, which can only import Pandoc’s generic json format.
+For your application to import specific document formats, you must call Pandoc to convert them into json first.</p>
+<p>As a starting point, here is the <code>pandoc</code> helper module used by the above example:</p>
 <pre><code class="language-gleam">import pandi/doc
 import shellout
 
@@ -414,9 +413,9 @@ Alternatively, you can convert documents to json separately from your Gleam/Lust
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1780760757"></script>
+    <script src="./js/index.js?v=1780770227"></script>
     <script>
-      fetch("./search-data.json?v=1780760757")
+      fetch("./search-data.json?v=1780770227")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
