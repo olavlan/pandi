@@ -7,11 +7,11 @@
     <meta name="description" content=""/>
     <meta name="theme-color" content="#ffaff3" media="(prefers-color-scheme: light)"/>
     <meta name="theme-color" content="#33384d" media="(prefers-color-scheme: dark)"/>
-    <link rel="stylesheet" href="./css/index.css?v=1.17.0-rc2" type="text/css"/>
+    <link rel="stylesheet" href="./css/index.css?v=1.17.0" type="text/css"/>
     <!-- The docs_config.js file is provided by HexDocs and shared
          between multiple versions of the same package. -->
     <script src="./docs_config.js"></script>
-    <link id="syntax-theme" rel="stylesheet" href="./css/atom-one-light.min.css?v=1.17.0-rc2"/>
+    <link id="syntax-theme" rel="stylesheet" href="./css/atom-one-light.min.css?v=1.17.0"/>
     
   </head>
   <body class="prewrap-off theme-light drawer-closed">
@@ -258,6 +258,68 @@
   <a href="#module-name">pandoc_lustre_converter</a>
   <svg class="icon icon-gleam-chasse"><use xlink:href="#icon-gleam-chasse"></use></svg>
 </h1>
+<p>Module for converting a Pandoc document to a Lustre element, with support for custom conversion rules.
+Complete example:</p>
+<p>import lustre/attribute
+import lustre/element
+import lustre/element/html
+import pandi/doc
+import pandoc_lustre_converter as pl</p>
+<p>pub fn main() {
+let block_converter: pl.BlockConverter(msg) = fn(block, <em>meta) {
+case block {
+doc.Div(</em>, [doc.Header(_, _, inlines), ..rest]) -&gt; {
+use details &lt;- pl.default_blocks(rest)
+use summary &lt;- pl.default_inlines(inlines)
+html.details([], [
+html.summary([], [summary]),
+details,
+])
+|&gt; pl.custom
+}
+_ -&gt; pl.default
+}
+}</p>
+<p>let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
+case inline {
+doc.Str(“#” &lt;&gt; tag) -&gt;
+html.a([attribute.href(“/tags/” &lt;&gt; tag)], [html.text(tag)]) |&gt; pl.custom
+_ -&gt; pl.default
+}
+}</p>
+<p>let empty_attributes = doc.Attributes(“”, [], [])
+let sample =
+doc.Document(
+blocks: [
+doc.Para(doc.text(“A #tag is in this paragraph.”)),
+doc.Div(attributes: empty_attributes, content: [
+doc.Header(1, empty_attributes, doc.text(“This is the summary”)),
+doc.Plain(doc.text(“There is #another-tag in the details.”)),
+]),
+],
+meta: [],
+)</p>
+<p>sample
+|&gt; pl.convert_document(block_converter, inline_converter)
+|&gt; element.to_readable_string
+// <p>
+//   A
+//   <a href="/tags/tag">
+//     tag
+//   </a>
+//    is in this paragraph.
+// </p>
+// <details>
+//   <summary>
+//     This is the summary
+//   </summary>
+//   There is
+//   <a href="/tags/another-tag">
+//     another-tag
+//   </a>
+//    in the details.
+// </details>
+}</p>
 
 
 
@@ -300,9 +362,29 @@ Use the provided constructors <code>default</code> and <code>custom</code>.</p>
     <div class="custom-type-constructors">
       <div class="rendered-markdown"><p>A block converter is a function that takes a block
 and returns and action, where an action is constructed using
-either <code>default</code> (converting the element in the default way)
-or <code>custom</code> (giving a custom lustre element instead).</p>
+either <code>default</code> (to convert the element in the default way)
+or <code>custom</code> (to convert to a custom Lustre element element.).</p>
 <p>Example:</p>
+<pre><code class="language-gleam">import lustre/element
+import pandi/doc
+
+// ...
+
+let block_converter: BlockConverter(msg) = fn(block, _meta) {
+  case block {
+    doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -&gt; {
+      use details &lt;- default_blocks(rest)
+      use summary &lt;- default_inlines(inlines)
+      html.details([], [
+        html.summary([], [summary]),
+        details,
+      ])
+      |&gt; custom
+    }
+    _ -&gt; default
+  }
+}
+</code></pre>
 </div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">BlockConverter</span>(<span class="hljs-variable">msg</span>) =
   <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
@@ -324,8 +406,22 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
       <div class="rendered-markdown"><p>A block converter is a function that takes an inline
 and produces and action, where an action is constructed using
 either <code>default</code> (converting the element in the default way)
-or <code>custom</code> (giving a custom lustre element instead).</p>
+or <code>custom</code> (to convert to a custom Lustre element element.).</p>
 <p>Example:</p>
+<pre><code class="language-gleam">import lustre/attribute
+import lustre/element
+import pandi/doc
+
+// ...
+
+let inline_converter: InlineConverter(msg) = fn(inline, _meta) {
+  case inline {
+    doc.Str("#" &lt;&gt; tag) -&gt;
+      html.a([attribute.href("/tags/" &lt;&gt; tag)], [html.text(tag)]) |&gt; custom
+    _ -&gt; default
+  }
+}
+</code></pre>
 </div>
       <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">InlineConverter</span>(<span class="hljs-variable">msg</span>) =
   <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
@@ -355,7 +451,7 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">convert_attributes</span>(
   <span class="hljs-variable">attrs</span>: <span title="pandi/doc.{type Attributes}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Attributes</span></span>,
-) -> <span class="hljs-title">List</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/attribute.html#Attribute" title="lustre/attribute.{type Attribute}"><span class="hljs-variable">attribute</span>.<span class="hljs-title">Attribute</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
+) -> <span class="hljs-title">List</span>(<a href="https://lustre.hexdocs.pm/5.6.0/lustre/attribute.html#Attribute" title="lustre/attribute.{type Attribute}"><span class="hljs-variable">attribute</span>.<span class="hljs-title">Attribute</span></a>(<span class="hljs-variable">msg</span>))</code></pre>
     
     <div class="rendered-markdown"><p>Convert document attributes to a list of Lustre attributes.</p>
 </div>
@@ -379,7 +475,7 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
   <span class="hljs-variable">inline_converter</span>: <span class="hljs-keyword">fn</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>, <span class="hljs-title">List</span>(#(<span class="hljs-title">String</span>, <span class="hljs-title">String</span>))) -> <a href="#Action"><span class="hljs-title">Action</span></a>(
     <span class="hljs-variable">msg</span>,
   ),
-) -> <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
+) -> <a href="https://lustre.hexdocs.pm/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Converts a document with the given block and inline converters.</p>
 </div>
@@ -395,7 +491,7 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
       
     </div>
 
-    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">custom</span>(<span class="hljs-variable">element</span>: <a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">custom</span>(<span class="hljs-variable">element</span>: <a href="https://lustre.hexdocs.pm/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Action to convert a document element to a custom Lustre element.</p>
 </div>
@@ -429,11 +525,33 @@ or <code>custom</code> (giving a custom lustre element instead).</p>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">default_blocks</span>(
   <span class="hljs-variable">blocks</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Block}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Block</span></span>),
-  <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>),
+  <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://lustre.hexdocs.pm/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>),
 ) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"><p>Action to convert some (block) children of a document element in the default way,
-and use the result to contruct a new action.</p>
+    <div class="rendered-markdown"><p>Use this when you need a custom conversion rule for a document element,
+but you want some children of the document element to be
+converted in the default way:</p>
+<pre><code class="language-gleam">import lustre/element
+import pandi/doc
+
+// ...
+
+let block_converter: BlockConverter(msg) = fn(block, _meta) {
+  case block {
+    doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -&gt; {
+      use details &lt;- default_blocks(rest)
+      use summary &lt;- default_inlines(inlines)
+      // `details` and `summary` are Lustre elements that can be used as building blocks:
+      html.details([], [
+        html.summary([], [summary]),
+        details,
+      ])
+      |&gt; custom
+    }
+    _ -&gt; default
+  }
+}
+</code></pre>
 </div>
   </div>
   
@@ -449,11 +567,33 @@ and use the result to contruct a new action.</p>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">default_inlines</span>(
   <span class="hljs-variable">inlines</span>: <span class="hljs-title">List</span>(<span title="pandi/doc.{type Inline}"><span class="hljs-variable">doc</span>.<span class="hljs-title">Inline</span></span>),
-  <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://hexdocs.pm/lustre/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>),
+  <span class="hljs-variable">callback</span>: <span class="hljs-keyword">fn</span>(<a href="https://lustre.hexdocs.pm/5.6.0/lustre/element.html#Element" title="lustre/element.{type Element}"><span class="hljs-variable">element</span>.<span class="hljs-title">Element</span></a>(<span class="hljs-variable">msg</span>)) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>),
 ) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
-    <div class="rendered-markdown"><p>Action to convert some (inline) children of a document element in the default way,
-and use the result to contruct a new action.</p>
+    <div class="rendered-markdown"><p>Use this when you need a custom conversion rule for a document element,
+but you want some children of the document element to be
+converted in the default way:</p>
+<pre><code class="language-gleam">import lustre/element
+import pandi/doc
+
+// ...
+
+let block_converter: BlockConverter(msg) = fn(block, _meta) {
+  case block {
+    doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -&gt; {
+      use details &lt;- default_blocks(rest)
+      use summary &lt;- default_inlines(inlines)
+      // `details` and `summary` are Lustre elements that can be used as building blocks:
+      html.details([], [
+        html.summary([], [summary]),
+        details,
+      ])
+      |&gt; custom
+    }
+    _ -&gt; default
+  }
+}
+</code></pre>
 </div>
   </div>
   
@@ -519,12 +659,12 @@ and use the result to contruct a new action.</p>
       </defs>
     </svg>
 
-    <script src="./js/highlight.min.js?v=1.17.0-rc2"></script>
-    <script src="./js/highlightjs-gleam.js?v=1.17.0-rc2"></script>
-    <script src="./js/highlightjs-erlang.min.js?v=1.17.0-rc2"></script>
-    <script src="./js/highlightjs-elixir.min.js?v=1.17.0-rc2"></script>
-    <script src="./js/highlightjs-javascript.min.js?v=1.17.0-rc2"></script>
-    <script src="./js/highlightjs-typescript.min.js?v=1.17.0-rc2"></script>
+    <script src="./js/highlight.min.js?v=1.17.0"></script>
+    <script src="./js/highlightjs-gleam.js?v=1.17.0"></script>
+    <script src="./js/highlightjs-erlang.min.js?v=1.17.0"></script>
+    <script src="./js/highlightjs-elixir.min.js?v=1.17.0"></script>
+    <script src="./js/highlightjs-javascript.min.js?v=1.17.0"></script>
+    <script src="./js/highlightjs-typescript.min.js?v=1.17.0"></script>
     <script>
       document.querySelectorAll("pre code").forEach((elem) => {
         if (elem.className === "") {
@@ -537,10 +677,10 @@ and use the result to contruct a new action.</p>
       hljs.highlightAll();
     </script>
 
-    <script src="./js/lunr.min.js?v=1.17.0-rc2"></script>
-    <script src="./js/index.js?v=1780419812"></script>
+    <script src="./js/lunr.min.js?v=1.17.0"></script>
+    <script src="./js/index.js?v=1780760757"></script>
     <script>
-      fetch("./search-data.json?v=1780419812")
+      fetch("./search-data.json?v=1780760757")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

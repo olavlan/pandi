@@ -1,3 +1,71 @@
+//// Module for converting a Pandoc document to a Lustre element, with support for custom conversion rules.
+//// Complete example:
+////
+//// import lustre/attribute
+//// import lustre/element
+//// import lustre/element/html
+//// import pandi/doc
+//// import pandoc_lustre_converter as pl
+//// 
+//// pub fn main() {
+////   let block_converter: pl.BlockConverter(msg) = fn(block, _meta) {
+////     case block {
+////       doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -> {
+////         use details <- pl.default_blocks(rest)
+////         use summary <- pl.default_inlines(inlines)
+////         html.details([], [
+////           html.summary([], [summary]),
+////           details,
+////         ])
+////         |> pl.custom
+////       }
+////       _ -> pl.default
+////     }
+////   }
+//// 
+////   let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
+////     case inline {
+////       doc.Str("#" <> tag) ->
+////         html.a([attribute.href("/tags/" <> tag)], [html.text(tag)]) |> pl.custom
+////       _ -> pl.default
+////     }
+////   }
+//// 
+////   let empty_attributes = doc.Attributes("", [], [])
+////   let sample =
+////     doc.Document(
+////       blocks: [
+////         doc.Para(doc.text("A #tag is in this paragraph.")),
+////         doc.Div(attributes: empty_attributes, content: [
+////           doc.Header(1, empty_attributes, doc.text("This is the summary")),
+////           doc.Plain(doc.text("There is #another-tag in the details.")),
+////         ]),
+////       ],
+////       meta: [],
+////     )
+//// 
+////   sample
+////   |> pl.convert_document(block_converter, inline_converter)
+////   |> element.to_readable_string
+////   // <p>
+////   //   A
+////   //   <a href="/tags/tag">
+////   //     tag
+////   //   </a>
+////   //    is in this paragraph.
+////   // </p>
+////   // <details>
+////   //   <summary>
+////   //     This is the summary
+////   //   </summary>
+////   //   There is
+////   //   <a href="/tags/another-tag">
+////   //     another-tag
+////   //   </a>
+////   //    in the details.
+////   // </details>
+//// }
+
 import gleam/int
 import gleam/list
 import gleam/string
@@ -8,23 +76,56 @@ import pandi/doc
 
 ///A block converter is a function that takes a block
 ///and returns and action, where an action is constructed using 
-///either `default` (converting the element in the default way)
-///or `custom` (giving a custom lustre element instead).
+///either `default` (to convert the element in the default way)
+///or `custom` (to convert to a custom Lustre element element.).
 ///
 ///Example:
+///```gleam
+/// import lustre/element
+/// import pandi/doc
 ///
+/// // ...
 ///
+/// let block_converter: BlockConverter(msg) = fn(block, _meta) {
+///   case block {
+///     doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -> {
+///       use details <- default_blocks(rest)
+///       use summary <- default_inlines(inlines)
+///       html.details([], [
+///         html.summary([], [summary]),
+///         details,
+///       ])
+///       |> custom
+///     }
+///     _ -> default
+///   }
+/// }
+/// ```
 pub type BlockConverter(msg) =
   fn(doc.Block, doc.Meta) -> Action(msg)
 
 ///A block converter is a function that takes an inline
 ///and produces and action, where an action is constructed using 
 ///either `default` (converting the element in the default way)
-///or `custom` (giving a custom lustre element instead).
+///or `custom` (to convert to a custom Lustre element element.).
 ///
 ///Example:
 ///
+///```gleam
+/// import lustre/attribute
+/// import lustre/element
+/// import pandi/doc
 ///
+/// // ...
+///
+/// let inline_converter: InlineConverter(msg) = fn(inline, _meta) {
+///   case inline {
+///     doc.Str("#" <> tag) ->
+///       html.a([attribute.href("/tags/" <> tag)], [html.text(tag)]) |> custom
+///     _ -> default
+///   }
+/// }
+///```
 pub type InlineConverter(msg) =
   fn(doc.Inline, doc.Meta) -> Action(msg)
 
@@ -47,8 +148,31 @@ pub fn custom(element: lustre.Element(msg)) -> Action(msg) {
   Custom(element)
 }
 
-///Action to convert some (block) children of a document element in the default way,
-///and use the result to contruct a new action.
+///Use this when you need a custom conversion rule for a document element,
+///but you want some children of the document element to be
+///converted in the default way:
+///```gleam
+/// import lustre/element
+/// import pandi/doc
+///
+/// // ...
+///
+/// let block_converter: BlockConverter(msg) = fn(block, _meta) {
+///   case block {
+///     doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -> {
+///       use details <- default_blocks(rest)
+///       use summary <- default_inlines(inlines)
+///       // `details` and `summary` are Lustre elements that can be used as building blocks:
+///       html.details([], [
+///         html.summary([], [summary]),
+///         details,
+///       ])
+///       |> custom
+///     }
+///     _ -> default
+///   }
+/// }
+/// ```
 pub fn default_blocks(
   blocks: List(doc.Block),
   callback: fn(lustre.Element(msg)) -> Action(msg),
@@ -56,8 +180,31 @@ pub fn default_blocks(
   WithDefaults(list.map(blocks, BlockElement), callback)
 }
 
-///Action to convert some (inline) children of a document element in the default way,
-///and use the result to contruct a new action.
+///Use this when you need a custom conversion rule for a document element,
+///but you want some children of the document element to be
+///converted in the default way:
+///```gleam
+/// import lustre/element
+/// import pandi/doc
+///
+/// // ...
+///
+/// let block_converter: BlockConverter(msg) = fn(block, _meta) {
+///   case block {
+///     doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -> {
+///       use details <- default_blocks(rest)
+///       use summary <- default_inlines(inlines)
+///       // `details` and `summary` are Lustre elements that can be used as building blocks:
+///       html.details([], [
+///         html.summary([], [summary]),
+///         details,
+///       ])
+///       |> custom
+///     }
+///     _ -> default
+///   }
+/// }
+/// ```
 pub fn default_inlines(
   inlines: List(doc.Inline),
   callback: fn(lustre.Element(msg)) -> Action(msg),
@@ -176,10 +323,10 @@ fn convert_document_element(
 ///   }
 /// }
 /// ```
-/// When we convert a paragraph, the first action will be of type `WithDefaults`.
-/// We "unwrap" that action by converting the inline elements and using the callback on the result.
-/// The unwrapped action is then processed recursively
-/// and this time we will match on the `Custom` branch.
+/// When we convert a paragraph with the above rule, the first action will be of type `WithDefaults`.
+/// We "unwrap" that action by converting the inline content and using the callback on the result.
+/// The unwrapped action is then passed to the function again, 
+/// and this time it will match on the `Custom` branch:
 fn convert_document_element_with_action(
   action: Action(msg),
   document_element: DocumentElement,
@@ -187,16 +334,12 @@ fn convert_document_element_with_action(
   meta: doc.Meta,
 ) -> lustre.Element(msg) {
   case action {
-    //Unwrap`WithDefaults` until we get to a `Custom` action:
     WithDefaults(document_elements, callback) ->
       document_elements
       |> list.map(convert_document_element(_, converter, meta))
       |> lustre.fragment
       |> callback
-      //In practice, the callback will eventually produce a `Custom` action,
-      //and the recursion will stop (see example above):
       |> convert_document_element_with_action(document_element, converter, meta)
-    //Convertan element using the default rules (children still subject to custom rules):
     Default ->
       case document_element {
         BlockElement(block) -> convert_block(block, converter, meta)
@@ -206,7 +349,7 @@ fn convert_document_element_with_action(
   }
 }
 
-//Convert a block with the default rules (children still subject to custom rules):
+//Convert a block with the default rules (but with children still subject to custom rules):
 fn convert_block(
   block: doc.Block,
   converter: Converter(msg),
@@ -258,7 +401,7 @@ fn convert_block(
   }
 }
 
-//Convert an inline with the default rules (children still subject to custom rules):
+//Convert an inline with the default rules (but with children still subject to custom rules):
 fn convert_inline(
   inline: doc.Inline,
   converter: Converter(msg),
