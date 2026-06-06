@@ -80,7 +80,7 @@ import pandi/doc
 ///A block converter is a function that takes a block
 ///and returns and action, where an action is constructed using 
 ///either `default` (to convert to the default Lustre element)
-///or `custom` (to convert to a custom Lustre element element.).
+///or `custom` (to convert to a custom Lustre element.).
 ///
 ///Example:
 ///```gleam
@@ -110,7 +110,7 @@ pub type BlockConverter(msg) =
 ///An inline converter is a function that takes an inline
 ///and produces and action, where an action is constructed using 
 ///either `default` (to convert to the default Lustre element)
-///or `custom` (to convert to a custom Lustre element element.).
+///or `custom` (to convert to a custom Lustre element.).
 ///
 ///Example:
 ///
