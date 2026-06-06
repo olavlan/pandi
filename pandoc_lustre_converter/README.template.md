@@ -3,10 +3,10 @@
 [![Package Version](https://img.shields.io/hexpm/v/pandi)](https://hex.pm/packages/pandi)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/pandi/)
 
-This package builds on [pandi] and aims to support:
+This package builds on [pandi](https://olavlan.github.io/pandi/pandi/) and aims to support:
 
-* Converting a [Pandoc document] to a [Lustre element](https://lustre.hexdocs.pm/lustre/element.html#Element)
-* Allowing custom conversion rules through pattern matching on [document elements].
+* Converting a [Pandoc document](https://olavlan.github.io/pandi/pandi/pandi/doc.html#Document) to a [Lustre element](https://lustre.hexdocs.pm/lustre/element.html#Element).
+* Custom conversion rules through pattern matching on [block](https://olavlan.github.io/pandi/pandi/pandi/doc.html#Block) and [inline](https://olavlan.github.io/pandi/pandi/pandi/doc.html#Inline) document elements.
 
 As an example, consider the following Markdown document:
 

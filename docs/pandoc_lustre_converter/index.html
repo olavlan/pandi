@@ -225,10 +225,10 @@
 <h1>pandoc-lustre-converter</h1>
 <p><a href="https://hex.pm/packages/pandi"><img src="https://img.shields.io/hexpm/v/pandi" alt="Package Version" /></a>
 <a href="https://hexdocs.pm/pandi/"><img src="https://img.shields.io/badge/hex-docs-ffaff3" alt="Hex Docs" /></a></p>
-<p>This package builds on [pandi] and aims to support:</p>
+<p>This package builds on <a href="https://olavlan.github.io/pandi/pandi/">pandi</a> and aims to support:</p>
 <ul>
-<li>Converting a [Pandoc document] to a <a href="https://lustre.hexdocs.pm/lustre/element.html#Element">Lustre element</a></li>
-<li>Allowing custom conversion rules through pattern matching on [document elements].</li>
+<li>Converting a <a href="https://olavlan.github.io/pandi/pandi/pandi/doc.html#Document">Pandoc document</a> to a <a href="https://lustre.hexdocs.pm/lustre/element.html#Element">Lustre element</a>.</li>
+<li>Custom conversion rules through pattern matching on <a href="https://olavlan.github.io/pandi/pandi/pandi/doc.html#Block">block</a> and <a href="https://olavlan.github.io/pandi/pandi/pandi/doc.html#Inline">inline</a> document elements.</li>
 </ul>
 <p>As an example, consider the following Markdown document:</p>
 <pre><code class="language-md">Here is a #gleam tag, which should be converted to a link pointing to /tags/gleam.
@@ -413,9 +413,9 @@ Alternatively, you can convert documents to json separately from your Gleam/Lust
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1780771293"></script>
+    <script src="./js/index.js?v=1780771914"></script>
     <script>
-      fetch("./search-data.json?v=1780771293")
+      fetch("./search-data.json?v=1780771914")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
