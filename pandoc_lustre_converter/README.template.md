@@ -20,7 +20,7 @@ Here is how we can convert it using a mix of default and custom conversion:
 {{./examples/src/examples/custom_converters_with_file.gleam}}
 ```
 
-See the [Hex Docs] for more details on custom conversion.
+See the [module docs](https://olavlan.github.io/pandi/pandoc_lustre_converter/pandoc_lustre_converter.html) for more details on custom conversion.
 See the next section on how to integrate your Gleam/Lustre application with Pandoc.
 
 ## Integrating with [Pandoc](https://pandoc.org/)

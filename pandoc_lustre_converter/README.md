@@ -88,7 +88,7 @@ pub fn main() {
 }
 ```
 
-See the [Hex Docs] for more details on custom conversion.
+See the [module docs](https://olavlan.github.io/pandi/pandoc_lustre_converter/pandoc_lustre_converter.html) for more details on custom conversion.
 See the next section on how to integrate your Gleam/Lustre application with Pandoc.
 
 ## Integrating with [Pandoc](https://pandoc.org/)
