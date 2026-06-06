@@ -260,66 +260,71 @@
 </h1>
 <p>Module for converting a Pandoc document to a Lustre element, with support for custom conversion rules.
 Complete example:</p>
-<p>import lustre/attribute
+<pre><code class="language-gleam">import lustre/attribute
 import lustre/element
 import lustre/element/html
 import pandi/doc
-import pandoc_lustre_converter as pl</p>
-<p>pub fn main() {
-let block_converter: pl.BlockConverter(msg) = fn(block, <em>meta) {
-case block {
-doc.Div(</em>, [doc.Header(_, _, inlines), ..rest]) -&gt; {
-use details &lt;- pl.default_blocks(rest)
-use summary &lt;- pl.default_inlines(inlines)
-html.details([], [
-html.summary([], [summary]),
-details,
-])
-|&gt; pl.custom
+import pandoc_lustre_converter as pl
+
+pub fn main() {
+  let block_converter: pl.BlockConverter(msg) = fn(block, _meta) {
+    case block {
+      doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -&gt; {
+        use details &lt;- pl.default_blocks(rest)
+        use summary &lt;- pl.default_inlines(inlines)
+        html.details([], [
+          html.summary([], [summary]),
+          details,
+        ])
+        |&gt; pl.custom
+      }
+      _ -&gt; pl.default
+    }
+  }
+
+  let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
+    case inline {
+      doc.Str("#" &lt;&gt; tag) -&gt;
+        html.a([attribute.href("/tags/" &lt;&gt; tag)], [html.text(tag)]) |&gt; pl.custom
+      _ -&gt; pl.default
+    }
+  }
+
+  let empty_attributes = doc.Attributes("", [], [])
+  let sample =
+    doc.Document(
+      blocks: [
+        doc.Para(doc.text("A #tag is in this paragraph.")),
+        doc.Div(attributes: empty_attributes, content: [
+          doc.Header(1, empty_attributes, doc.text("This is the summary")),
+          doc.Plain(doc.text("There is #another-tag in the details.")),
+        ]),
+      ],
+      meta: [],
+    )
+
+  sample
+  |&gt; pl.convert_document(block_converter, inline_converter)
+  |&gt; element.to_readable_string
+  // &lt;p&gt;
+  //   A
+  //   &lt;a href="/tags/tag"&gt;
+  //     tag
+  //   &lt;/a&gt;
+  //    is in this paragraph.
+  // &lt;/p&gt;
+  // &lt;details&gt;
+  //   &lt;summary&gt;
+  //     This is the summary
+  //   &lt;/summary&gt;
+  //   There is
+  //   &lt;a href="/tags/another-tag"&gt;
+  //     another-tag
+  //   &lt;/a&gt;
+  //    in the details.
+  // &lt;/details&gt;
 }
-_ -&gt; pl.default
-}
-}</p>
-<p>let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
-case inline {
-doc.Str(“#” &lt;&gt; tag) -&gt;
-html.a([attribute.href(“/tags/” &lt;&gt; tag)], [html.text(tag)]) |&gt; pl.custom
-_ -&gt; pl.default
-}
-}</p>
-<p>let empty_attributes = doc.Attributes(“”, [], [])
-let sample =
-doc.Document(
-blocks: [
-doc.Para(doc.text(“A #tag is in this paragraph.”)),
-doc.Div(attributes: empty_attributes, content: [
-doc.Header(1, empty_attributes, doc.text(“This is the summary”)),
-doc.Plain(doc.text(“There is #another-tag in the details.”)),
-]),
-],
-meta: [],
-)</p>
-<p>sample
-|&gt; pl.convert_document(block_converter, inline_converter)
-|&gt; element.to_readable_string
-// <p>
-//   A
-//   <a href="/tags/tag">
-//     tag
-//   </a>
-//    is in this paragraph.
-// </p>
-// <details>
-//   <summary>
-//     This is the summary
-//   </summary>
-//   There is
-//   <a href="/tags/another-tag">
-//     another-tag
-//   </a>
-//    in the details.
-// </details>
-}</p>
+</code></pre>
 
 
 
@@ -678,9 +683,9 @@ let block_converter: BlockConverter(msg) = fn(block, _meta) {
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1780770227"></script>
+    <script src="./js/index.js?v=1780770311"></script>
     <script>
-      fetch("./search-data.json?v=1780770227")
+      fetch("./search-data.json?v=1780770311")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

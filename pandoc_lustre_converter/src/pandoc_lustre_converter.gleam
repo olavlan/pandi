@@ -1,6 +1,7 @@
 //// Module for converting a Pandoc document to a Lustre element, with support for custom conversion rules.
 //// Complete example:
 ////
+////```gleam
 //// import lustre/attribute
 //// import lustre/element
 //// import lustre/element/html
@@ -65,6 +66,7 @@
 ////   //    in the details.
 ////   // </details>
 //// }
+//// ```
 
 import gleam/int
 import gleam/list
