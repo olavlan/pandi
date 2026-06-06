@@ -6,13 +6,11 @@ Gleam packages for working with Pandoc-compatible documents:
 
 Tasks, pandi:
 
+* simplify introduction and pandi/filter docs
 * add docs to pandi/doc
 
 Tasks, pandoc-lustre-converter:
 
-* improve "Element" naming to avoid confusion with lustre
-* introduction
-* docs
 * ask Discord for feedback
 
 Tasks, other:
