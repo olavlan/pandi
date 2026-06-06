@@ -368,7 +368,7 @@ Use the provided constructors <code>default</code> and <code>custom</code>.</p>
       <div class="rendered-markdown"><p>A block converter is a function that takes a block
 and returns and action, where an action is constructed using
 either <code>default</code> (to convert to the default Lustre element)
-or <code>custom</code> (to convert to a custom Lustre element.).</p>
+or <code>custom</code> (to convert to a custom Lustre element).</p>
 <p>Example:</p>
 <pre><code class="language-gleam">import lustre/element
 import pandi/doc
@@ -411,7 +411,7 @@ let block_converter: BlockConverter(msg) = fn(block, _meta) {
       <div class="rendered-markdown"><p>An inline converter is a function that takes an inline
 and produces and action, where an action is constructed using
 either <code>default</code> (to convert to the default Lustre element)
-or <code>custom</code> (to convert to a custom Lustre element.).</p>
+or <code>custom</code> (to convert to a custom Lustre element).</p>
 <p>Example:</p>
 <pre><code class="language-gleam">import lustre/attribute
 import lustre/element
@@ -534,7 +534,7 @@ let inline_converter: InlineConverter(msg) = fn(inline, _meta) {
 ) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Use this when you need a custom conversion rule for a document element,
-but you want some block children of the element to be
+but you want some children of the element to be
 converted to the default Lustre element:</p>
 <pre><code class="language-gleam">import lustre/element
 import pandi/doc
@@ -576,7 +576,7 @@ let block_converter: BlockConverter(msg) = fn(block, _meta) {
 ) -> <a href="#Action"><span class="hljs-title">Action</span></a>(<span class="hljs-variable">msg</span>)</code></pre>
     
     <div class="rendered-markdown"><p>Use this when you need a custom conversion rule for a document element,
-but you want some inline children of the element to be
+but you want some children of the element to be
 converted to the default Lustre element:</p>
 <pre><code class="language-gleam">import lustre/element
 import pandi/doc
@@ -683,9 +683,9 @@ let block_converter: BlockConverter(msg) = fn(block, _meta) {
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1780771998"></script>
+    <script src="./js/index.js?v=1780772214"></script>
     <script>
-      fetch("./search-data.json?v=1780771998")
+      fetch("./search-data.json?v=1780772214")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

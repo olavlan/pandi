@@ -80,7 +80,7 @@ import pandi/doc
 ///A block converter is a function that takes a block
 ///and returns and action, where an action is constructed using 
 ///either `default` (to convert to the default Lustre element)
-///or `custom` (to convert to a custom Lustre element.).
+///or `custom` (to convert to a custom Lustre element).
 ///
 ///Example:
 ///```gleam
@@ -110,7 +110,7 @@ pub type BlockConverter(msg) =
 ///An inline converter is a function that takes an inline
 ///and produces and action, where an action is constructed using 
 ///either `default` (to convert to the default Lustre element)
-///or `custom` (to convert to a custom Lustre element.).
+///or `custom` (to convert to a custom Lustre element).
 ///
 ///Example:
 ///
@@ -152,7 +152,7 @@ pub fn custom(element: lustre.Element(msg)) -> Action(msg) {
 }
 
 ///Use this when you need a custom conversion rule for a document element,
-///but you want some block children of the element to be
+///but you want some children of the element to be
 ///converted to the default Lustre element:
 ///```gleam
 /// import lustre/element
@@ -184,7 +184,7 @@ pub fn default_blocks(
 }
 
 ///Use this when you need a custom conversion rule for a document element,
-///but you want some inline children of the element to be
+///but you want some children of the element to be
 ///converted to the default Lustre element:
 ///```gleam
 /// import lustre/element
