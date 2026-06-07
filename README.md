@@ -6,11 +6,11 @@ Gleam packages for working with Pandoc-compatible documents:
 
 Tasks, pandi:
 
-* add docs to pandi/doc
+* Add integration test folder
 
 Tasks, pandoc-lustre-converter:
 
-* ask Discord for feedback
+* ask for feedback on implementation
 
 Tasks, other:
 

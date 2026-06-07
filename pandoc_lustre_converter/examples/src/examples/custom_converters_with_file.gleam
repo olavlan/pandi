@@ -33,7 +33,6 @@ pub fn main() {
   pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
   |> pl.convert_document(block_converter, inline_converter)
   |> element.to_readable_string
-  |> echo
   // <p>
   //   Here is a
   //   <a href="/tags/gleam">

@@ -2,8 +2,8 @@
 
 This project consists of several Gleam packages for working with Pandoc documents.
 
-* [pandi](/pandi/README.md): Core and Pandoc filters.
-* [pandoc-lustre-converter](/pandoc_lustre_converter/README.md): Pandoc to Lustre converter, with rendering hooks.
+* [pandi](/pandi/README.md): Core package and Pandoc filters.
+* [pandoc-lustre-converter](/pandoc_lustre_converter/README.md): Pandoc to Lustre converter, with support for custom conversion rules.
 * [qcheck-pandoc](/qcheck_pandoc/README.md): Pandoc random document generator.
 
 ## Pandoc document AST
@@ -72,35 +72,25 @@ However, we want more useful constructors similar to the [Lua implementation](ht
 We want to parse the JSON-serialized document AST.
 While there is no official schema, we can understand the structure of the different element types by running `echo "markdown text" | pandoc --from markdown --to json` with a minimal markdown example.
 Markdown examples should follow the [Pandoc markdown](https://pandoc.org/MANUAL.html#pandocs-markdown) flavor.
-The Lua implementation above should also be used for a reference to the possible values of fields.
+The Lua implementation above should be used for a reference to the possible values of fields.
 
 ## Checklist when adding or changing an element type
 
-Note that all snapshot tests must be reviewed manually (by a human)
+Note that all snapshot tests must be reviewed manually (by a human).
 
-[pandi](./pandi/src/pandi.gleam):
+Assume we add or change a constructor in [pandi/doc](./pandi/src/pandi/doc.gleam), in either the `Block` or `Inline` type.
+Now running `just check` in the project root will show all the things that needs to be implemented.
 
-* Type constructor
-* Decoder
-* Encoder
-* Handling of the element type in the filter (if it has nested elements)
-* Handling
+When running `just pre-commit` passes, we are done.
 
-[tests](./pandi/test/):
-
-* A minimal `from_json` snapshot test (follow existing examples)
-  * Note: Example is written as a markdown file and converted to JSON using `just generate-resources`
-
-[pandoc-lustre-converter](./pandoc_lustre_converter/src/pandoc_lustre_converter.gleam):
+Special notes:
 
 * Handling of the element in the Lustre conversion
-  * Note: we use Pandoc's html output as a guideline
-
-[tests](./pandoc_lustre_converter/test/)
-
-* A minimal `convert_inlines` or `convert_blocks` snapshot test (follow existing examples)
-
-[qcheck-pandoc](./qcheck_pandoc/src/qcheck_pandoc.gleam):
-
-* A generator for the type (to be used by the document generator)
-  * Note: we want to ensure the document generator produces readable document samples
+  * We use Pandoc's html output as a guideline
+* [pandi/test](./pandi/test/from_json_test.gleam)
+  * Add a minimal `from_json` snapshot test (follow existing examples)
+* [pandoc_lustre_converter/test](./pandoc_lustre_converter/test/)
+  * A minimal `convert_inlines` or `convert_blocks` snapshot test (follow existing examples)
+* [qcheck-pandoc](./qcheck_pandoc/src/qcheck_pandoc.gleam):
+  * A generator for the type (to be used by the document generator)
+    * We want to ensure the document generator produces readable document samples

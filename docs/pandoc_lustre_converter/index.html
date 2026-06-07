@@ -278,7 +278,6 @@ pub fn main() {
   pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
   |&gt; pl.convert_document(block_converter, inline_converter)
   |&gt; element.to_readable_string
-  |&gt; echo
   // &lt;p&gt;
   //   Here is a
   //   &lt;a href="/tags/gleam"&gt;
@@ -412,9 +411,9 @@ Alternatively, you can convert documents to json separately from your Gleam/Lust
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1780848587"></script>
+    <script src="./js/index.js?v=1780855712"></script>
     <script>
-      fetch("./search-data.json?v=1780848587")
+      fetch("./search-data.json?v=1780855712")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

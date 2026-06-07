@@ -1,4 +1,3 @@
-import gleam/io
 import pandi/doc
 import pandi/filter
 
@@ -15,7 +14,6 @@ pub fn main() {
   doc.Document([doc.Para(doc.text("Gleam is cool!"))], [])
   |> filter.apply_inline_filter(wrap_gleam_in_span)
   |> doc.to_string
-  |> io.println
   // [
   //   Para
   //     [
