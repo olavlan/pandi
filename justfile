@@ -83,18 +83,6 @@ docs:
         cp -r "$pkg/build/dev/docs/$pkg/." "docs/$pkg/"
     done
 
-# watch source files and rebuild documentation on changes
-serve-docs:
-    #!/usr/bin/env sh
-    set -e
-    for pkg in {{ packages }}; do
-        (cd "$pkg" && gleam docs build)
-    done
-    echo "Docs built. Open files directly in browser:"
-    for pkg in {{ packages }}; do
-        echo "  file://$(pwd)/$pkg/build/dev/docs/$pkg/index.html"
-    done
-    find . -path '*/src/*.gleam' -o -name "*.template.md" | entr -d -s 'echo "Change detected, rebuilding docs..." && just generate-readme && for pkg in {{ packages }}; do (cd "$pkg" && gleam docs build); done'
 
 # generate README-files from templates across all packages
 generate-readme:
