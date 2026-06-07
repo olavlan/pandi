@@ -324,6 +324,11 @@ fn decode_c_at(
   next(value)
 }
 
+/// Convert a `Document` to a Pandoc json string,
+/// useful for converting further with `pandoc`, e.g.:
+///
+/// * `pandoc -f json -t html JSON_FILE` 
+/// * `echo JSON_STRING | pandoc -f json -t html`
 pub fn to_json(doc: Document) -> String {
   doc
   |> encode
