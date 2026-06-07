@@ -52,31 +52,15 @@
 ////   document
 ////   |> filter.apply_block_filter(change_ordered_to_bullet_list)
 ////   |> filter.apply_inline_filter(insert_github_links)
-////   |> doc.to_json
-////   |> io.println
+////   |> doc.to_string
+////   // output
+////   // more output
+////   // even more output
+////   // final try
+////   // more tries
+////   // is it finally going to work?
 //// }
 //// ```
-////
-//// Pipe the result to `pandoc` to convert to any document format:
-////
-//// ```sh
-//// $ gleam run --no-print-progress | pandoc -f json -t markdown --wrap=preserve
-//// - [lustre-labs/lustre 🔗](https://github.com/lustre-labs/lustre "lustre-labs/lustre at Github")
-//// - [gleam-wisp/wisp 🔗](https://github.com/gleam-wisp/wisp "gleam-wisp/wisp at Github")
-//// - [giacomocavalieri/squirrel 🔗](https://github.com/giacomocavalieri/squirrel "giacomocavalieri/squirrel at Github")
-//// ```
-////
-//// Rendered result:
-////
-//// <ul>
-//// <li><a href="https://github.com/lustre-labs/lustre"
-//// title="lustre-labs/lustre at Github">lustre-labs/lustre 🔗</a></li>
-//// <li><a href="https://github.com/gleam-wisp/wisp"
-//// title="gleam-wisp/wisp at Github">gleam-wisp/wisp 🔗</a></li>
-//// <li><a href="https://github.com/giacomocavalieri/squirrel"
-//// title="giacomocavalieri/squirrel at Github">giacomocavalieri/squirrel
-//// 🔗</a></li>
-//// </ul>
 
 import gleam/list
 import pandi/doc
