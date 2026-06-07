@@ -265,9 +265,9 @@
 <p>This module aims to make it easy to create <em>document filters</em>,
 i.e. element-processing functions that can be applied to the whole document tree.
 The types guarantee a valid document at the end; infinite recursion loops will never happen.</p>
-<p>Complete example:</p>
-<pre><code class="language-gleam">import gleam/io
-import pandi/doc
+<p>Below is a complete example converting ordered lists to bullet lists (block converter),
+and converting occurences like gh:lustre-labs/lustre to a Github link (inline converter):</p>
+<pre><code class="language-gleam">import pandi/doc
 import pandi/filter
 
 pub fn main() {
@@ -285,7 +285,7 @@ pub fn main() {
         [
           doc.Link(
             attributes: empty_attributes,
-            content: doc.text(repo &lt;&gt; " 🔗"),
+            content: doc.text(repo),
             target: doc.Target(
               url: "https://github.com/" &lt;&gt; repo,
               title: repo &lt;&gt; " at Github",
@@ -303,7 +303,6 @@ pub fn main() {
       blocks: [
         doc.OrderedList(list_attributes, [
           [doc.Plain([doc.Str("gh:lustre-labs/lustre")])],
-          [doc.Plain([doc.Str("gh:gleam-wisp/wisp")])],
           [doc.Plain([doc.Str("gh:giacomocavalieri/squirrel")])],
         ]),
       ],
@@ -314,14 +313,35 @@ pub fn main() {
   |&gt; filter.apply_block_filter(change_ordered_to_bullet_list)
   |&gt; filter.apply_inline_filter(insert_github_links)
   |&gt; doc.to_string
-  // output
-  // more output
-  // even more output
-  // final try
-  // more tries
-  // is it finally going to work?
-  // now?
-  // what about now?
+  // [
+  //   BulletList
+  //     [
+  //       [
+  //         Plain
+  //           [
+  //             Link
+  //               ( "" , [  ] , [  ] )
+  //               [ Str "lustre-labs/lustre" ]
+  //               (
+  //                 "https://github.com/lustre-labs/lustre" ,
+  //                 "lustre-labs/lustre at Github" ,
+  //               ) ,
+  //           ] ,
+  //       ] ,
+  //       [
+  //         Plain
+  //           [
+  //             Link
+  //               ( "" , [  ] , [  ] )
+  //               [ Str "giacomocavalieri/squirrel" ]
+  //               (
+  //                 "https://github.com/giacomocavalieri/squirrel" ,
+  //                 "giacomocavalieri/squirrel at Github" ,
+  //               ) ,
+  //           ] ,
+  //       ] ,
+  //     ] ,
+  // ]
 }
 </code></pre>
 
@@ -560,7 +580,7 @@ If you need to further process inserted elements, apply a new filter instead.</p
   }
 }
 </code></pre>
-<p>Note that children of the kept element will be filtered recursively.</p>
+<p>Note that children of the kept element will be filtered.</p>
 </div>
   </div>
   
@@ -719,9 +739,9 @@ If you need to further process inserted elements, apply a new filter instead.</p
     </script>
 
     <script src="../js/lunr.min.js?v=1.17.0"></script>
-    <script src="../js/index.js?v=1780831144"></script>
+    <script src="../js/index.js?v=1780832723"></script>
     <script>
-      fetch("../search-data.json?v=1780831144")
+      fetch("../search-data.json?v=1780832723")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

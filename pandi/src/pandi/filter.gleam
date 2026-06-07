@@ -2,10 +2,10 @@
 //// i.e. element-processing functions that can be applied to the whole document tree.
 //// The types guarantee a valid document at the end; infinite recursion loops will never happen.
 ////
-//// Complete example:
+//// Below is a complete example converting ordered lists to bullet lists (block converter),
+//// and converting occurences like gh:lustre-labs/lustre to a Github link (inline converter):
 ////
 //// ```gleam 
-//// import gleam/io
 //// import pandi/doc
 //// import pandi/filter
 //// 
@@ -24,7 +24,7 @@
 ////         [
 ////           doc.Link(
 ////             attributes: empty_attributes,
-////             content: doc.text(repo <> " 🔗"),
+////             content: doc.text(repo),
 ////             target: doc.Target(
 ////               url: "https://github.com/" <> repo,
 ////               title: repo <> " at Github",
@@ -42,7 +42,6 @@
 ////       blocks: [
 ////         doc.OrderedList(list_attributes, [
 ////           [doc.Plain([doc.Str("gh:lustre-labs/lustre")])],
-////           [doc.Plain([doc.Str("gh:gleam-wisp/wisp")])],
 ////           [doc.Plain([doc.Str("gh:giacomocavalieri/squirrel")])],
 ////         ]),
 ////       ],
@@ -53,14 +52,35 @@
 ////   |> filter.apply_block_filter(change_ordered_to_bullet_list)
 ////   |> filter.apply_inline_filter(insert_github_links)
 ////   |> doc.to_string
-////   // output
-////   // more output
-////   // even more output
-////   // final try
-////   // more tries
-////   // is it finally going to work?
-////   // now?
-////   // what about now?
+////   // [
+////   //   BulletList
+////   //     [
+////   //       [
+////   //         Plain
+////   //           [
+////   //             Link
+////   //               ( "" , [  ] , [  ] )
+////   //               [ Str "lustre-labs/lustre" ]
+////   //               (
+////   //                 "https://github.com/lustre-labs/lustre" ,
+////   //                 "lustre-labs/lustre at Github" ,
+////   //               ) ,
+////   //           ] ,
+////   //       ] ,
+////   //       [
+////   //         Plain
+////   //           [
+////   //             Link
+////   //               ( "" , [  ] , [  ] )
+////   //               [ Str "giacomocavalieri/squirrel" ]
+////   //               (
+////   //                 "https://github.com/giacomocavalieri/squirrel" ,
+////   //                 "giacomocavalieri/squirrel at Github" ,
+////   //               ) ,
+////   //           ] ,
+////   //       ] ,
+////   //     ] ,
+////   // ]
 //// }
 //// ```
 
@@ -131,7 +151,7 @@ type OriginalElementAction {
 /// }
 /// ``` 
 ///
-/// Note that children of the kept element will be filtered recursively.
+/// Note that children of the kept element will be filtered.
 pub const keep: Action(element) = Action([], KeepOriginal, [])
 
 /// Action to remove an element.
