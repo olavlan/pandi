@@ -11,14 +11,13 @@ As an example, consider the following Markdown document:
 {{./examples/resources/example.md}}
 ````
 
-Let's say we want to add a link to the [Gleam playground](https://playground.gleam.run/) after each code block, and then convert the document to html.
-We can achieve this with Pandoc and `pandi`:
+Here is how we can process the code blocks with `pandi`:
 
 ```gleam
 {{./examples/src/examples/gleam_markdown.gleam}}
 ```
 
-We'll explain the imported `pandoc` and `element` modules in the next sections.
+We'll explain the helper modules `pandoc` and `element` in the next sections.
 For now, here is the rendered html:
 
 ---
@@ -27,18 +26,18 @@ For now, here is the rendered html:
 
 ---
 
-## Adding a Pandoc wrapper
+## Integrating with Pandoc
 
-`pandi` deliberately doesn't try to run Pandoc, but works with its json output format instead.
-That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.
+`pandi` can only import Pandoc's generic json format.
+If you want to import specific document formats, you have to call Pandoc with output set to `json`, and then import the result.
 
-The example defines the following `pandoc` module for working with files:
+As a starting point, here is the `pandoc` helper module used by the above example:
 
 ```gleam
 {{./examples/src/examples/pandoc.gleam}}
 ```
 
-This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
+This can be extended with proper file and error handling.
 Alternatively, you can convert documents to json separately from your Gleam application.
 
 ## More advanced processing with filters
@@ -49,8 +48,7 @@ Taking the example a step further, assume we have the following Markdown documen
 {{./examples/resources/example-2.md}}
 ````
 
-We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of "docs:\[package name\]" with a link to the Hex docs.
-
+In this case we need to process nested elements.
 This can be done with *filters*, using the `pandi/filter` module.
 A filter is an element-processing function that can be applied to the whole document tree:
 

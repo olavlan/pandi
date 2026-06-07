@@ -1,6 +1,5 @@
 import examples/pandoc
-import gleam/io
-import lustre/attribute as attr
+import lustre/attribute
 import lustre/element
 import lustre/element/html
 import pandi/doc
@@ -25,7 +24,7 @@ pub fn main() {
   let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
     case inline {
       doc.Str("#" <> tag) ->
-        html.a([attr.href("/tags/" <> tag)], [html.text("#" <> tag)])
+        html.a([attribute.href("/tags/" <> tag)], [html.text("#" <> tag)])
         |> pl.custom
       _ -> pl.default
     }
@@ -34,7 +33,7 @@ pub fn main() {
   pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
   |> pl.convert_document(block_converter, inline_converter)
   |> element.to_readable_string
-  |> io.println
+  |> echo
   // <p>
   //   Here is a
   //   <a href="/tags/gleam">

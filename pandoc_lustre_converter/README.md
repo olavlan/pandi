@@ -27,8 +27,7 @@ Here is how we can convert it using a mix of default and custom conversion:
 
 ```gleam
 import examples/pandoc
-import gleam/io
-import lustre/attribute as attr
+import lustre/attribute
 import lustre/element
 import lustre/element/html
 import pandi/doc
@@ -53,7 +52,7 @@ pub fn main() {
   let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
     case inline {
       doc.Str("#" <> tag) ->
-        html.a([attr.href("/tags/" <> tag)], [html.text("#" <> tag)])
+        html.a([attribute.href("/tags/" <> tag)], [html.text("#" <> tag)])
         |> pl.custom
       _ -> pl.default
     }
@@ -62,7 +61,7 @@ pub fn main() {
   pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
   |> pl.convert_document(block_converter, inline_converter)
   |> element.to_readable_string
-  |> io.println
+  |> echo
   // <p>
   //   Here is a
   //   <a href="/tags/gleam">
@@ -94,7 +93,7 @@ See the next section on how to integrate your Gleam/Lustre application with Pand
 ## Integrating with [Pandoc](https://pandoc.org/)
 
 `pandoc_lustre_converter` depends on `pandi`, which can only import Pandoc's generic json format.
-For your application to import specific document formats, you must call Pandoc to convert them to json first.
+If you want to import specific document formats, you have to call Pandoc with output set to `json`, and then import the result.
 
 As a starting point, here is the `pandoc` helper module used by the above example:
 

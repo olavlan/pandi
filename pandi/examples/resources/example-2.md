@@ -1,7 +1,7 @@
 
-Gleam is **cool**:
+A list:
 
-* *Hello world* example:
+* We want to add a link to the *Gleam Playground* after this nested code block:
 
   ```gleam
   import gleam/io
@@ -11,4 +11,4 @@ Gleam is **cool**:
   }
   ```
 
-* Try docs:lustre to make a web application in Gleam!
+* We want docs:lustre to become a link to the Hex Docs.

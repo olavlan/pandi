@@ -1,5 +1,5 @@
 
-Gleam is **cool** - here is a *Hello world* example:
+We want to add a link to the *Gleam Playground* after this code block:
 
 ```gleam
 import gleam/io

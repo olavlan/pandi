@@ -244,8 +244,7 @@ These are the details, including a #lustre tag.
 </code></pre>
 <p>Here is how we can convert it using a mix of default and custom conversion:</p>
 <pre><code class="language-gleam">import examples/pandoc
-import gleam/io
-import lustre/attribute as attr
+import lustre/attribute
 import lustre/element
 import lustre/element/html
 import pandi/doc
@@ -270,7 +269,7 @@ pub fn main() {
   let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
     case inline {
       doc.Str("#" &lt;&gt; tag) -&gt;
-        html.a([attr.href("/tags/" &lt;&gt; tag)], [html.text("#" &lt;&gt; tag)])
+        html.a([attribute.href("/tags/" &lt;&gt; tag)], [html.text("#" &lt;&gt; tag)])
         |&gt; pl.custom
       _ -&gt; pl.default
     }
@@ -279,7 +278,7 @@ pub fn main() {
   pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
   |&gt; pl.convert_document(block_converter, inline_converter)
   |&gt; element.to_readable_string
-  |&gt; io.println
+  |&gt; echo
   // &lt;p&gt;
   //   Here is a
   //   &lt;a href="/tags/gleam"&gt;
@@ -308,7 +307,7 @@ pub fn main() {
 See the next section on how to integrate your Gleam/Lustre application with Pandoc.</p>
 <h2>Integrating with <a href="https://pandoc.org/">Pandoc</a></h2>
 <p><code>pandoc_lustre_converter</code> depends on <code>pandi</code>, which can only import Pandoc’s generic json format.
-For your application to import specific document formats, you must call Pandoc to convert them to json first.</p>
+If you want to import specific document formats, you have to call Pandoc with output set to <code>json</code>, and then import the result.</p>
 <p>As a starting point, here is the <code>pandoc</code> helper module used by the above example:</p>
 <pre><code class="language-gleam">import pandi/doc
 import shellout
@@ -413,9 +412,9 @@ Alternatively, you can convert documents to json separately from your Gleam/Lust
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1780772445"></script>
+    <script src="./js/index.js?v=1780818646"></script>
     <script>
-      fetch("./search-data.json?v=1780772445")
+      fetch("./search-data.json?v=1780818646")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

@@ -9,7 +9,7 @@ As an example, consider the following Markdown document:
 
 ````md
 
-Gleam is **cool** - here is a *Hello world* example:
+We want to add a link to the *Gleam Playground* after this code block:
 
 ```gleam
 import gleam/io
@@ -20,8 +20,7 @@ pub fn main() {
 ```
 ````
 
-Let's say we want to add a link to the [Gleam playground](https://playground.gleam.run/) after each code block, and then convert the document to html.
-We can achieve this with Pandoc and `pandi`:
+Here is how we can process the code blocks with `pandi`:
 
 ```gleam
 import examples/gleam_markdown/element
@@ -51,13 +50,13 @@ pub fn main() {
 }
 ```
 
-We'll explain the imported `pandoc` and `element` modules in the next sections.
+We'll explain the helper modules `pandoc` and `element` in the next sections.
 For now, here is the rendered html:
 
 ---
 
-<p>Gleam is <strong>cool</strong> - here is a <em>Hello world</em>
-example:</p>
+<p>We want to add a link to the <em>Gleam Playground</em> after this
+code block:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -70,12 +69,12 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 
 ---
 
-## Adding a Pandoc wrapper
+## Integrating with Pandoc
 
-`pandi` deliberately doesn't try to run Pandoc, but works with its json output format instead.
-That means your application must run Pandoc in order to bridge the gap between json and the desired document formats.
+`pandi` can only import Pandoc's generic json format.
+If you want to import specific document formats, you have to call Pandoc with output set to `json`, and then import the result.
 
-The example defines the following `pandoc` module for working with files:
+As a starting point, here is the `pandoc` helper module used by the above example:
 
 ```gleam
 import pandi/doc
@@ -118,7 +117,7 @@ pub fn document_to_file(
 }
 ```
 
-This can be extended with proper file and error handling, or you can wrap Pandoc in a different way.
+This can be extended with proper file and error handling.
 Alternatively, you can convert documents to json separately from your Gleam application.
 
 ## More advanced processing with filters
@@ -127,9 +126,9 @@ Taking the example a step further, assume we have the following Markdown documen
 
 ````md
 
-Gleam is **cool**:
+A list:
 
-* *Hello world* example:
+* We want to add a link to the *Gleam Playground* after this nested code block:
 
   ```gleam
   import gleam/io
@@ -139,11 +138,10 @@ Gleam is **cool**:
   }
   ```
 
-* Try docs:lustre to make a web application in Gleam!
+* We want docs:lustre to become a link to the Hex Docs.
 ````
 
-We still want to add a Playground link after (possibly nested) code blocks, and additionally replace occurrences of "docs:\[package name\]" with a link to the Hex docs.
-
+In this case we need to process nested elements.
 This can be done with *filters*, using the `pandi/filter` module.
 A filter is an element-processing function that can be applied to the whole document tree:
 
@@ -184,9 +182,10 @@ Here is the rendered html:
 
 ---
 
-<p>Gleam is <strong>cool</strong>:</p>
+<p>A list:</p>
 <ul>
-<li><p><em>Hello world</em> example:</p>
+<li><p>We want to add a link to the <em>Gleam Playground</em> after this
+nested code block:</p>
 <div class="sourceCode" id="cb1"><pre
 class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">gleam/io</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -196,9 +195,9 @@ class="sourceCode gleam"><code class="sourceCode gleam"><span id="cb1-1"><a href
 <p><a
 href="https://playground.gleam.run/#N4IgbgpgTgzglgewHYgFwEYA0IDGyAuES+aIcAtgA4JT4AEA5gDYQCG5A9IgDpK+UBXAEZ0AZkjrlWcJAAoAlHWC86dRADpKUGfiZzuIABIQmTBJjoB3GkwAmAQgPzeAXxAugA=="
 title="Gleam playground">Open code in Gleam playground 🔗</a></p></li>
-<li><p>Try <a href="https://hexdocs.pm/lustre/index.html"
-title="lustre at Hex Docs">lustre 🔗</a> to make a web application in
-Gleam!</p></li>
+<li><p>We want <a href="https://hexdocs.pm/lustre/index.html"
+title="lustre at Hex Docs">lustre 🔗</a> to become a link to the Hex
+Docs.</p></li>
 </ul>
 
 ---
