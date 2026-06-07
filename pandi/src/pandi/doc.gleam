@@ -71,19 +71,40 @@ pub type ListNumberDelimiter {
   TwoParens
 }
 
-/// Convert a string of space-separated words to a list of inlines.
+/// Convert a string of space-separated words to a list of inlines:
 ///
-/// Example: `text("A sentence.") -> [Str("A"), Space, Str("sentence.")]`.
+/// ```gleam
+/// doc.text("A sentence.") // [Str("A"), Space, Str("sentence.")]
+/// ```
 pub fn text(text: String) -> List(Inline) {
   string.split(text, on: " ")
   |> list.map(Str)
   |> list.intersperse(Space)
 }
 
+/// Convert a Pandoc json string to a `Document`,
+/// where a Pandoc json string is the output of running `pandoc`
+/// with the output format set to `json`, e.g.:
+///
+/// * `pandoc -t json FILE` 
+/// * `echo DOCUMENT_CONTENT | pandoc -t json`
 pub fn from_json(json_string: String) -> Result(Document, json.DecodeError) {
   json.parse(from: json_string, using: decoder())
 }
 
+/// A decoder for `Document`, useful when decoding data
+/// that contain Pandoc json content:
+/// ```gleam
+/// type BlogPost {
+///   BlogPost(author: String, content: Document)
+/// }
+/// 
+/// fn blog_post_decoder() -> decode.Decoder(BlogPost) {
+///   use author <- decode.field("author", decode.string)
+///   use content <- decode.field("content", doc.decoder())
+///   decode.success(BlogPost(author:, content:))
+/// }
+/// ```
 pub fn decoder() -> decode.Decoder(Document) {
   use blocks <- decode.field("blocks", decode.list(block_decoder()))
   use meta <- decode.field("meta", meta_decoder())

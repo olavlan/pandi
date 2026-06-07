@@ -6,7 +6,6 @@ Gleam packages for working with Pandoc-compatible documents:
 
 Tasks, pandi:
 
-* simplify filter code
 * add docs to pandi/doc
 
 Tasks, pandoc-lustre-converter:

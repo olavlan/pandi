@@ -971,7 +971,19 @@
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">decoder</span>() -> <a href="https://gleam-stdlib.hexdocs.pm/1.0.3/gleam/dynamic/decode.html#Decoder" title="gleam/dynamic/decode.{type Decoder}"><span class="hljs-variable">decode</span>.<span class="hljs-title">Decoder</span></a>(<a href="#Document"><span class="hljs-title">Document</span></a>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>A decoder for <code>Document</code>, useful when decoding data
+that contain Pandoc json content:</p>
+<pre><code class="language-gleam">type BlogPost {
+  BlogPost(author: String, content: Document)
+}
+
+fn blog_post_decoder() -&gt; decode.Decoder(BlogPost) {
+  use author &lt;- decode.field("author", decode.string)
+  use content &lt;- decode.field("content", doc.decoder())
+  decode.success(BlogPost(author:, content:))
+}
+</code></pre>
+</div>
   </div>
   
   <div class="member">
@@ -988,7 +1000,14 @@
   <span class="hljs-variable">json_string</span>: <span class="hljs-title">String</span>,
 ) -> <span class="hljs-title">Result</span>(<a href="#Document"><span class="hljs-title">Document</span></a>, <a href="https://gleam-json.hexdocs.pm/3.1.0/gleam/json.html#DecodeError" title="gleam/json.{type DecodeError}"><span class="hljs-variable">json</span>.<span class="hljs-title">DecodeError</span></a>)</code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Convert a Pandoc json string to a <code>Document</code>,
+where a Pandoc json string is the output of running <code>pandoc</code>
+with the output format set to <code>json</code>, e.g.:</p>
+<ul>
+<li><code>pandoc -t json FILE</code></li>
+<li><code>echo DOCUMENT_CONTENT | pandoc -t json</code></li>
+</ul>
+</div>
   </div>
   
   <div class="member">
@@ -1003,8 +1022,9 @@
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">text</span>(<span class="hljs-variable">text</span>: <span class="hljs-title">String</span>) -> <span class="hljs-title">List</span>(<a href="#Inline"><span class="hljs-title">Inline</span></a>)</code></pre>
     
-    <div class="rendered-markdown"><p>Convert a string of space-separated words to a list of inlines.</p>
-<p>Example: <code>text("A sentence.") -&gt; [Str("A"), Space, Str("sentence.")]</code>.</p>
+    <div class="rendered-markdown"><p>Convert a string of space-separated words to a list of inlines:</p>
+<pre><code class="language-gleam">doc.text("A sentence.") // [Str("A"), Space, Str("sentence.")]
+</code></pre>
 </div>
   </div>
   
@@ -1119,9 +1139,9 @@
     </script>
 
     <script src="../js/lunr.min.js?v=1.17.0"></script>
-    <script src="../js/index.js?v=1780845443"></script>
+    <script src="../js/index.js?v=1780846561"></script>
     <script>
-      fetch("../search-data.json?v=1780845443")
+      fetch("../search-data.json?v=1780846561")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
