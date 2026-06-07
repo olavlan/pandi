@@ -251,9 +251,11 @@ pub fn replace(elements: List(element)) -> Action(element) {
 /// If you need to further process inserted elements, apply a new filter instead. 
 pub fn apply_block_filter(
   document: doc.Document,
-  filter: BlockFilter,
+  block_filter: BlockFilter,
 ) -> doc.Document {
-  let new_blocks = walk_blocks(document.blocks, document.meta, filter)
+  let inline_filter = fn(_, _) { keep }
+  let new_blocks =
+    walk_blocks(document.blocks, document.meta, block_filter, inline_filter)
   doc.Document(..document, blocks: new_blocks)
 }
 
@@ -292,27 +294,30 @@ pub fn apply_block_filter(
 /// If you need to further process inserted elements, apply a new filter instead. 
 pub fn apply_inline_filter(
   document: doc.Document,
-  filter: InlineFilter,
+  inline_filter: InlineFilter,
 ) -> doc.Document {
+  let block_filter = fn(_, _) { keep }
   let new_blocks =
-    list.map(document.blocks, walk_inlines_in_block(_, document.meta, filter))
+    walk_blocks(document.blocks, document.meta, block_filter, inline_filter)
   doc.Document(..document, blocks: new_blocks)
 }
 
 fn walk_blocks(
   blocks: List(doc.Block),
   meta: doc.Meta,
-  filter: BlockFilter,
+  block_filter: BlockFilter,
+  inline_filter: InlineFilter,
 ) -> List(doc.Block) {
-  list.flat_map(blocks, walk_block(_, meta, filter))
+  list.flat_map(blocks, walk_block(_, meta, block_filter, inline_filter))
 }
 
 fn walk_block(
   block: doc.Block,
   meta: doc.Meta,
-  filter: BlockFilter,
+  block_filter: BlockFilter,
+  inline_filter: InlineFilter,
 ) -> List(doc.Block) {
-  case filter(block, meta) {
+  case block_filter(block, meta) {
     Action(prepend, RemoveOriginal, append) ->
       [prepend, append]
       |> list.flatten
@@ -320,43 +325,31 @@ fn walk_block(
     Action(prepend, KeepOriginal, append) -> {
       let original_block_with_filtered_children: doc.Block = case block {
         doc.Div(attrs, content) ->
-          doc.Div(attrs, walk_blocks(content, meta, filter))
+          doc.Div(
+            attrs,
+            walk_blocks(content, meta, block_filter, inline_filter),
+          )
         doc.BulletList(items) ->
-          doc.BulletList(list.map(items, walk_blocks(_, meta, filter)))
+          doc.BulletList(
+            list.map(items, walk_blocks(_, meta, block_filter, inline_filter)),
+          )
         doc.OrderedList(list_attributes, items) ->
           doc.OrderedList(
             list_attributes,
-            list.map(items, walk_blocks(_, meta, filter)),
+            list.map(items, walk_blocks(_, meta, block_filter, inline_filter)),
           )
-        _ -> block
+        doc.BlockQuote(content) ->
+          doc.BlockQuote(walk_blocks(content, meta, block_filter, inline_filter))
+        doc.Header(level, attrs, content) ->
+          doc.Header(level, attrs, walk_inlines(content, meta, inline_filter))
+        doc.Para(content) ->
+          doc.Para(walk_inlines(content, meta, inline_filter))
+        doc.Plain(content) ->
+          doc.Plain(walk_inlines(content, meta, inline_filter))
+        doc.CodeBlock(..) -> block
       }
       [prepend, [original_block_with_filtered_children], append] |> list.flatten
     }
-  }
-}
-
-fn walk_inlines_in_block(
-  block: doc.Block,
-  meta: doc.Meta,
-  filter: InlineFilter,
-) -> doc.Block {
-  case block {
-    doc.Header(level, attrs, content) ->
-      doc.Header(level, attrs, walk_inlines(content, meta, filter))
-    doc.Para(content) -> doc.Para(walk_inlines(content, meta, filter))
-    doc.Plain(content) -> doc.Plain(walk_inlines(content, meta, filter))
-    doc.Div(attrs, content) ->
-      doc.Div(attrs, list.map(content, walk_inlines_in_block(_, meta, filter)))
-    doc.BulletList(items) ->
-      doc.BulletList(
-        list.map(items, list.map(_, walk_inlines_in_block(_, meta, filter))),
-      )
-    doc.OrderedList(list_attributes, items) ->
-      doc.OrderedList(
-        list_attributes,
-        list.map(items, list.map(_, walk_inlines_in_block(_, meta, filter))),
-      )
-    _ -> block
   }
 }
 
@@ -387,7 +380,11 @@ fn walk_inline(
           doc.Span(attrs, walk_inlines(content, meta, filter))
         doc.Link(attrs, content, target) ->
           doc.Link(attrs, walk_inlines(content, meta, filter), target)
-        _ -> inline
+        doc.Code(..) -> inline
+        doc.Str(..) -> inline
+        doc.LineBreak -> inline
+        doc.SoftBreak -> inline
+        doc.Space -> inline
       }
       [prepend, [original_inline_with_filtered_children], append]
       |> list.flatten
