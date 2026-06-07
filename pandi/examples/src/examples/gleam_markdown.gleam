@@ -1,25 +1,33 @@
-import examples/gleam_markdown/element
-import examples/pandoc
-import gleam/list
 import pandi/doc
 
-fn process_block(block: doc.Block) -> List(doc.Block) {
-  case block {
-    doc.CodeBlock(doc.Attributes(_, ["gleam"], _), code) -> [
-      block,
-      element.gleam_playground_link(code),
-    ]
-    _ -> [block]
-  }
+pub fn hex_link(package_name: String) -> doc.Inline {
+  let url = "https://hexdocs.pm/" <> package_name <> "/index.html"
+  let title = package_name <> " at Hex Docs"
+  doc.Link(
+    attributes: empty_attributes(),
+    target: doc.Target(url: url, title: title),
+    content: [
+      doc.Str(package_name),
+      doc.Space,
+      doc.Str("🔗"),
+    ],
+  )
 }
 
-fn process_top_level_blocks(document: doc.Document) -> doc.Document {
-  let new_blocks = list.flat_map(document.blocks, process_block)
-  doc.Document(..document, blocks: new_blocks)
+pub fn gleam_playground_link(gleam_code: String) -> doc.Block {
+  let url = "https://playground.gleam.run/#" <> make_v1_hash(gleam_code)
+  doc.Para(content: [
+    doc.Link(
+      attributes: empty_attributes(),
+      target: doc.Target(url: url, title: "Gleam playground"),
+      content: doc.text("Open code in Gleam playground 🔗"),
+    ),
+  ])
 }
 
-pub fn main() {
-  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
-  |> process_top_level_blocks
-  |> pandoc.document_to_file(to_file: "example.html", to_format: "html")
+fn empty_attributes() -> doc.Attributes {
+  doc.Attributes(id: "", classes: [], keyvalues: [])
 }
+
+@external(javascript, "./lz_ffi.mjs", "makeV1Hash")
+fn make_v1_hash(code: String) -> String

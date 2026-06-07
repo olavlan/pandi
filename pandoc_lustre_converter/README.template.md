@@ -26,9 +26,8 @@ See the next section on how to integrate your Gleam/Lustre application with Pand
 ## Integrating with [Pandoc](https://pandoc.org/)
 
 `pandoc_lustre_converter` depends on `pandi`, which can only import Pandoc's generic json format.
-If you want to import specific document formats, you have to call Pandoc with output set to `json`, and then import the result.
-
-As a starting point, here is the `pandoc` helper module used by the above example:
+If you want to import specific document formats, you have to call Pandoc with the output set to `json`,
+and then import the result:
 
 ```gleam
 {{./examples/src/examples/pandoc.gleam}}

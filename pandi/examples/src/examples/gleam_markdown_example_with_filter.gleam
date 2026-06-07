@@ -1,4 +1,4 @@
-import examples/gleam_markdown/element
+import examples/gleam_markdown as element
 import examples/pandoc
 import pandi/doc
 import pandi/filter

@@ -20,10 +20,10 @@ pub fn main() {
 ```
 ````
 
-Here is how we can process the code blocks with `pandi`:
+Here is how we can process code blocks with `pandi`:
 
 ```gleam
-import examples/gleam_markdown/element
+import examples/gleam_markdown as element
 import examples/pandoc
 import gleam/list
 import pandi/doc
@@ -50,7 +50,7 @@ pub fn main() {
 }
 ```
 
-We'll explain the helper modules `pandoc` and `element` in the next sections.
+We'll explain the helper modules in the next sections.
 For now, here is the rendered html:
 
 ---
@@ -72,9 +72,8 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 ## Integrating with Pandoc
 
 `pandi` can only import Pandoc's generic json format.
-If you want to import specific document formats, you have to call Pandoc with output set to `json`, and then import the result.
-
-As a starting point, here is the `pandoc` helper module used by the above example:
+If you want to import specific document formats, you have to call Pandoc with the output set to `json`,
+and then import the result:
 
 ```gleam
 import pandi/doc
@@ -141,12 +140,11 @@ A list:
 * We want docs:lustre to become a link to the Hex Docs.
 ````
 
-In this case we need to process nested elements.
-This can be done with *filters*, using the `pandi/filter` module.
+These nested elements can be processed with *filters*, using the `pandi/filter` module.
 A filter is an element-processing function that can be applied to the whole document tree:
 
 ```gleam
-import examples/gleam_markdown/element
+import examples/gleam_markdown as element
 import examples/pandoc
 import pandi/doc
 import pandi/filter
@@ -205,9 +203,7 @@ Docs.</p></li>
 ## Element construction
 
 `pandi` only exposes one convenience function to construct elements; the `doc.text` function.
-Otherwise, the type constructors in the `doc` module are used directly.
-
-The above example defines the following `element` module:
+Otherwise, the type constructors in the `doc` module are used directly:
 
 ```gleam
 import pandi/doc

@@ -240,8 +240,8 @@ pub fn main() {
 }
 ```
 </code></pre>
-<p>Here is how we can process the code blocks with <code>pandi</code>:</p>
-<pre><code class="language-gleam">import examples/gleam_markdown/element
+<p>Here is how we can process code blocks with <code>pandi</code>:</p>
+<pre><code class="language-gleam">import examples/gleam_markdown as element
 import examples/pandoc
 import gleam/list
 import pandi/doc
@@ -267,7 +267,7 @@ pub fn main() {
   |&gt; pandoc.document_to_file(to_file: "example.html", to_format: "html")
 }
 </code></pre>
-<p>We’ll explain the helper modules <code>pandoc</code> and <code>element</code> in the next sections.
+<p>We’ll explain the helper modules in the next sections.
 For now, here is the rendered html:</p>
 <hr />
 <p>We want to add a link to the <em>Gleam Playground</em> after this
@@ -284,8 +284,8 @@ title="Gleam playground">Open code in Gleam playground 🔗</a></p>
 <hr />
 <h2>Integrating with Pandoc</h2>
 <p><code>pandi</code> can only import Pandoc’s generic json format.
-If you want to import specific document formats, you have to call Pandoc with output set to <code>json</code>, and then import the result.</p>
-<p>As a starting point, here is the <code>pandoc</code> helper module used by the above example:</p>
+If you want to import specific document formats, you have to call Pandoc with the output set to <code>json</code>,
+and then import the result:</p>
 <pre><code class="language-gleam">import pandi/doc
 import shellout
 import simplifile
@@ -344,10 +344,9 @@ A list:
 
 * We want docs:lustre to become a link to the Hex Docs.
 </code></pre>
-<p>In this case we need to process nested elements.
-This can be done with <em>filters</em>, using the <code>pandi/filter</code> module.
+<p>These nested elements can be processed with <em>filters</em>, using the <code>pandi/filter</code> module.
 A filter is an element-processing function that can be applied to the whole document tree:</p>
-<pre><code class="language-gleam">import examples/gleam_markdown/element
+<pre><code class="language-gleam">import examples/gleam_markdown as element
 import examples/pandoc
 import pandi/doc
 import pandi/filter
@@ -399,8 +398,7 @@ Docs.</p></li>
 <hr />
 <h2>Element construction</h2>
 <p><code>pandi</code> only exposes one convenience function to construct elements; the <code>doc.text</code> function.
-Otherwise, the type constructors in the <code>doc</code> module are used directly.</p>
-<p>The above example defines the following <code>element</code> module:</p>
+Otherwise, the type constructors in the <code>doc</code> module are used directly:</p>
 <pre><code class="language-gleam">import pandi/doc
 
 pub fn hex_link(package_name: String) -&gt; doc.Inline {
@@ -516,9 +514,9 @@ fn make_v1_hash(code: String) -&gt; String
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1780818646"></script>
+    <script src="./js/index.js?v=1780819577"></script>
     <script>
-      fetch("./search-data.json?v=1780818646")
+      fetch("./search-data.json?v=1780819577")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
