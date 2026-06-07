@@ -83,6 +83,17 @@ docs:
         cp -r "$pkg/build/dev/docs/$pkg/." "docs/$pkg/"
     done
 
+# serve documentation locally and rebuild on source changes
+serve-docs port="8000":
+    #!/usr/bin/env sh
+    set -e
+    just docs
+    python3 -m http.server {{ port }} -d docs &
+    SERVER_PID=$!
+    trap 'kill $SERVER_PID 2>/dev/null; exit' EXIT INT
+    echo "Serving docs at http://localhost:{{ port }}"
+    find . -name "*.gleam" -o -name "*.template.md" | entr -d -s 'echo "Change detected, rebuilding docs..." && just generate-readme && just docs'
+
 # generate README-files from templates across all packages
 generate-readme:
     #!/usr/bin/env sh
