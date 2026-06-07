@@ -84,7 +84,7 @@ pub fn text(text: String) -> List(Inline) {
 
 /// Convert a Pandoc json string to a `Document`,
 /// where a Pandoc json string is the output of running `pandoc`
-/// with the output format set to `json`, e.g.:
+/// with the output format set to `json`:
 ///
 /// * `pandoc -t json FILE` 
 /// * `echo DOCUMENT_CONTENT | pandoc -t json`
@@ -92,8 +92,8 @@ pub fn from_json(json_string: String) -> Result(Document, json.DecodeError) {
   json.parse(from: json_string, using: decoder())
 }
 
-/// A decoder for `Document`, useful when decoding data
-/// that contain Pandoc json content:
+/// Get a decoder for `Document`, useful when decoding data
+/// that contains Pandoc json content:
 /// ```gleam
 /// type BlogPost {
 ///   BlogPost(author: String, content: Document)
@@ -325,7 +325,7 @@ fn decode_c_at(
 }
 
 /// Convert a `Document` to a Pandoc json string,
-/// useful for converting further with `pandoc`, e.g.:
+/// useful for converting further with `pandoc`:
 ///
 /// * `pandoc -f json -t html JSON_FILE` 
 /// * `echo JSON_STRING | pandoc -f json -t html`
@@ -572,6 +572,32 @@ fn encode_list_number_delimiter(delim: ListNumberDelimiter) -> json.Json {
   json.object([#("t", json.string(t))])
 }
 
+/// Pretty-print a `Document`:
+/// ```gleam
+/// let document =
+///   doc.Document(
+///     blocks: [
+///       doc.OrderedList(
+///         attributes: doc.ListAttributes(1, doc.Decimal, doc.Period),
+///         items: [
+///           [doc.Plain(doc.text("First item"))],
+///           [doc.Plain(doc.text("Second item"))],
+///         ],
+///       ),
+///     ],
+///     meta: [],
+///   )
+/// 
+/// doc.to_string(document)
+/// // [
+/// //   OrderedList
+/// //     ( 1 , Decimal , Period )
+/// //     [
+/// //       [ Plain [ Str "First" , Space , Str "item" ] ] ,
+/// //       [ Plain [ Str "Second" , Space , Str "item" ] ] ,
+/// //     ] ,
+/// // ]
+/// ```
 pub fn to_string(document: Document) -> String {
   pretty_blocks(document.blocks)
   |> glam.to_string(80)

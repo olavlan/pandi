@@ -971,8 +971,8 @@
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">decoder</span>() -> <a href="https://gleam-stdlib.hexdocs.pm/1.0.3/gleam/dynamic/decode.html#Decoder" title="gleam/dynamic/decode.{type Decoder}"><span class="hljs-variable">decode</span>.<span class="hljs-title">Decoder</span></a>(<a href="#Document"><span class="hljs-title">Document</span></a>)</code></pre>
     
-    <div class="rendered-markdown"><p>A decoder for <code>Document</code>, useful when decoding data
-that contain Pandoc json content:</p>
+    <div class="rendered-markdown"><p>Get a decoder for <code>Document</code>, useful when decoding data
+that contains Pandoc json content:</p>
 <pre><code class="language-gleam">type BlogPost {
   BlogPost(author: String, content: Document)
 }
@@ -1002,7 +1002,7 @@ fn blog_post_decoder() -&gt; decode.Decoder(BlogPost) {
     
     <div class="rendered-markdown"><p>Convert a Pandoc json string to a <code>Document</code>,
 where a Pandoc json string is the output of running <code>pandoc</code>
-with the output format set to <code>json</code>, e.g.:</p>
+with the output format set to <code>json</code>:</p>
 <ul>
 <li><code>pandoc -t json FILE</code></li>
 <li><code>echo DOCUMENT_CONTENT | pandoc -t json</code></li>
@@ -1041,7 +1041,7 @@ with the output format set to <code>json</code>, e.g.:</p>
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">to_json</span>(<span class="hljs-variable">doc</span>: <a href="#Document"><span class="hljs-title">Document</span></a>) -> <span class="hljs-title">String</span></code></pre>
     
     <div class="rendered-markdown"><p>Convert a <code>Document</code> to a Pandoc json string,
-useful for converting further with <code>pandoc</code>, e.g.:</p>
+useful for converting further with <code>pandoc</code>:</p>
 <ul>
 <li><code>pandoc -f json -t html JSON_FILE</code></li>
 <li><code>echo JSON_STRING | pandoc -f json -t html</code></li>
@@ -1061,7 +1061,32 @@ useful for converting further with <code>pandoc</code>, e.g.:</p>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">to_string</span>(<span class="hljs-variable">document</span>: <a href="#Document"><span class="hljs-title">Document</span></a>) -> <span class="hljs-title">String</span></code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Pretty-print a <code>Document</code>:</p>
+<pre><code class="language-gleam">let document =
+  doc.Document(
+    blocks: [
+      doc.OrderedList(
+        attributes: doc.ListAttributes(1, doc.Decimal, doc.Period),
+        items: [
+          [doc.Plain(doc.text("First item"))],
+          [doc.Plain(doc.text("Second item"))],
+        ],
+      ),
+    ],
+    meta: [],
+  )
+
+doc.to_string(document)
+// [
+//   OrderedList
+//     ( 1 , Decimal , Period )
+//     [
+//       [ Plain [ Str "First" , Space , Str "item" ] ] ,
+//       [ Plain [ Str "Second" , Space , Str "item" ] ] ,
+//     ] ,
+// ]
+</code></pre>
+</div>
   </div>
   
 </section>
@@ -1145,9 +1170,9 @@ useful for converting further with <code>pandoc</code>, e.g.:</p>
     </script>
 
     <script src="../js/lunr.min.js?v=1.17.0"></script>
-    <script src="../js/index.js?v=1780847639"></script>
+    <script src="../js/index.js?v=1780848587"></script>
     <script>
-      fetch("../search-data.json?v=1780847639")
+      fetch("../search-data.json?v=1780848587")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
