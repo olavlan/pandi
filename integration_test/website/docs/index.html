@@ -1,18 +1,26 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
 
-    <title>
-      olavlan
-    </title>
+    <title>olavlan</title>
 
+    <link href="website.css" rel="stylesheet" />
+    <script>
+      (function () {
+        var p = new URLSearchParams(window.location.search);
+        var t = p.get("path");
+        if (t) {
+          window.history.replaceState(null, null, t);
+        }
+      })();
+    </script>
 
-    <link href="/website.css" rel="stylesheet">
-    <script>(function(){var p=new URLSearchParams(window.location.search);var t=p.get("path");if(t){window.history.replaceState(null,null,t)}})()</script>
-
-    <script src="/website.js" type="module"></script>
+    <script src="website.js" type="module"></script>
   </head>
-  <body><div id="app"></div></body>
+  <body>
+    <div id="app"></div>
+  </body>
 </html>
+

@@ -31,9 +31,4 @@ lustre_dev_tools = ">= 2.3.6 and < 3.0.0"
 
 [tools.lustre.build]
 outdir = "docs"
-
-[tools.lustre.html]
-title = "olavlan"
-scripts = [
-  { content = "(function(){var p=new URLSearchParams(window.location.search);var t=p.get(\"path\");if(t){window.history.replaceState(null,null,t)}})()" },
-]
+no_html = true

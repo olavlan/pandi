@@ -639,6 +639,24 @@ function to_list(dict) {
     return prepend([key, value], acc);
   });
 }
+function from_list_loop(loop$transient, loop$list) {
+  while (true) {
+    let transient = loop$transient;
+    let list = loop$list;
+    if (list instanceof Empty) {
+      return fromTransient(transient);
+    } else {
+      let rest = list.tail;
+      let key = list.head[0];
+      let value = list.head[1];
+      loop$transient = destructiveTransientInsert(key, value, transient);
+      loop$list = rest;
+    }
+  }
+}
+function from_list(list) {
+  return from_list_loop(toTransient(make()), list);
+}
 function keys(dict) {
   return fold(dict, toList([]), (acc, key, _) => {
     return prepend(key, acc);
@@ -1088,10 +1106,8 @@ function sort(list, compare2) {
 }
 function key_find(keyword_list, desired_key) {
   return find_map(keyword_list, (keyword) => {
-    let key;
-    let value;
-    key = keyword[0];
-    value = keyword[1];
+    let key = keyword[0];
+    let value = keyword[1];
     let $ = isEqual(key, desired_key);
     if ($) {
       return new Ok(value);
@@ -1191,10 +1207,8 @@ var int2 = /* @__PURE__ */ new Decoder(decode_int);
 var string2 = /* @__PURE__ */ new Decoder(decode_string);
 function run(data2, decoder) {
   let $ = decoder.function(data2);
-  let maybe_invalid_data;
-  let errors;
-  maybe_invalid_data = $[0];
-  errors = $[1];
+  let maybe_invalid_data = $[0];
+  let errors = $[1];
   if (errors instanceof Empty) {
     return new Ok(maybe_invalid_data);
   } else {
@@ -1220,10 +1234,8 @@ function decode_float(data2) {
 function map3(decoder, transformer) {
   return new Decoder((d) => {
     let $ = decoder.function(d);
-    let data2;
-    let errors;
-    data2 = $[0];
-    errors = $[1];
+    let data2 = $[0];
+    let errors = $[1];
     return [transformer(data2), errors];
   });
 }
@@ -1244,10 +1256,8 @@ function run_decoders(loop$data, loop$failure, loop$decoders) {
       let decoder = decoders.head;
       let decoders$1 = decoders.tail;
       let $ = decoder.function(data2);
-      let layer;
-      let errors;
-      layer = $;
-      errors = $[1];
+      let layer = $;
+      let errors = $[1];
       if (errors instanceof Empty) {
         return layer;
       } else {
@@ -1261,10 +1271,8 @@ function run_decoders(loop$data, loop$failure, loop$decoders) {
 function one_of(first, alternatives) {
   return new Decoder((dynamic_data) => {
     let $ = first.function(dynamic_data);
-    let layer;
-    let errors;
-    layer = $;
-    errors = $[1];
+    let layer = $;
+    let errors = $[1];
     if (errors instanceof Empty) {
       return layer;
     } else {
@@ -1339,8 +1347,7 @@ function index3(loop$path, loop$position, loop$inner, loop$data, loop$handle_mis
       } else {
         let kind = $[0];
         let $1 = inner(data2);
-        let default$;
-        default$ = $1[0];
+        let default$ = $1[0];
         let _pipe = [
           default$,
           toList([new DecodeError(kind, classify_dynamic(data2), toList([]))])
@@ -1354,23 +1361,18 @@ function subfield(field_path, field_decoder, next) {
   return new Decoder((data2) => {
     let $ = index3(field_path, toList([]), field_decoder.function, data2, (data3, position) => {
       let $12 = field_decoder.function(data3);
-      let default$;
-      default$ = $12[0];
+      let default$ = $12[0];
       let _pipe = [
         default$,
         toList([new DecodeError("Field", "Nothing", toList([]))])
       ];
       return push_path(_pipe, reverse(position));
     });
-    let out;
-    let errors1;
-    out = $[0];
-    errors1 = $[1];
+    let out = $[0];
+    let errors1 = $[1];
     let $1 = next(out).function(data2);
-    let out$1;
-    let errors2;
-    out$1 = $1[0];
-    errors2 = $1[1];
+    let out$1 = $1[0];
+    let errors2 = $1[1];
     return [out$1, append(errors1, errors2)];
   });
 }
@@ -1378,8 +1380,7 @@ function at(path, inner) {
   return new Decoder((data2) => {
     return index3(path, toList([]), inner.function, data2, (data3, position) => {
       let $ = inner.function(data3);
-      let default$;
-      default$ = $[0];
+      let default$ = $[0];
       let _pipe = [
         default$,
         toList([new DecodeError("Field", "Nothing", toList([]))])
@@ -1836,6 +1837,14 @@ function try$(result, fun) {
     return fun(x);
   } else {
     return result;
+  }
+}
+function unwrap2(result, default$) {
+  if (result instanceof Ok) {
+    let v = result[0];
+    return v;
+  } else {
+    return default$;
   }
 }
 function replace_error(result, error) {
@@ -2486,6 +2495,9 @@ function h1(attrs, children) {
 function h2(attrs, children) {
   return element2("h2", attrs, children);
 }
+function h3(attrs, children) {
+  return element2("h3", attrs, children);
+}
 function h4(attrs, children) {
   return element2("h4", attrs, children);
 }
@@ -2501,11 +2513,17 @@ function main(attrs, children) {
 function nav(attrs, children) {
   return element2("nav", attrs, children);
 }
+function blockquote(attrs, children) {
+  return element2("blockquote", attrs, children);
+}
 function div(attrs, children) {
   return element2("div", attrs, children);
 }
 function li(attrs, children) {
   return element2("li", attrs, children);
+}
+function ol(attrs, children) {
+  return element2("ol", attrs, children);
 }
 function p(attrs, children) {
   return element2("p", attrs, children);
@@ -2519,11 +2537,23 @@ function ul(attrs, children) {
 function a(attrs, children) {
   return element2("a", attrs, children);
 }
+function br(attrs) {
+  return element2("br", attrs, empty_list);
+}
 function code(attrs, children) {
   return element2("code", attrs, children);
 }
+function em(attrs, children) {
+  return element2("em", attrs, children);
+}
 function span(attrs, children) {
   return element2("span", attrs, children);
+}
+function strong(attrs, children) {
+  return element2("strong", attrs, children);
+}
+function del(attrs, children) {
+  return element2("del", attrs, children);
 }
 function details(attrs, children) {
   return element2("details", attrs, children);
@@ -2948,12 +2978,9 @@ function do_add_children(loop$handlers, loop$children, loop$vdoms, loop$parent, 
         let nodes$1 = $.children;
         let path = add2(parent, child_index, key);
         let $1 = do_add_children(handlers, children, vdoms, path, 0, nodes$1);
-        let handlers$1;
-        let children$1;
-        let vdoms$1;
-        handlers$1 = $1.handlers;
-        children$1 = $1.children;
-        vdoms$1 = $1.vdoms;
+        let handlers$1 = $1.handlers;
+        let children$1 = $1.children;
+        let vdoms$1 = $1.vdoms;
         loop$handlers = handlers$1;
         loop$children = children$1;
         loop$vdoms = vdoms$1;
@@ -2968,12 +2995,9 @@ function do_add_children(loop$handlers, loop$children, loop$vdoms, loop$parent, 
         let path = add2(parent, child_index, key);
         let handlers$1 = add_attributes(handlers, path, attributes);
         let $1 = do_add_children(handlers$1, children, vdoms, path, 0, nodes$1);
-        let handlers$2;
-        let children$1;
-        let vdoms$1;
-        handlers$2 = $1.handlers;
-        children$1 = $1.children;
-        vdoms$1 = $1.vdoms;
+        let handlers$2 = $1.handlers;
+        let children$1 = $1.children;
+        let vdoms$1 = $1.vdoms;
         loop$handlers = handlers$2;
         loop$children = children$1;
         loop$vdoms = vdoms$1;
@@ -3036,17 +3060,12 @@ function do_add_children(loop$handlers, loop$children, loop$vdoms, loop$parent, 
 }
 function add_children(cache, events, path, child_index, nodes) {
   let vdoms = cache.vdoms;
-  let handlers;
-  let children;
-  handlers = events.handlers;
-  children = events.children;
+  let handlers = events.handlers;
+  let children = events.children;
   let $ = do_add_children(handlers, children, vdoms, path, child_index, nodes);
-  let handlers$1;
-  let children$1;
-  let vdoms$1;
-  handlers$1 = $.handlers;
-  children$1 = $.children;
-  vdoms$1 = $.vdoms;
+  let handlers$1 = $.handlers;
+  let children$1 = $.children;
+  let vdoms$1 = $.vdoms;
   return [
     new Cache(cache.events, vdoms$1, cache.old_vdoms, cache.dispatched_paths, cache.next_dispatched_paths),
     new Events(handlers$1, children$1)
@@ -3059,10 +3078,8 @@ function add_child(cache, events, parent, index4, child2) {
 function from_node(root2) {
   let cache = new$4();
   let $ = add_child(cache, cache.events, root, 0, root2);
-  let cache$1;
-  let events$1;
-  cache$1 = $[0];
-  events$1 = $[1];
+  let cache$1 = $[0];
+  let events$1 = $[1];
   return new Cache(events$1, cache$1.vdoms, cache$1.old_vdoms, cache$1.dispatched_paths, cache$1.next_dispatched_paths);
 }
 function tick(cache) {
@@ -3140,10 +3157,8 @@ function do_remove_children(loop$handlers, loop$children, loop$vdoms, loop$paren
         let nodes$1 = $.children;
         let path = add2(parent, index4, key);
         let $1 = do_remove_children(handlers, children, vdoms, path, 0, nodes$1);
-        let handlers$1;
-        let children$1;
-        handlers$1 = $1.handlers;
-        children$1 = $1.children;
+        let handlers$1 = $1.handlers;
+        let children$1 = $1.children;
         loop$handlers = handlers$1;
         loop$children = children$1;
         loop$vdoms = vdoms;
@@ -3158,10 +3173,8 @@ function do_remove_children(loop$handlers, loop$children, loop$vdoms, loop$paren
         let path = add2(parent, index4, key);
         let handlers$1 = remove_attributes(handlers, path, attributes);
         let $1 = do_remove_children(handlers$1, children, vdoms, path, 0, nodes$1);
-        let handlers$2;
-        let children$1;
-        handlers$2 = $1.handlers;
-        children$1 = $1.children;
+        let handlers$2 = $1.handlers;
+        let children$1 = $1.children;
         loop$handlers = handlers$2;
         loop$children = children$1;
         loop$vdoms = vdoms;
@@ -3741,10 +3754,8 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
         return new PartialDiff(patch, cache, events2);
       } else {
         let $ = add_children(cache, events2, path, node_index, new$5);
-        let cache$1;
-        let events$1;
-        cache$1 = $[0];
-        events$1 = $[1];
+        let cache$1 = $[0];
+        let events$1 = $[1];
         let insert4 = insert3(new$5, node_index - moved_offset);
         let changes$1 = prepend(insert4, changes);
         let patch = new Patch(patch_index, removed, changes$1, children);
@@ -3825,10 +3836,8 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
           } else {
             let before = node_index - moved_offset;
             let $ = add_child(cache, events2, path, node_index, next);
-            let cache$1;
-            let events$1;
-            cache$1 = $[0];
-            events$1 = $[1];
+            let cache$1 = $[0];
+            let events$1 = $[1];
             let insert4 = insert3(toList([next]), before);
             let changes$1 = prepend(insert4, changes);
             loop$old = old;
@@ -3867,10 +3876,8 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
         } else {
           let change = replace2(node_index - moved_offset, next);
           let $ = replace_child(cache, events2, path, node_index, prev, next);
-          let cache$1;
-          let events$1;
-          cache$1 = $[0];
-          events$1 = $[1];
+          let cache$1 = $[0];
+          let events$1 = $[1];
           loop$old = old_remaining;
           loop$old_keyed = old_keyed;
           loop$new = new_remaining;
@@ -3896,12 +3903,9 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
             let next2 = $1;
             let new$1 = new$5.tail;
             let $2 = do_diff(prev2.children, prev2.keyed_children, next2.children, next2.keyed_children, empty2(), 0, 0, 0, node_index, empty_list, empty_list, add2(path, node_index, next2.key), cache, events2);
-            let patch;
-            let cache$1;
-            let events$1;
-            patch = $2.patch;
-            cache$1 = $2.cache;
-            events$1 = $2.events;
+            let patch = $2.patch;
+            let cache$1 = $2.cache;
+            let events$1 = $2.events;
             let _block;
             let $3 = patch.changes;
             if ($3 instanceof Empty) {
@@ -3941,10 +3945,8 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
             let new_remaining = new$5.tail;
             let change = replace2(node_index - moved_offset, next2);
             let $2 = replace_child(cache, events2, path, node_index, prev2, next2);
-            let cache$1;
-            let events$1;
-            cache$1 = $2[0];
-            events$1 = $2[1];
+            let cache$1 = $2[0];
+            let events$1 = $2[1];
             loop$old = old_remaining;
             loop$old_keyed = old_keyed;
             loop$new = new_remaining;
@@ -3971,12 +3973,9 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
               let child_path = add2(path, node_index, next2.key);
               let controlled = is_controlled(cache, next2.namespace, next2.tag, child_path);
               let $2 = diff_attributes(controlled, child_path, events2, prev2.attributes, next2.attributes, empty_list, empty_list);
-              let added_attrs;
-              let removed_attrs;
-              let events$1;
-              added_attrs = $2.added;
-              removed_attrs = $2.removed;
-              events$1 = $2.events;
+              let added_attrs = $2.added;
+              let removed_attrs = $2.removed;
+              let events$1 = $2.events;
               let _block;
               if (added_attrs instanceof Empty && removed_attrs instanceof Empty) {
                 _block = empty_list;
@@ -3985,12 +3984,9 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
               }
               let initial_child_changes = _block;
               let $3 = do_diff(prev2.children, prev2.keyed_children, next2.children, next2.keyed_children, empty2(), 0, 0, 0, node_index, initial_child_changes, empty_list, child_path, cache, events$1);
-              let patch;
-              let cache$1;
-              let events$2;
-              patch = $3.patch;
-              cache$1 = $3.cache;
-              events$2 = $3.events;
+              let patch = $3.patch;
+              let cache$1 = $3.cache;
+              let events$2 = $3.events;
               let _block$1;
               let $4 = patch.changes;
               if ($4 instanceof Empty) {
@@ -4030,10 +4026,8 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
               let new_remaining = new$5.tail;
               let change = replace2(node_index - moved_offset, next3);
               let $2 = replace_child(cache, events2, path, node_index, prev3, next3);
-              let cache$1;
-              let events$1;
-              cache$1 = $2[0];
-              events$1 = $2[1];
+              let cache$1 = $2[0];
+              let events$1 = $2[1];
               loop$old = old_remaining;
               loop$old_keyed = old_keyed;
               loop$new = new_remaining;
@@ -4056,10 +4050,8 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
             let new_remaining = new$5.tail;
             let change = replace2(node_index - moved_offset, next2);
             let $2 = replace_child(cache, events2, path, node_index, prev2, next2);
-            let cache$1;
-            let events$1;
-            cache$1 = $2[0];
-            events$1 = $2[1];
+            let cache$1 = $2[0];
+            let events$1 = $2[1];
             loop$old = old_remaining;
             loop$old_keyed = old_keyed;
             loop$new = new_remaining;
@@ -4124,10 +4116,8 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
             let new_remaining = new$5.tail;
             let change = replace2(node_index - moved_offset, next2);
             let $2 = replace_child(cache, events2, path, node_index, prev2, next2);
-            let cache$1;
-            let events$1;
-            cache$1 = $2[0];
-            events$1 = $2[1];
+            let cache$1 = $2[0];
+            let events$1 = $2[1];
             loop$old = old_remaining;
             loop$old_keyed = old_keyed;
             loop$new = new_remaining;
@@ -4152,12 +4142,9 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
             let new$1 = new$5.tail;
             let child_path = add2(path, node_index, next2.key);
             let $2 = diff_attributes(false, child_path, events2, prev2.attributes, next2.attributes, empty_list, empty_list);
-            let added_attrs;
-            let removed_attrs;
-            let events$1;
-            added_attrs = $2.added;
-            removed_attrs = $2.removed;
-            events$1 = $2.events;
+            let added_attrs = $2.added;
+            let removed_attrs = $2.removed;
+            let events$1 = $2.events;
             let _block;
             if (added_attrs instanceof Empty && removed_attrs instanceof Empty) {
               _block = empty_list;
@@ -4201,10 +4188,8 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
             let new_remaining = new$5.tail;
             let change = replace2(node_index - moved_offset, next2);
             let $2 = replace_child(cache, events2, path, node_index, prev2, next2);
-            let cache$1;
-            let events$1;
-            cache$1 = $2[0];
-            events$1 = $2[1];
+            let cache$1 = $2[0];
+            let events$1 = $2[1];
             loop$old = old_remaining;
             loop$old_keyed = old_keyed;
             loop$new = new_remaining;
@@ -4230,12 +4215,9 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
             let child_path = add2(path, node_index, next2.key);
             let child_key = child(child_path);
             let $2 = do_diff(prepend(prev2.child, empty_list), empty2(), prepend(next2.child, empty_list), empty2(), empty2(), 0, 0, 0, node_index, empty_list, empty_list, subtree(child_path), cache, get_subtree(events2, child_key, prev2.mapper));
-            let patch;
-            let cache$1;
-            let child_events;
-            patch = $2.patch;
-            cache$1 = $2.cache;
-            child_events = $2.events;
+            let patch = $2.patch;
+            let cache$1 = $2.cache;
+            let child_events = $2.events;
             let events$1 = update_subtree(events2, child_key, next2.mapper, child_events);
             let _block;
             let $3 = patch.changes;
@@ -4276,10 +4258,8 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
             let new_remaining = new$5.tail;
             let change = replace2(node_index - moved_offset, next2);
             let $2 = replace_child(cache, events2, path, node_index, prev2, next2);
-            let cache$1;
-            let events$1;
-            cache$1 = $2[0];
-            events$1 = $2[1];
+            let cache$1 = $2[0];
+            let events$1 = $2[1];
             loop$old = old_remaining;
             loop$old_keyed = old_keyed;
             loop$new = new_remaining;
@@ -4345,10 +4325,8 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
             let new_remaining = new$5.tail;
             let change = replace2(node_index - moved_offset, next2);
             let $2 = replace_child(cache, events2, path, node_index, prev2, next2);
-            let cache$1;
-            let events$1;
-            cache$1 = $2[0];
-            events$1 = $2[1];
+            let cache$1 = $2[0];
+            let events$1 = $2[1];
             loop$old = old_remaining;
             loop$old_keyed = old_keyed;
             loop$new = new_remaining;
@@ -4372,12 +4350,9 @@ function do_diff(loop$old, loop$old_keyed, loop$new, loop$new_keyed, loop$moved,
 function diff(cache, old, new$5) {
   let cache$1 = tick(cache);
   let $ = do_diff(prepend(old, empty_list), empty2(), prepend(new$5, empty_list), empty2(), empty2(), 0, 0, 0, 0, empty_list, empty_list, root, cache$1, events(cache$1));
-  let patch;
-  let cache$2;
-  let events2;
-  patch = $.patch;
-  cache$2 = $.cache;
-  events2 = $.events;
+  let patch = $.patch;
+  let cache$2 = $.cache;
+  let events2 = $.events;
   return new Diff(patch, update_events(cache$2, events2));
 }
 
@@ -4891,26 +4866,20 @@ function extract_keyed_children(children) {
 }
 function element3(tag, attributes, children) {
   let $ = extract_keyed_children(children);
-  let keyed_children;
-  let children$1;
-  keyed_children = $[0];
-  children$1 = $[1];
+  let keyed_children = $[0];
+  let children$1 = $[1];
   return element("", "", tag, attributes, children$1, keyed_children, false, is_void_html_element(tag, ""));
 }
 function namespaced2(namespace, tag, attributes, children) {
   let $ = extract_keyed_children(children);
-  let keyed_children;
-  let children$1;
-  keyed_children = $[0];
-  children$1 = $[1];
+  let keyed_children = $[0];
+  let children$1 = $[1];
   return element("", namespace, tag, attributes, children$1, keyed_children, false, is_void_html_element(tag, namespace));
 }
 function fragment3(children) {
   let $ = extract_keyed_children(children);
-  let keyed_children;
-  let children$1;
-  keyed_children = $[0];
-  children$1 = $[1];
+  let keyed_children = $[0];
+  let children$1 = $[1];
   return fragment("", children$1, keyed_children);
 }
 
@@ -5474,8 +5443,7 @@ function parse_query_with_question_mark_loop(loop$original, loop$uri_string, loo
       return new Ok(new Uri(pieces.scheme, pieces.userinfo, pieces.host, pieces.port, pieces.path, new Some(original), pieces.fragment));
     } else {
       let $ = pop_codeunit(uri_string);
-      let rest;
-      rest = $[1];
+      let rest = $[1];
       loop$original = original;
       loop$uri_string = rest;
       loop$pieces = pieces;
@@ -5507,8 +5475,7 @@ function parse_path_loop(loop$original, loop$uri_string, loop$pieces, loop$size)
       return new Ok(new Uri(pieces.scheme, pieces.userinfo, pieces.host, pieces.port, original, pieces.query, pieces.fragment));
     } else {
       let $1 = pop_codeunit(uri_string);
-      let rest;
-      rest = $1[1];
+      let rest = $1[1];
       loop$original = original;
       loop$uri_string = rest;
       loop$pieces = pieces;
@@ -5683,8 +5650,7 @@ function parse_host_outside_of_brackets_loop(loop$original, loop$uri_string, loo
       return parse_fragment(rest, pieces$1);
     } else {
       let $1 = pop_codeunit(uri_string);
-      let rest;
-      rest = $1[1];
+      let rest = $1[1];
       loop$original = original;
       loop$uri_string = rest;
       loop$pieces = pieces;
@@ -5747,10 +5713,8 @@ function parse_host_within_brackets_loop(loop$original, loop$uri_string, loop$pi
       }
     } else {
       let $1 = pop_codeunit(uri_string);
-      let char;
-      let rest;
-      char = $1[0];
-      rest = $1[1];
+      let char = $1[0];
+      let rest = $1[1];
       let $2 = is_valid_host_within_brackets_char(char);
       if ($2) {
         loop$original = original;
@@ -5806,8 +5770,7 @@ function parse_userinfo_loop(loop$original, loop$uri_string, loop$pieces, loop$s
       return parse_host(original, pieces);
     } else {
       let $1 = pop_codeunit(uri_string);
-      let rest;
-      rest = $1[1];
+      let rest = $1[1];
       loop$original = original;
       loop$uri_string = rest;
       loop$pieces = pieces;
@@ -5876,8 +5839,7 @@ function parse_scheme_loop(loop$original, loop$uri_string, loop$pieces, loop$siz
       return new Ok(new Uri(pieces.scheme, pieces.userinfo, pieces.host, pieces.port, original, pieces.query, pieces.fragment));
     } else {
       let $1 = pop_codeunit(uri_string);
-      let rest;
-      rest = $1[1];
+      let rest = $1[1];
       loop$original = original;
       loop$uri_string = rest;
       loop$pieces = pieces;
@@ -6089,13 +6051,12 @@ function init(handler) {
     });
   });
 }
-// build/dev/javascript/pandi/pandi/pandoc.mjs
-class Attributes extends CustomType {
-  constructor(id2, classes, keyvalues) {
+// build/dev/javascript/pandi/pandi/doc.mjs
+class Document extends CustomType {
+  constructor(blocks, meta2) {
     super();
-    this.id = id2;
-    this.classes = classes;
-    this.keyvalues = keyvalues;
+    this.blocks = blocks;
+    this.meta = meta2;
   }
 }
 class Header extends CustomType {
@@ -6138,6 +6099,19 @@ class BulletList extends CustomType {
     this.items = items;
   }
 }
+class OrderedList extends CustomType {
+  constructor(attributes, items) {
+    super();
+    this.attributes = attributes;
+    this.items = items;
+  }
+}
+class BlockQuote extends CustomType {
+  constructor(content) {
+    super();
+    this.content = content;
+  }
+}
 class Str extends CustomType {
   constructor(content) {
     super();
@@ -6145,6 +6119,35 @@ class Str extends CustomType {
   }
 }
 class Space extends CustomType {
+}
+class LineBreak extends CustomType {
+}
+class SoftBreak extends CustomType {
+}
+class Emph extends CustomType {
+  constructor(content) {
+    super();
+    this.content = content;
+  }
+}
+class Strong extends CustomType {
+  constructor(content) {
+    super();
+    this.content = content;
+  }
+}
+class Strikeout extends CustomType {
+  constructor(content) {
+    super();
+    this.content = content;
+  }
+}
+class Code extends CustomType {
+  constructor(attributes, text4) {
+    super();
+    this.attributes = attributes;
+    this.text = text4;
+  }
 }
 class Span extends CustomType {
   constructor(attributes, content) {
@@ -6161,6 +6164,14 @@ class Link extends CustomType {
     this.target = target;
   }
 }
+class Attributes extends CustomType {
+  constructor(id2, classes, keyvalues) {
+    super();
+    this.id = id2;
+    this.classes = classes;
+    this.keyvalues = keyvalues;
+  }
+}
 class Target extends CustomType {
   constructor(url, title2) {
     super();
@@ -6168,15 +6179,30 @@ class Target extends CustomType {
     this.title = title2;
   }
 }
-class Document extends CustomType {
-  constructor(blocks, meta2) {
+class ListAttributes extends CustomType {
+  constructor(start5, style, delimiter) {
     super();
-    this.blocks = blocks;
-    this.meta = meta2;
+    this.start = start5;
+    this.style = style;
+    this.delimiter = delimiter;
   }
 }
-
-// build/dev/javascript/pandi/pandi/decode.mjs
+class Decimal extends CustomType {
+}
+class LowerAlpha extends CustomType {
+}
+class UpperAlpha extends CustomType {
+}
+class LowerRoman extends CustomType {
+}
+class UpperRoman extends CustomType {
+}
+class Period extends CustomType {
+}
+class OneParen extends CustomType {
+}
+class TwoParens extends CustomType {
+}
 function target_decoder() {
   return field(0, string2, (url) => {
     return field(1, string2, (title2) => {
@@ -6205,6 +6231,19 @@ function attributes_decoder() {
     });
   });
 }
+function code_decoder() {
+  return decode_c_at(0, attributes_decoder(), (attributes) => {
+    return decode_c_at(1, string2, (text4) => {
+      return success(new Code(attributes, text4));
+    });
+  });
+}
+function soft_break_decoder() {
+  return success(new SoftBreak);
+}
+function line_break_decoder() {
+  return success(new LineBreak);
+}
 function space_decoder() {
   return success(new Space);
 }
@@ -6229,12 +6268,39 @@ function span_decoder() {
     });
   });
 }
+function strikeout_decoder() {
+  return field("c", list2(recursive(inline_decoder)), (content) => {
+    return success(new Strikeout(content));
+  });
+}
+function strong_decoder() {
+  return field("c", list2(recursive(inline_decoder)), (content) => {
+    return success(new Strong(content));
+  });
+}
+function emph_decoder() {
+  return field("c", list2(recursive(inline_decoder)), (content) => {
+    return success(new Emph(content));
+  });
+}
 function inline_decoder() {
   return field("t", string2, (t) => {
     if (t === "Str") {
       return str_decoder();
     } else if (t === "Space") {
       return space_decoder();
+    } else if (t === "LineBreak") {
+      return line_break_decoder();
+    } else if (t === "SoftBreak") {
+      return soft_break_decoder();
+    } else if (t === "Emph") {
+      return emph_decoder();
+    } else if (t === "Strong") {
+      return strong_decoder();
+    } else if (t === "Strikeout") {
+      return strikeout_decoder();
+    } else if (t === "Code") {
+      return code_decoder();
     } else if (t === "Span") {
       return span_decoder();
     } else if (t === "Link") {
@@ -6247,7 +6313,7 @@ function inline_decoder() {
 function meta_value_decoder() {
   return field("c", list2(inline_decoder()), (content) => {
     if (content instanceof Empty) {
-      return failure("", "pd.MetaInlines");
+      return failure("", "MetaInlines");
     } else {
       let $ = content.tail;
       if ($ instanceof Empty) {
@@ -6256,10 +6322,10 @@ function meta_value_decoder() {
           let val = $1.content;
           return success(val);
         } else {
-          return failure("", "pd.MetaInlines");
+          return failure("", "MetaInlines");
         }
       } else {
-        return failure("", "pd.MetaInlines");
+        return failure("", "MetaInlines");
       }
     }
   });
@@ -6267,6 +6333,45 @@ function meta_value_decoder() {
 function meta_decoder() {
   let _pipe = dict2(string2, meta_value_decoder());
   return map3(_pipe, to_list);
+}
+function list_number_delimiter_decoder() {
+  return field("t", string2, (t) => {
+    if (t === "Period") {
+      return success(new Period);
+    } else if (t === "OneParen") {
+      return success(new OneParen);
+    } else if (t === "TwoParens") {
+      return success(new TwoParens);
+    } else {
+      return failure(new Period, "ListNumberDelimiter");
+    }
+  });
+}
+function list_number_style_decoder() {
+  return field("t", string2, (t) => {
+    if (t === "Decimal") {
+      return success(new Decimal);
+    } else if (t === "LowerAlpha") {
+      return success(new LowerAlpha);
+    } else if (t === "UpperAlpha") {
+      return success(new UpperAlpha);
+    } else if (t === "LowerRoman") {
+      return success(new LowerRoman);
+    } else if (t === "UpperRoman") {
+      return success(new UpperRoman);
+    } else {
+      return failure(new Decimal, "ListNumberStyle");
+    }
+  });
+}
+function list_attributes_decoder() {
+  return field(0, int2, (start5) => {
+    return field(1, list_number_style_decoder(), (style) => {
+      return field(2, list_number_delimiter_decoder(), (delimiter) => {
+        return success(new ListAttributes(start5, style, delimiter));
+      });
+    });
+  });
 }
 function code_block_decoder() {
   return decode_c_at(0, attributes_decoder(), (attributes) => {
@@ -6291,6 +6396,18 @@ function header_decoder() {
       return decode_c_at(2, list2(inline_decoder()), (content) => {
         return success(new Header(level, attributes, content));
       });
+    });
+  });
+}
+function block_quote_decoder() {
+  return field("c", list2(recursive(block_decoder)), (content) => {
+    return success(new BlockQuote(content));
+  });
+}
+function ordered_list_decoder() {
+  return decode_c_at(0, list_attributes_decoder(), (attrs) => {
+    return decode_c_at(1, list2(list2(recursive(block_decoder))), (items) => {
+      return success(new OrderedList(attrs, items));
     });
   });
 }
@@ -6320,12 +6437,16 @@ function block_decoder() {
       return div_decoder();
     } else if (t === "BulletList") {
       return bullet_list_decoder();
+    } else if (t === "OrderedList") {
+      return ordered_list_decoder();
+    } else if (t === "BlockQuote") {
+      return block_quote_decoder();
     } else {
       return failure(new Para(toList([])), "Block");
     }
   });
 }
-function document_decoder() {
+function decoder() {
   return field("blocks", list2(block_decoder()), (blocks) => {
     return field("meta", meta_decoder(), (meta2) => {
       return success(new Document(blocks, meta2));
@@ -6807,13 +6928,13 @@ class UserNavigatedTo extends CustomType {
     this.route = route;
   }
 }
-class BlogFetched extends CustomType {
+class PostsFetched extends CustomType {
   constructor($0) {
     super();
     this[0] = $0;
   }
 }
-class BlogPost extends CustomType {
+class Post2 extends CustomType {
   constructor(title2, date_created, document2) {
     super();
     this.title = title2;
@@ -6821,10 +6942,10 @@ class BlogPost extends CustomType {
     this.document = document2;
   }
 }
-var blog_url = "https://raw.githubusercontent.com/olavlan/blog/master/blog.json";
-function fetch_blog() {
+var blog_url = "https://raw.githubusercontent.com/olavlan/blog/master/posts.json";
+function fetch_posts() {
   return get3(blog_url, expect_text((var0) => {
-    return new BlogFetched(var0);
+    return new PostsFetched(var0);
   }));
 }
 function init2(_) {
@@ -6839,25 +6960,24 @@ function init2(_) {
   let route = _block;
   let modem_effect = init((uri) => {
     let _pipe = parse_route(uri);
+    echo(_pipe, undefined, "src/model.gleam", 31);
     return new UserNavigatedTo(_pipe);
   });
   return [
     new Model(new Error(undefined), route),
-    batch(toList([modem_effect, fetch_blog()]))
+    batch(toList([modem_effect, fetch_posts()]))
   ];
 }
-function blog_post_decoder() {
-  return field("title", string2, (title2) => {
-    return field("date_created", string2, (date_created) => {
-      return field("pandoc", document_decoder(), (document2) => {
-        return success(new BlogPost(title2, date_created, document2));
-      });
+function post_decoder() {
+  return field("date_created", string2, (date_created) => {
+    return field("pandoc", decoder(), (document2) => {
+      let _block;
+      let _pipe = from_list(document2.meta);
+      let _pipe$1 = get(_pipe, "title");
+      _block = unwrap2(_pipe$1, "No title");
+      let title2 = _block;
+      return success(new Post2(title2, date_created, document2));
     });
-  });
-}
-function blog_decoder() {
-  return field("posts", dict2(string2, blog_post_decoder()), (posts) => {
-    return success(posts);
   });
 }
 function update2(model, message2) {
@@ -6868,10 +6988,7 @@ function update2(model, message2) {
     let $ = message2[0];
     if ($ instanceof Ok) {
       let body = $[0];
-      let _block;
-      let _pipe = body;
-      _block = parse(_pipe, blog_decoder());
-      let decoded = _block;
+      let decoded = parse(body, dict2(string2, post_decoder()));
       if (decoded instanceof Ok) {
         let posts = decoded[0];
         return [new Model(new Ok(posts), model.route), none()];
@@ -6883,9 +7000,273 @@ function update2(model, message2) {
     }
   }
 }
+function echo(value, message2, file, line) {
+  const grey = "\x1B[90m";
+  const reset_color = "\x1B[39m";
+  const file_line = `${file}:${line}`;
+  const inspector = new Echo$Inspector;
+  const string_value = inspector.inspect(value);
+  const string_message = message2 === undefined ? "" : " " + message2;
+  if (globalThis.process?.stderr?.write) {
+    const string5 = `${grey}${file_line}${reset_color}${string_message}
+${string_value}
+`;
+    globalThis.process.stderr.write(string5);
+  } else if (globalThis.Deno) {
+    const string5 = `${grey}${file_line}${reset_color}${string_message}
+${string_value}
+`;
+    globalThis.Deno.stderr.writeSync(new TextEncoder().encode(string5));
+  } else {
+    const string5 = `${file_line}${string_message}
+${string_value}`;
+    globalThis.console.log(string5);
+  }
+  return value;
+}
 
-// build/dev/javascript/pandi/pandi/lustre.mjs
-function attributes_to_lustre(attrs) {
+class Echo$Inspector {
+  #references = new globalThis.Set;
+  #isDict(value) {
+    try {
+      const empty_dict = make();
+      const dict_class = empty_dict.constructor;
+      return value instanceof dict_class;
+    } catch {
+      return false;
+    }
+  }
+  #float(float3) {
+    const string5 = float3.toString().replace("+", "");
+    if (string5.indexOf(".") >= 0) {
+      return string5;
+    } else {
+      const index5 = string5.indexOf("e");
+      if (index5 >= 0) {
+        return string5.slice(0, index5) + ".0" + string5.slice(index5);
+      } else {
+        return string5 + ".0";
+      }
+    }
+  }
+  inspect(v) {
+    const t = typeof v;
+    if (v === true)
+      return "True";
+    if (v === false)
+      return "False";
+    if (v === null)
+      return "//js(null)";
+    if (v === undefined)
+      return "Nil";
+    if (t === "string")
+      return this.#string(v);
+    if (t === "bigint" || globalThis.Number.isInteger(v))
+      return v.toString();
+    if (t === "number")
+      return this.#float(v);
+    if (v instanceof UtfCodepoint)
+      return this.#utfCodepoint(v);
+    if (v instanceof BitArray)
+      return this.#bit_array(v);
+    if (v instanceof globalThis.RegExp)
+      return `//js(${v})`;
+    if (v instanceof globalThis.Date)
+      return `//js(Date("${v.toISOString()}"))`;
+    if (v instanceof globalThis.Error)
+      return `//js(${v.toString()})`;
+    if (v instanceof globalThis.Function) {
+      const args = [];
+      for (const i of globalThis.Array(v.length).keys())
+        args.push(globalThis.String.fromCharCode(i + 97));
+      return `//fn(${args.join(", ")}) { ... }`;
+    }
+    if (this.#references.size === this.#references.add(v).size) {
+      return "//js(circular reference)";
+    }
+    let printed;
+    if (globalThis.Array.isArray(v)) {
+      printed = `#(${v.map((v2) => this.inspect(v2)).join(", ")})`;
+    } else if (v instanceof List) {
+      printed = this.#list(v);
+    } else if (v instanceof CustomType) {
+      printed = this.#customType(v);
+    } else if (this.#isDict(v)) {
+      printed = this.#dict(v);
+    } else if (v instanceof Set) {
+      return `//js(Set(${[...v].map((v2) => this.inspect(v2)).join(", ")}))`;
+    } else {
+      printed = this.#object(v);
+    }
+    this.#references.delete(v);
+    return printed;
+  }
+  #object(v) {
+    const name = globalThis.Object.getPrototypeOf(v)?.constructor?.name || "Object";
+    const props = [];
+    for (const k of globalThis.Object.keys(v)) {
+      props.push(`${this.inspect(k)}: ${this.inspect(v[k])}`);
+    }
+    const body = props.length ? " " + props.join(", ") + " " : "";
+    const head = name === "Object" ? "" : name + " ";
+    return `//js(${head}{${body}})`;
+  }
+  #dict(map10) {
+    let body = "dict.from_list([";
+    let first = true;
+    let key_value_pairs = fold(map10, [], (pairs, key, value) => {
+      pairs.push([key, value]);
+      return pairs;
+    });
+    key_value_pairs.sort();
+    key_value_pairs.forEach(([key, value]) => {
+      if (!first)
+        body = body + ", ";
+      body = body + "#(" + this.inspect(key) + ", " + this.inspect(value) + ")";
+      first = false;
+    });
+    return body + "])";
+  }
+  #customType(record) {
+    const props = globalThis.Object.keys(record).map((label) => {
+      const value = this.inspect(record[label]);
+      return isNaN(parseInt(label)) ? `${label}: ${value}` : value;
+    }).join(", ");
+    return props ? `${record.constructor.name}(${props})` : record.constructor.name;
+  }
+  #list(list4) {
+    if (list4 instanceof Empty) {
+      return "[]";
+    }
+    let char_out = 'charlist.from_string("';
+    let list_out = "[";
+    let current = list4;
+    while (current instanceof NonEmpty) {
+      let element4 = current.head;
+      current = current.tail;
+      if (list_out !== "[") {
+        list_out += ", ";
+      }
+      list_out += this.inspect(element4);
+      if (char_out) {
+        if (globalThis.Number.isInteger(element4) && element4 >= 32 && element4 <= 126) {
+          char_out += globalThis.String.fromCharCode(element4);
+        } else {
+          char_out = null;
+        }
+      }
+    }
+    if (char_out) {
+      return char_out + '")';
+    } else {
+      return list_out + "]";
+    }
+  }
+  #string(str) {
+    let new_str = '"';
+    for (let i = 0;i < str.length; i++) {
+      const char = str[i];
+      switch (char) {
+        case `
+`:
+          new_str += "\\n";
+          break;
+        case "\r":
+          new_str += "\\r";
+          break;
+        case "\t":
+          new_str += "\\t";
+          break;
+        case "\f":
+          new_str += "\\f";
+          break;
+        case "\\":
+          new_str += "\\\\";
+          break;
+        case '"':
+          new_str += "\\\"";
+          break;
+        default:
+          if (char < " " || char > "~" && char < " ") {
+            new_str += "\\u{" + char.charCodeAt(0).toString(16).toUpperCase().padStart(4, "0") + "}";
+          } else {
+            new_str += char;
+          }
+      }
+    }
+    new_str += '"';
+    return new_str;
+  }
+  #utfCodepoint(codepoint2) {
+    return `//utfcodepoint(${globalThis.String.fromCodePoint(codepoint2.value)})`;
+  }
+  #bit_array(bits2) {
+    if (bits2.bitSize === 0) {
+      return "<<>>";
+    }
+    let acc = "<<";
+    for (let i = 0;i < bits2.byteSize - 1; i++) {
+      acc += bits2.byteAt(i).toString();
+      acc += ", ";
+    }
+    if (bits2.byteSize * 8 === bits2.bitSize) {
+      acc += bits2.byteAt(bits2.byteSize - 1).toString();
+    } else {
+      const trailingBitsCount = bits2.bitSize % 8;
+      acc += bits2.byteAt(bits2.byteSize - 1) >> 8 - trailingBitsCount;
+      acc += `:size(${trailingBitsCount})`;
+    }
+    acc += ">>";
+    return acc;
+  }
+}
+// build/dev/javascript/pandoc_lustre_converter/pandoc_lustre_converter.mjs
+class WithDefaults extends CustomType {
+  constructor(document_elements, callback) {
+    super();
+    this.document_elements = document_elements;
+    this.callback = callback;
+  }
+}
+
+class Default extends CustomType {
+}
+
+class Custom extends CustomType {
+  constructor(element4) {
+    super();
+    this.element = element4;
+  }
+}
+
+class BlockElement extends CustomType {
+  constructor(block) {
+    super();
+    this.block = block;
+  }
+}
+
+class InlineElement extends CustomType {
+  constructor(inline) {
+    super();
+    this.inline = inline;
+  }
+}
+var default$ = /* @__PURE__ */ new Default;
+function custom(element4) {
+  return new Custom(element4);
+}
+function default_blocks(blocks, callback) {
+  return new WithDefaults(map2(blocks, (var0) => {
+    return new BlockElement(var0);
+  }), callback);
+}
+function default_inlines(inlines, callback) {
+  return new WithDefaults(map2(inlines, (var0) => {
+    return new InlineElement(var0);
+  }), callback);
+}
+function convert_attributes(attrs) {
   let _block;
   let $ = attrs.id;
   if ($ === "") {
@@ -6909,142 +7290,218 @@ function attributes_to_lustre(attrs) {
   });
   return flatten(toList([id2, classes, keyvalues]));
 }
-function inline_to_lustre_with(inline, inline_renderer, meta2) {
-  let $ = inline_renderer(inline, meta2);
-  if ($ instanceof Some) {
-    let el = $[0];
-    return el;
+function convert_list_attributes(attrs) {
+  let start5 = attribute2("start", to_string(attrs.start));
+  let _block;
+  let $ = attrs.style;
+  if ($ instanceof Decimal) {
+    _block = attribute2("type", "1");
+  } else if ($ instanceof LowerAlpha) {
+    _block = attribute2("type", "a");
+  } else if ($ instanceof UpperAlpha) {
+    _block = attribute2("type", "A");
+  } else if ($ instanceof LowerRoman) {
+    _block = attribute2("type", "i");
   } else {
-    if (inline instanceof Str) {
-      let content = inline.content;
-      return text3(content);
-    } else if (inline instanceof Space) {
-      return text3(" ");
-    } else if (inline instanceof Span) {
-      let attrs = inline.attributes;
-      let content = inline.content;
-      let inlines = map2(content, (_capture) => {
-        return inline_to_lustre_with(_capture, inline_renderer, meta2);
-      });
-      let attributes = attributes_to_lustre(attrs);
-      return span(attributes, inlines);
-    } else {
-      let attrs = inline.attributes;
-      let content = inline.content;
-      let target = inline.target;
-      let inlines = map2(content, (_capture) => {
-        return inline_to_lustre_with(_capture, inline_renderer, meta2);
-      });
-      let attributes = attributes_to_lustre(attrs);
-      let href3 = href(target.url);
-      let _block;
-      let $1 = target.title;
-      if ($1 === "") {
-        _block = toList([]);
-      } else {
-        let title3 = $1;
-        _block = toList([title(title3)]);
-      }
-      let title2 = _block;
-      return a(flatten(toList([attributes, toList([href3]), title2])), inlines);
-    }
+    _block = attribute2("type", "I");
   }
+  let type_ = _block;
+  return toList([start5, type_]);
 }
-function block_to_lustre_with(block, block_renderer, inline_renderer, meta2) {
-  let $ = block_renderer(block, meta2);
-  if ($ instanceof Some) {
-    let el = $[0];
-    return el;
-  } else {
-    if (block instanceof Header) {
-      let level = block.level;
-      let attrs = block.attributes;
-      let content = block.content;
-      let inlines = map2(content, (_capture) => {
-        return inline_to_lustre_with(_capture, inline_renderer, meta2);
-      });
-      let attrs$1 = attributes_to_lustre(attrs);
-      if (level === 1) {
-        return h1(attrs$1, inlines);
-      } else if (level === 2) {
-        return h2(attrs$1, inlines);
-      } else if (level === 4) {
-        return h4(attrs$1, inlines);
-      } else if (level === 5) {
-        return h5(attrs$1, inlines);
-      } else if (level === 6) {
-        return h6(attrs$1, inlines);
-      } else {
-        return h1(attrs$1, inlines);
-      }
-    } else if (block instanceof Para) {
-      let content = block.content;
-      let inlines = map2(content, (_capture) => {
-        return inline_to_lustre_with(_capture, inline_renderer, meta2);
-      });
-      return p(toList([]), inlines);
-    } else if (block instanceof Plain) {
-      let content = block.content;
-      let inlines = map2(content, (_capture) => {
-        return inline_to_lustre_with(_capture, inline_renderer, meta2);
-      });
-      return span(toList([]), inlines);
-    } else if (block instanceof CodeBlock) {
-      let attrs = block.attributes;
-      let text4 = block.text;
-      let attributes = attributes_to_lustre(attrs);
-      return pre(attributes, toList([code(toList([]), toList([text3(text4)]))]));
-    } else if (block instanceof Div) {
-      let attrs = block.attributes;
-      let content = block.content;
-      let blocks = map2(content, (_capture) => {
-        return block_to_lustre_with(_capture, block_renderer, inline_renderer, meta2);
-      });
-      let attributes = attributes_to_lustre(attrs);
-      return div(attributes, blocks);
-    } else {
-      let items = block.items;
-      let list_items = map2(items, (item) => {
-        let blocks = map2(item, (_capture) => {
-          return block_to_lustre_with(_capture, block_renderer, inline_renderer, meta2);
-        });
-        return li(toList([]), blocks);
-      });
-      return ul(toList([]), list_items);
-    }
-  }
-}
-function block_to_lustre(block) {
-  return block_to_lustre_with(block, (_, _1) => {
-    return new None;
-  }, (_, _1) => {
-    return new None;
-  }, toList([]));
-}
-function inline_to_lustre(inline) {
-  return inline_to_lustre_with(inline, (_, _1) => {
-    return new None;
-  }, toList([]));
-}
-function blocks_to_lustre_with(blocks, block_renderer, inline_renderer, meta2) {
-  let elements = map2(blocks, (_capture) => {
-    return block_to_lustre_with(_capture, block_renderer, inline_renderer, meta2);
+function convert_inlines(inlines, converter, meta2) {
+  let _pipe = map2(inlines, (var0) => {
+    return new InlineElement(var0);
   });
-  return fragment2(elements);
+  return convert_document_elements(_pipe, converter, meta2);
 }
-function to_lustre_with(document2, block_renderer, inline_renderer) {
-  return blocks_to_lustre_with(document2.blocks, block_renderer, inline_renderer, document2.meta);
+function convert_inline(inline, converter, meta2) {
+  if (inline instanceof Str) {
+    let content = inline.content;
+    return text3(content);
+  } else if (inline instanceof Space) {
+    return text3(" ");
+  } else if (inline instanceof LineBreak) {
+    return br(toList([]));
+  } else if (inline instanceof SoftBreak) {
+    return text3(" ");
+  } else if (inline instanceof Emph) {
+    let content = inline.content;
+    let child2 = convert_inlines(content, converter, meta2);
+    return em(toList([]), toList([child2]));
+  } else if (inline instanceof Strong) {
+    let content = inline.content;
+    let child2 = convert_inlines(content, converter, meta2);
+    return strong(toList([]), toList([child2]));
+  } else if (inline instanceof Strikeout) {
+    let content = inline.content;
+    let child2 = convert_inlines(content, converter, meta2);
+    return del(toList([]), toList([child2]));
+  } else if (inline instanceof Code) {
+    let attrs = inline.attributes;
+    let text4 = inline.text;
+    let attributes = convert_attributes(attrs);
+    return code(attributes, toList([text3(text4)]));
+  } else if (inline instanceof Span) {
+    let attrs = inline.attributes;
+    let content = inline.content;
+    let child2 = convert_inlines(content, converter, meta2);
+    let attributes = convert_attributes(attrs);
+    return span(attributes, toList([child2]));
+  } else {
+    let attrs = inline.attributes;
+    let content = inline.content;
+    let target = inline.target;
+    let child2 = convert_inlines(content, converter, meta2);
+    let attributes = convert_attributes(attrs);
+    let href3 = href(target.url);
+    let _block;
+    let $ = target.title;
+    if ($ === "") {
+      _block = toList([]);
+    } else {
+      let title3 = $;
+      _block = toList([title(title3)]);
+    }
+    let title2 = _block;
+    return a(flatten(toList([attributes, toList([href3]), title2])), toList([child2]));
+  }
+}
+function convert_list_items(items, converter, meta2) {
+  return map2(items, (item) => {
+    let content = convert_blocks(item, converter, meta2);
+    return li(toList([]), toList([content]));
+  });
+}
+function convert_block(block, converter, meta2) {
+  if (block instanceof Header) {
+    let level = block.level;
+    let attrs = block.attributes;
+    let content = block.content;
+    let child2 = convert_inlines(content, converter, meta2);
+    let attrs$1 = convert_attributes(attrs);
+    if (level === 1) {
+      return h1(attrs$1, toList([child2]));
+    } else if (level === 2) {
+      return h2(attrs$1, toList([child2]));
+    } else if (level === 3) {
+      return h3(attrs$1, toList([child2]));
+    } else if (level === 4) {
+      return h4(attrs$1, toList([child2]));
+    } else if (level === 5) {
+      return h5(attrs$1, toList([child2]));
+    } else if (level === 6) {
+      return h6(attrs$1, toList([child2]));
+    } else {
+      return h1(attrs$1, toList([child2]));
+    }
+  } else if (block instanceof Para) {
+    let content = block.content;
+    let child2 = convert_inlines(content, converter, meta2);
+    return p(toList([]), toList([child2]));
+  } else if (block instanceof Plain) {
+    let content = block.content;
+    return convert_inlines(content, converter, meta2);
+  } else if (block instanceof CodeBlock) {
+    let attrs = block.attributes;
+    let text4 = block.text;
+    let attributes = convert_attributes(attrs);
+    return pre(attributes, toList([code(toList([]), toList([text3(text4)]))]));
+  } else if (block instanceof Div) {
+    let attrs = block.attributes;
+    let content = block.content;
+    let child2 = convert_blocks(content, converter, meta2);
+    let attributes = convert_attributes(attrs);
+    return div(attributes, toList([child2]));
+  } else if (block instanceof BulletList) {
+    let items = block.items;
+    let list_items = convert_list_items(items, converter, meta2);
+    return ul(toList([]), list_items);
+  } else if (block instanceof OrderedList) {
+    let attrs = block.attributes;
+    let items = block.items;
+    let list_items = convert_list_items(items, converter, meta2);
+    let attributes = convert_list_attributes(attrs);
+    return ol(attributes, list_items);
+  } else {
+    let content = block.content;
+    let child2 = convert_blocks(content, converter, meta2);
+    return blockquote(toList([]), toList([child2]));
+  }
+}
+function convert_document_element_with_action(loop$action, loop$document_element, loop$converter, loop$meta) {
+  while (true) {
+    let action = loop$action;
+    let document_element = loop$document_element;
+    let converter = loop$converter;
+    let meta2 = loop$meta;
+    if (action instanceof WithDefaults) {
+      let document_elements = action.document_elements;
+      let callback = action.callback;
+      let _pipe = document_elements;
+      let _pipe$1 = map2(_pipe, (_capture) => {
+        return convert_document_element(_capture, converter, meta2);
+      });
+      let _pipe$2 = fragment2(_pipe$1);
+      let _pipe$3 = callback(_pipe$2);
+      loop$action = _pipe$3;
+      loop$document_element = document_element;
+      loop$converter = converter;
+      loop$meta = meta2;
+    } else if (action instanceof Default) {
+      if (document_element instanceof BlockElement) {
+        let block = document_element.block;
+        return convert_block(block, converter, meta2);
+      } else {
+        let inline = document_element.inline;
+        return convert_inline(inline, converter, meta2);
+      }
+    } else {
+      let element4 = action.element;
+      return element4;
+    }
+  }
+}
+function convert_document_element(document_element, converter, meta2) {
+  let _pipe = converter(document_element, meta2);
+  return convert_document_element_with_action(_pipe, document_element, converter, meta2);
+}
+function convert_document_elements(document_elements, converter, meta2) {
+  let _pipe = map2(document_elements, (_capture) => {
+    return convert_document_element(_capture, converter, meta2);
+  });
+  return fragment2(_pipe);
+}
+function convert_blocks(blocks, converter, meta2) {
+  let _pipe = map2(blocks, (var0) => {
+    return new BlockElement(var0);
+  });
+  return convert_document_elements(_pipe, converter, meta2);
+}
+function combine_converters(block_converter, inline_converter) {
+  return (element4, meta2) => {
+    if (element4 instanceof BlockElement) {
+      let block = element4.block;
+      return block_converter(block, meta2);
+    } else {
+      let inline = element4.inline;
+      return inline_converter(inline, meta2);
+    }
+  };
+}
+function convert_document(document2, block_converter, inline_converter) {
+  let converter = combine_converters(block_converter, inline_converter);
+  return convert_blocks(document2.blocks, converter, document2.meta);
 }
 
 // build/dev/javascript/website/component.mjs
-class Reference extends CustomType {
+class Link2 extends CustomType {
   constructor(target, label) {
     super();
     this.target = target;
     this.label = label;
   }
 }
-class FeedItem extends CustomType {
+class PostItem extends CustomType {
   constructor(title2, route, date) {
     super();
     this.title = title2;
@@ -7055,15 +7512,15 @@ class FeedItem extends CustomType {
 function container(children) {
   return div(toList([class$("container mx-auto max-w-5xl px-8")]), children);
 }
-function link(label, target) {
-  return a(toList([href2(target)]), toList([text3(label)]));
+function link(link2) {
+  return a(toList([href2(link2.target)]), toList([text3(link2.label)]));
 }
-function nav2(logo, menu) {
+function navbar(logo, menu) {
   let logo$1 = div(toList([class$("flex-1")]), toList([
     a(toList([class$("btn btn-ghost text-xl"), href2(logo.target)]), toList([text3(logo.label)]))
   ]));
-  let links = map2(menu, (ref2) => {
-    return li(toList([]), toList([link(ref2.label, ref2.target)]));
+  let links = map2(menu, (data2) => {
+    return li(toList([]), toList([link(data2)]));
   });
   let menu$1 = div(toList([class$("flex-none")]), toList([ul(toList([class$("menu menu-horizontal px-1")]), links)]));
   return nav(toList([class$("navbar bg-base-100 shadow-sm")]), toList([logo$1, menu$1]));
@@ -7074,37 +7531,28 @@ function content(children) {
 function prose(children) {
   return article(toList([class$("prose")]), children);
 }
-function feed(items) {
-  let entries = map2(items, (item) => {
+function post_listing(post_items) {
+  let list_items = map2(post_items, (item) => {
     return li(toList([]), toList([
       a(toList([href2(item.route), class$("link hover:underline")]), toList([text3(item.title)])),
       span(toList([class$("text-sm opacity-50 ml-2")]), toList([text3(item.date)]))
     ]));
   });
-  return ul(toList([class$("list")]), entries);
+  return ul(toList([class$("list")]), list_items);
 }
-function collapse(title2, content2) {
+function details2(summary2, content2) {
   return details(toList([
     class$("collapse collapse-arrow bg-base-100 border border-base-300")
   ]), toList([
-    summary(toList([class$("collapse-title font-semibold")]), (() => {
-      let _pipe = title2;
-      return map2(_pipe, inline_to_lustre);
-    })()),
-    div(toList([class$("collapse-content")]), (() => {
-      let _pipe = content2;
-      return map2(_pipe, block_to_lustre);
-    })())
+    summary(toList([class$("collapse-title font-semibold")]), toList([summary2])),
+    div(toList([class$("collapse-content")]), toList([content2]))
   ]));
 }
-function definition(definition_text, content2) {
+function definition(definition_text, term) {
   return span(toList([
     class$("tooltip tooltip-top"),
     attribute2("data-tip", definition_text)
-  ]), (() => {
-    let _pipe = content2;
-    return map2(_pipe, inline_to_lustre);
-  })());
+  ]), toList([term]));
 }
 
 // build/dev/javascript/website/view.mjs
@@ -7115,69 +7563,79 @@ function view_post_list(model) {
   if ($ instanceof Ok) {
     posts = $[0];
   } else {
-    throw makeError("let_assert", FILEPATH, "view", 29, "view_post_list", "Pattern match failed, no pattern matched the value.", { value: $, start: 832, end: 866, pattern_start: 843, pattern_end: 852 });
+    throw makeError("let_assert", FILEPATH, "view", 32, "view_post_list", "Pattern match failed, no pattern matched the value.", { value: $, start: 852, end: 886, pattern_start: 863, pattern_end: 872 });
   }
   let _block;
   let _pipe = to_list(posts);
   _block = map2(_pipe, (entry) => {
-    let id2;
-    let post;
-    id2 = entry[0];
-    post = entry[1];
-    return new FeedItem(post.title, new PostById(id2), post.date_created);
+    let id2 = entry[0];
+    let post = entry[1];
+    return new PostItem(post.title, new PostById(id2), post.date_created);
   });
   let items = _block;
-  return toList([feed(items)]);
+  return post_listing(items);
 }
 function inline_renderer() {
   return (inline, _) => {
-    if (inline instanceof Span) {
+    if (inline instanceof Str) {
+      let $ = inline.content;
+      if ($.startsWith("gh:")) {
+        let repo = $.slice(3);
+        let _pipe = a(toList([href("https://github.com/" + repo)]), toList([text3(repo)]));
+        return custom(_pipe);
+      } else {
+        return default$;
+      }
+    } else if (inline instanceof Span) {
       let $ = inline.attributes.keyvalues;
       if ($ instanceof Empty) {
-        return new None;
+        return default$;
       } else {
         let $1 = $.tail;
         if ($1 instanceof Empty) {
           let $2 = $.head[0];
           if ($2 === "definition") {
-            let content2 = inline.content;
+            let inlines = inline.content;
             let definition_text = $.head[1];
-            return new Some(definition(definition_text, content2));
+            return default_inlines(inlines, (term) => {
+              let _pipe = definition(definition_text, term);
+              return custom(_pipe);
+            });
           } else {
-            return new None;
+            return default$;
           }
         } else {
-          return new None;
+          return default$;
         }
       }
     } else {
-      return new None;
+      return default$;
     }
   };
 }
-function block_renderer() {
+function block_converter() {
   return (block, _) => {
     if (block instanceof Div) {
       let $ = block.content;
       if ($ instanceof Empty) {
-        return new None;
+        return default$;
       } else {
         let $1 = $.head;
         if ($1 instanceof Header) {
-          let $2 = $1.level;
-          if ($2 === 1) {
-            let rest = $.tail;
-            let inlines = $1.content;
-            return new Some(collapse(inlines, rest));
-          } else {
-            return new None;
-          }
+          let rest = $.tail;
+          let inlines = $1.content;
+          return default_inlines(inlines, (title2) => {
+            return default_blocks(rest, (content2) => {
+              let _pipe = details2(title2, content2);
+              return custom(_pipe);
+            });
+          });
         } else {
-          return new None;
+          return default$;
         }
       }
     } else {
-      return new None;
+      return default$;
     }
   };
 }
@@ -7188,11 +7646,9 @@ function view_post(model, post_id) {
     let $1 = get(posts, post_id);
     if ($1 instanceof Ok) {
       let post = $1[0];
-      return toList([
-        prose(toList([
-          to_lustre_with(post.document, block_renderer(), inline_renderer())
-        ]))
-      ]);
+      return prose(toList([
+        convert_document(post.document, block_converter(), inline_renderer())
+      ]));
     } else {
       return view_post_list(model);
     }
@@ -7202,22 +7658,24 @@ function view_post(model, post_id) {
 }
 function view2(model) {
   return container(toList([
-    nav2(new Reference(new Index2, "olavlan"), toList([new Reference(new Posts, "Posts")])),
-    content((() => {
-      let $ = model.route;
-      if ($ instanceof Index2) {
-        return view_post_list(model);
-      } else if ($ instanceof Posts) {
-        return view_post_list(model);
-      } else if ($ instanceof PostById) {
-        let post_id = $.id;
-        return view_post(model, post_id);
-      } else if ($ instanceof About) {
-        return view_post_list(model);
-      } else {
-        return view_post_list(model);
-      }
-    })())
+    navbar(new Link2(new Index2, "olavlan"), toList([new Link2(new Posts, "Posts")])),
+    content(toList([
+      (() => {
+        let $ = model.route;
+        if ($ instanceof Index2) {
+          return view_post_list(model);
+        } else if ($ instanceof Posts) {
+          return view_post_list(model);
+        } else if ($ instanceof PostById) {
+          let post_id = $.id;
+          return view_post(model, post_id);
+        } else if ($ instanceof About) {
+          return view_post_list(model);
+        } else {
+          return view_post_list(model);
+        }
+      })()
+    ]))
   ]));
 }
 

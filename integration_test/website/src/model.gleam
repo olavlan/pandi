@@ -1,7 +1,9 @@
 import gleam/dict.{type Dict}
 import gleam/dynamic/decode
 import gleam/json
+import gleam/list
 import gleam/result
+import gleam/string
 import lustre/effect.{type Effect}
 import modem
 import pandi/doc
@@ -41,7 +43,9 @@ pub fn update(model: Model, message: Message) -> #(Model, Effect(Message)) {
     UserNavigatedTo(route:) -> #(Model(..model, route:), effect.none())
 
     PostsFetched(Ok(body)) -> {
-      let decoded = json.parse(body, decode.dict(decode.string, post_decoder()))
+      let decoded =
+        json.parse(body, decode.dict(decode.string, post_decoder()))
+        |> result.map(sanitize_keys)
       case decoded {
         Ok(posts) -> #(Model(..model, posts: Ok(posts)), effect.none())
         Error(_) -> #(Model(..model, posts: Error(Nil)), effect.none())
@@ -69,4 +73,13 @@ fn post_decoder() -> decode.Decoder(Post) {
     |> dict.get("title")
     |> result.unwrap(or: "No title")
   decode.success(Post(title:, date_created:, document:))
+}
+
+fn sanitize_keys(input: dict.Dict(String, a)) -> dict.Dict(String, a) {
+  dict.to_list(input)
+  |> list.map(fn(item) {
+    let key = string.replace(in: item.0, each: ".", with: "-")
+    #(key, item.1)
+  })
+  |> dict.from_list
 }

@@ -1,7 +1,9 @@
 import component.{Link, PostItem}
 import gleam/dict
 import gleam/list
+import lustre/attribute
 import lustre/element.{type Element}
+import lustre/element/html
 import model.{type Message, type Model}
 import pandi/doc
 import pandoc_lustre_converter as pl
@@ -81,6 +83,12 @@ fn inline_renderer() -> pl.InlineConverter(message) {
       ) -> {
         use term <- pl.default_inlines(inlines)
         component.definition(definition_text, term) |> pl.custom
+      }
+      doc.Str("gh:" <> repo) -> {
+        html.a([attribute.href("https://github.com/" <> repo)], [
+          html.text(repo),
+        ])
+        |> pl.custom
       }
       _ -> pl.default
     }
