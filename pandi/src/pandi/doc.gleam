@@ -335,11 +335,11 @@ pub fn to_json(doc: Document) -> String {
   |> json.to_string
 }
 
-fn encode(doc: Document) -> json.Json {
+pub fn encode(document: Document) -> json.Json {
   json.object([
     #("pandoc-api-version", json.array([1, 23, 1], json.int)),
-    #("meta", encode_meta(doc.meta)),
-    #("blocks", json.array(doc.blocks, encode_block)),
+    #("meta", encode_meta(document.meta)),
+    #("blocks", json.array(document.blocks, encode_block)),
   ])
 }
 
@@ -349,10 +349,10 @@ fn encode_meta(meta: Meta) -> json.Json {
   |> json.object
 }
 
-fn encode_meta_value(val: String) -> json.Json {
+fn encode_meta_value(value: String) -> json.Json {
   json.object([
     #("t", json.string("MetaInlines")),
-    #("c", json.array([Str(val)], encode_inline)),
+    #("c", json.array([Str(value)], encode_inline)),
   ])
 }
 

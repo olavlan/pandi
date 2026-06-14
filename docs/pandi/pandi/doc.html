@@ -251,6 +251,8 @@
   
   <li><a href="#decoder">decoder</a></li>
   
+  <li><a href="#encode">encode</a></li>
+  
   <li><a href="#from_json">from_json</a></li>
   
   <li><a href="#text">text</a></li>
@@ -988,6 +990,21 @@ fn blog_post_decoder() -&gt; decode.Decoder(BlogPost) {
   
   <div class="member">
     <div class="member-name">
+      <h2 id="encode">
+        <a href="#encode">
+          encode
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">encode</span>(<span class="hljs-variable">document</span>: <a href="#Document"><span class="hljs-title">Document</span></a>) -> <a href="https://gleam-json.hexdocs.pm/3.1.0/gleam/json.html#Json" title="gleam/json.{type Json}"><span class="hljs-variable">json</span>.<span class="hljs-title">Json</span></a></code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
       <h2 id="from_json">
         <a href="#from_json">
           from_json
@@ -1170,9 +1187,9 @@ doc.to_string(document)
     </script>
 
     <script src="../js/lunr.min.js?v=1.17.0"></script>
-    <script src="../js/index.js?v=1781377546"></script>
+    <script src="../js/index.js?v=1781427677"></script>
     <script>
-      fetch("../search-data.json?v=1781377546")
+      fetch("../search-data.json?v=1781427677")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
