@@ -82,6 +82,30 @@ pub fn text(text: String) -> List(Inline) {
   |> list.intersperse(Space)
 }
 
+pub fn get_text(block: Block) -> String {
+  let inlines = todo as "get inlines from block"
+  inlines_to_string(inlines)
+}
+
+fn inlines_to_string(inlines: List(Inline)) {
+  list.map(inlines, inline_to_string) |> string.concat
+}
+
+fn inline_to_string(inline: Inline) -> String {
+  case inline {
+    Str(content) -> content
+    Space -> " "
+    LineBreak -> "\n"
+    SoftBreak -> ""
+    Emph(content) -> inlines_to_string(content)
+    Strong(content) -> inlines_to_string(content)
+    Strikeout(content) -> inlines_to_string(content)
+    Code(_, text) -> text
+    Span(_, content) -> inlines_to_string(content)
+    Link(_, content, _) -> inlines_to_string(content)
+  }
+}
+
 /// Convert a Pandoc json string to a `Document`,
 /// where a Pandoc json string is the output of running `pandoc`
 /// with the output format set to `json`:

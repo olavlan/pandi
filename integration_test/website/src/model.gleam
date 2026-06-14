@@ -71,7 +71,7 @@ fn post_decoder() -> decode.Decoder(Post) {
   let title =
     dict.from_list(document.meta)
     |> dict.get("title")
-    |> result.unwrap(or: "No title")
+    |> result.unwrap(or: date_created)
   decode.success(Post(title:, date_created:, document:))
 }
 

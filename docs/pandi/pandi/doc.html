@@ -255,6 +255,8 @@
   
   <li><a href="#from_json">from_json</a></li>
   
+  <li><a href="#get_text">get_text</a></li>
+  
   <li><a href="#text">text</a></li>
   
   <li><a href="#to_json">to_json</a></li>
@@ -1029,6 +1031,21 @@ with the output format set to <code>json</code>:</p>
   
   <div class="member">
     <div class="member-name">
+      <h2 id="get_text">
+        <a href="#get_text">
+          get_text
+        </a>
+      </h2>
+      
+    </div>
+
+    <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">get_text</span>(<span class="hljs-variable">block</span>: <a href="#Block"><span class="hljs-title">Block</span></a>) -> <span class="hljs-title">String</span></code></pre>
+    
+    <div class="rendered-markdown"></div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
       <h2 id="text">
         <a href="#text">
           text
@@ -1187,9 +1204,9 @@ doc.to_string(document)
     </script>
 
     <script src="../js/lunr.min.js?v=1.17.0"></script>
-    <script src="../js/index.js?v=1781460945"></script>
+    <script src="../js/index.js?v=1781464858"></script>
     <script>
-      fetch("../search-data.json?v=1781460945")
+      fetch("../search-data.json?v=1781464858")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
