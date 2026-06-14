@@ -8,9 +8,9 @@ import pandi/doc
 import shellout
 import simplifile
 
-const document_folder = "./static/"
+const document_folder = "./assets/"
 
-const json_file = "./static/static.json"
+const json_file = "./assets/content.json"
 
 pub fn main() {
   let assert Ok(document_files) = simplifile.get_files(document_folder)
@@ -20,8 +20,8 @@ pub fn main() {
   |> json.object
   |> json.to_string
   |> simplifile.write(to: json_file, contents: _)
-  let assert Ok(static) = import_static()
-  static |> get_posts("articles") |> echo
+  let assert Ok(static) = get_all_posts()
+  static |> get_posts_in_folder("articles") |> echo
 }
 
 pub type PandocError {
@@ -29,7 +29,7 @@ pub type PandocError {
   DecodeError
 }
 
-pub fn get_posts(
+pub fn get_posts_in_folder(
   content: dict.Dict(String, doc.Document),
   folder_name: String,
 ) -> List(#(String, doc.Document)) {
@@ -37,7 +37,7 @@ pub fn get_posts(
   |> list.filter(fn(item) { string.starts_with(item.0, folder_name <> "/") })
 }
 
-pub fn import_static() -> Result(dict.Dict(String, doc.Document), Nil) {
+pub fn get_all_posts() -> Result(dict.Dict(String, doc.Document), Nil) {
   let read_result =
     simplifile.read(json_file)
     |> result.map_error(fn(_) { Nil })
