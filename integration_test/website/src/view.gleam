@@ -64,7 +64,10 @@ fn view_post(model: Model, post_id: String) -> Element(message) {
 fn block_converter() -> pl.BlockConverter(message) {
   fn(block, _) {
     case block {
-      doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -> {
+      doc.Div(
+        doc.Attributes(_, ["details"], _),
+        [doc.Header(_, _, inlines), ..rest],
+      ) -> {
         use title <- pl.default_inlines(inlines)
         use content <- pl.default_blocks(rest)
         component.details(title, content) |> pl.custom
