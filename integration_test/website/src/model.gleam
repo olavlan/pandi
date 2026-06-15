@@ -68,10 +68,14 @@ fn fetch_posts() -> Effect(Message) {
 fn post_decoder() -> decode.Decoder(Post) {
   use date_created <- decode.field("date_created", decode.string)
   use document <- decode.field("pandoc", doc.decoder())
-  let title =
-    dict.from_list(document.meta)
-    |> dict.get("title")
-    |> result.unwrap(or: date_created)
+  let title = case document.blocks {
+    [doc.Header(..) as block] -> doc.get_text(block)
+    [block, ..] ->
+      doc.get_text(block)
+      |> string.slice(at_index: 0, length: 30)
+      |> string.append("...")
+    [] -> "Untitled"
+  }
   decode.success(Post(title:, date_created:, document:))
 }
 

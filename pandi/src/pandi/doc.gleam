@@ -83,8 +83,26 @@ pub fn text(text: String) -> List(Inline) {
 }
 
 pub fn get_text(block: Block) -> String {
-  let inlines = todo as "get inlines from block"
-  inlines_to_string(inlines)
+  block_to_string(block)
+}
+
+fn blocks_to_string(blocks: List(Block)) -> String {
+  list.map(blocks, block_to_string) |> string.join(with: "\n\n")
+}
+
+fn block_to_string(block: Block) -> String {
+  case block {
+    Header(_, _, content) -> inlines_to_string(content)
+    Para(content) -> inlines_to_string(content)
+    Plain(content) -> inlines_to_string(content)
+    CodeBlock(_, text) -> text
+    Div(_, content) -> blocks_to_string(content)
+    BulletList(items) ->
+      list.map(items, blocks_to_string) |> string.join("\n\n")
+    OrderedList(_, items) ->
+      list.map(items, blocks_to_string) |> string.join("\n\n")
+    BlockQuote(content) -> blocks_to_string(content)
+  }
 }
 
 fn inlines_to_string(inlines: List(Inline)) {
