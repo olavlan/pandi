@@ -1,15 +1,15 @@
 import gleam/list
-import pandi as pd
+import pandi/doc
 import qcheck
 
-pub fn document_generator() -> qcheck.Generator(pd.Document) {
+pub fn document_generator() -> qcheck.Generator(doc.Document) {
   qcheck.map(
     qcheck.generic_list(block_generator(), qcheck.bounded_int(5, 10)),
-    fn(blocks) { pd.Document(blocks, []) },
+    fn(blocks) { doc.Document(blocks, []) },
   )
 }
 
-pub fn block_generator() -> qcheck.Generator(pd.Block) {
+pub fn block_generator() -> qcheck.Generator(doc.Block) {
   qcheck.from_generators(para_generator(), [
     plain_generator(),
     header_generator(),
@@ -21,64 +21,64 @@ pub fn block_generator() -> qcheck.Generator(pd.Block) {
   ])
 }
 
-fn plain_generator() -> qcheck.Generator(pd.Block) {
+fn plain_generator() -> qcheck.Generator(doc.Block) {
   use content <- qcheck.map(inlines_generator())
-  pd.Plain(content)
+  doc.Plain(content)
 }
 
-fn para_generator() -> qcheck.Generator(pd.Block) {
+fn para_generator() -> qcheck.Generator(doc.Block) {
   use content <- qcheck.map(inlines_generator())
-  pd.Para(content)
+  doc.Para(content)
 }
 
-fn header_generator() -> qcheck.Generator(pd.Block) {
+fn header_generator() -> qcheck.Generator(doc.Block) {
   use level, attributes, content <- qcheck.map3(
     qcheck.bounded_int(1, 6),
     attributes_generator(),
     inlines_generator(),
   )
-  pd.Header(level, attributes, content)
+  doc.Header(level, attributes, content)
 }
 
-fn code_block_generator() -> qcheck.Generator(pd.Block) {
+fn code_block_generator() -> qcheck.Generator(doc.Block) {
   use attributes, text <- qcheck.map2(attributes_generator(), word_generator())
-  pd.CodeBlock(attributes, text)
+  doc.CodeBlock(attributes, text)
 }
 
-fn div_generator() -> qcheck.Generator(pd.Block) {
+fn div_generator() -> qcheck.Generator(doc.Block) {
   use attributes, content <- qcheck.map2(
     attributes_generator(),
     simple_blocks_generator(),
   )
-  pd.Div(attributes, content)
+  doc.Div(attributes, content)
 }
 
-fn bullet_list_generator() -> qcheck.Generator(pd.Block) {
+fn bullet_list_generator() -> qcheck.Generator(doc.Block) {
   use items <- qcheck.map(qcheck.generic_list(
     simple_blocks_generator(),
     qcheck.bounded_int(2, 5),
   ))
-  pd.BulletList(items)
+  doc.BulletList(items)
 }
 
-fn ordered_list_generator() -> qcheck.Generator(pd.Block) {
+fn ordered_list_generator() -> qcheck.Generator(doc.Block) {
   use attributes, items <- qcheck.map2(
     list_attributes_generator(),
     qcheck.generic_list(simple_blocks_generator(), qcheck.bounded_int(2, 5)),
   )
-  pd.OrderedList(attributes, items)
+  doc.OrderedList(attributes, items)
 }
 
-fn block_quote_generator() -> qcheck.Generator(pd.Block) {
+fn block_quote_generator() -> qcheck.Generator(doc.Block) {
   use content <- qcheck.map(simple_blocks_generator())
-  pd.BlockQuote(content)
+  doc.BlockQuote(content)
 }
 
-fn simple_blocks_generator() -> qcheck.Generator(List(pd.Block)) {
+fn simple_blocks_generator() -> qcheck.Generator(List(doc.Block)) {
   qcheck.generic_list(leaf_block_generator(), qcheck.bounded_int(1, 3))
 }
 
-fn leaf_block_generator() -> qcheck.Generator(pd.Block) {
+fn leaf_block_generator() -> qcheck.Generator(doc.Block) {
   qcheck.from_generators(para_generator(), [
     plain_generator(),
     header_generator(),
@@ -86,32 +86,34 @@ fn leaf_block_generator() -> qcheck.Generator(pd.Block) {
   ])
 }
 
-fn list_attributes_generator() -> qcheck.Generator(pd.ListAttributes) {
+fn list_attributes_generator() -> qcheck.Generator(doc.ListAttributes) {
   use start, style, delimiter <- qcheck.map3(
     qcheck.return(1),
     list_number_style_generator(),
     list_number_delimiter_generator(),
   )
-  pd.ListAttributes(start, style, delimiter)
+  doc.ListAttributes(start, style, delimiter)
 }
 
-fn list_number_style_generator() -> qcheck.Generator(pd.ListNumberStyle) {
-  qcheck.from_generators(qcheck.return(pd.Decimal), [
-    qcheck.return(pd.LowerAlpha),
-    qcheck.return(pd.UpperAlpha),
-    qcheck.return(pd.LowerRoman),
-    qcheck.return(pd.UpperRoman),
+fn list_number_style_generator() -> qcheck.Generator(doc.ListNumberStyle) {
+  qcheck.from_generators(qcheck.return(doc.Decimal), [
+    qcheck.return(doc.LowerAlpha),
+    qcheck.return(doc.UpperAlpha),
+    qcheck.return(doc.LowerRoman),
+    qcheck.return(doc.UpperRoman),
   ])
 }
 
-fn list_number_delimiter_generator() -> qcheck.Generator(pd.ListNumberDelimiter) {
-  qcheck.from_generators(qcheck.return(pd.Period), [
-    qcheck.return(pd.OneParen),
-    qcheck.return(pd.TwoParens),
+fn list_number_delimiter_generator() -> qcheck.Generator(
+  doc.ListNumberDelimiter,
+) {
+  qcheck.from_generators(qcheck.return(doc.Period), [
+    qcheck.return(doc.OneParen),
+    qcheck.return(doc.TwoParens),
   ])
 }
 
-pub fn inlines_generator() -> qcheck.Generator(List(pd.Inline)) {
+pub fn inlines_generator() -> qcheck.Generator(List(doc.Inline)) {
   use length <- qcheck.bind(qcheck.small_non_negative_int())
   use separators, segments <- qcheck.map2(
     qcheck.fixed_length_list_from(separator_generator(), length),
@@ -120,11 +122,13 @@ pub fn inlines_generator() -> qcheck.Generator(List(pd.Inline)) {
   list.interleave([segments, separators])
 }
 
-fn separator_generator() -> qcheck.Generator(pd.Inline) {
-  qcheck.from_generators(qcheck.return(pd.Space), [qcheck.return(pd.SoftBreak)])
+fn separator_generator() -> qcheck.Generator(doc.Inline) {
+  qcheck.from_generators(qcheck.return(doc.Space), [
+    qcheck.return(doc.SoftBreak),
+  ])
 }
 
-fn non_separator_generator() -> qcheck.Generator(pd.Inline) {
+fn non_separator_generator() -> qcheck.Generator(doc.Inline) {
   qcheck.from_generators(str_generator(), [
     line_break_generator(),
     code_generator(),
@@ -136,58 +140,58 @@ fn non_separator_generator() -> qcheck.Generator(pd.Inline) {
   ])
 }
 
-fn str_generator() -> qcheck.Generator(pd.Inline) {
+fn str_generator() -> qcheck.Generator(doc.Inline) {
   use word <- qcheck.map(word_generator())
-  pd.Str(word)
+  doc.Str(word)
 }
 
-fn line_break_generator() -> qcheck.Generator(pd.Inline) {
-  qcheck.return(pd.LineBreak)
+fn line_break_generator() -> qcheck.Generator(doc.Inline) {
+  qcheck.return(doc.LineBreak)
 }
 
-fn code_generator() -> qcheck.Generator(pd.Inline) {
+fn code_generator() -> qcheck.Generator(doc.Inline) {
   use attributes, text <- qcheck.map2(attributes_generator(), word_generator())
-  pd.Code(attributes, text)
+  doc.Code(attributes, text)
 }
 
-fn emph_generator() -> qcheck.Generator(pd.Inline) {
+fn emph_generator() -> qcheck.Generator(doc.Inline) {
   use content <- qcheck.map(simple_inlines_generator())
-  pd.Emph(content)
+  doc.Emph(content)
 }
 
-fn strong_generator() -> qcheck.Generator(pd.Inline) {
+fn strong_generator() -> qcheck.Generator(doc.Inline) {
   use content <- qcheck.map(simple_inlines_generator())
-  pd.Strong(content)
+  doc.Strong(content)
 }
 
-fn strikeout_generator() -> qcheck.Generator(pd.Inline) {
+fn strikeout_generator() -> qcheck.Generator(doc.Inline) {
   use content <- qcheck.map(simple_inlines_generator())
-  pd.Strikeout(content)
+  doc.Strikeout(content)
 }
 
-fn span_generator() -> qcheck.Generator(pd.Inline) {
+fn span_generator() -> qcheck.Generator(doc.Inline) {
   use attributes, content <- qcheck.map2(
     attributes_generator(),
     simple_inlines_generator(),
   )
-  pd.Span(attributes, content)
+  doc.Span(attributes, content)
 }
 
-fn link_generator() -> qcheck.Generator(pd.Inline) {
+fn link_generator() -> qcheck.Generator(doc.Inline) {
   use attributes, content, target <- qcheck.map3(
     attributes_generator(),
     simple_inlines_generator(),
     target_generator(),
   )
-  pd.Link(attributes, content, target)
+  doc.Link(attributes, content, target)
 }
 
-fn target_generator() -> qcheck.Generator(pd.Target) {
+fn target_generator() -> qcheck.Generator(doc.Target) {
   use title, url <- qcheck.map2(word_generator(), word_generator())
-  pd.Target(title, url)
+  doc.Target(title, url)
 }
 
-fn simple_inlines_generator() -> qcheck.Generator(List(pd.Inline)) {
+fn simple_inlines_generator() -> qcheck.Generator(List(doc.Inline)) {
   use length <- qcheck.bind(qcheck.small_non_negative_int())
   use separators, segments <- qcheck.map2(
     qcheck.fixed_length_list_from(separator_generator(), length),
@@ -196,7 +200,7 @@ fn simple_inlines_generator() -> qcheck.Generator(List(pd.Inline)) {
   list.interleave([segments, separators])
 }
 
-fn leaf_inline_generator() -> qcheck.Generator(pd.Inline) {
+fn leaf_inline_generator() -> qcheck.Generator(doc.Inline) {
   qcheck.from_generators(str_generator(), [
     line_break_generator(),
     code_generator(),
@@ -210,13 +214,13 @@ pub fn word_generator() -> qcheck.Generator(String) {
   )
 }
 
-pub fn attributes_generator() -> qcheck.Generator(pd.Attributes) {
+pub fn attributes_generator() -> qcheck.Generator(doc.Attributes) {
   use identifier, classes, keyvalues <- qcheck.map3(
     qcheck.from_generators(word_generator(), [qcheck.return("")]),
     qcheck.generic_list(word_generator(), qcheck.bounded_int(0, 2)),
     qcheck.generic_list(keyvalue_generator(), qcheck.bounded_int(0, 1)),
   )
-  pd.Attributes(identifier, classes, keyvalues)
+  doc.Attributes(identifier, classes, keyvalues)
 }
 
 fn keyvalue_generator() -> qcheck.Generator(#(String, String)) {

@@ -1,8 +1,7 @@
 default:
     @just --list
 
-packages := "pandi pandoc_lustre_converter"
-published := "pandi"
+packages := "pandi pandoc_lustre_converter qcheck_pandoc"
 
 # installs the pre-commit hook 
 install-hook:
@@ -13,6 +12,7 @@ pre-commit:
     @just check
     @just generate-resources
     @just test
+    @just integration-test
     @just generate-readme
     @just docs
 
@@ -26,6 +26,17 @@ check:
             gleam check
             gleam fix
             gleam format
+        )
+    done
+
+#run integration tests
+integration-test:
+    #!/usr/bin/env sh
+    set -e
+    for dir in integration_test/*/; do
+        (
+            cd "$dir"
+            gleam test
         )
     done
 
@@ -45,7 +56,7 @@ test:
 # review all new snapshots
 snapshots:
     #!/usr/bin/env sh
-    for pkg in {{ published }}; do
+    for pkg in {{ packages }}; do
         (
             cd "$pkg"
             gleam run -m birdie
