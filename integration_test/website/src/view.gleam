@@ -1,4 +1,4 @@
-import component.{Link, PostItem}
+import component.{PostItem}
 import gleam/dict
 import gleam/list
 import lustre/attribute
@@ -11,9 +11,6 @@ import route
 
 pub fn view(model: Model) -> Element(Message) {
   component.container([
-    component.navbar(logo: Link(route.Index, "olavlan"), menu: [
-      Link(route.Posts, "Posts"),
-    ]),
     component.content([
       {
         case model.route {
@@ -64,10 +61,7 @@ fn view_post(model: Model, post_id: String) -> Element(message) {
 fn block_converter() -> pl.BlockConverter(message) {
   fn(block, _) {
     case block {
-      doc.Div(
-        doc.Attributes(_, ["details"], _),
-        [doc.Header(_, _, inlines), ..rest],
-      ) -> {
+      doc.Div(_, [doc.Header(_, _, inlines), ..rest]) -> {
         use title <- pl.default_inlines(inlines)
         use content <- pl.default_blocks(rest)
         component.details(title, content) |> pl.custom

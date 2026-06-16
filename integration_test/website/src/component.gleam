@@ -8,31 +8,16 @@ pub fn container(children: List(Element(message))) -> Element(message) {
   html.div([class("container mx-auto max-w-5xl px-8")], children)
 }
 
-pub type Link {
-  Link(target: route.Route, label: String)
-}
-
-pub fn navbar(logo logo: Link, menu menu: List(Link)) -> Element(message) {
-  let logo =
-    html.div([class("flex-1")], [
-      html.a([class("btn btn-ghost text-xl"), route.href(logo.target)], [
-        html.text(logo.label),
-      ]),
-    ])
-  let links = list.map(menu, fn(data) { html.li([], [link(data)]) })
-  let menu =
-    html.div([class("flex-none")], [
-      html.ul([class("menu menu-horizontal px-1")], links),
-    ])
-  html.nav([class("navbar bg-base-100 shadow-sm")], [logo, menu])
-}
-
 pub fn content(children: List(Element(message))) -> Element(message) {
   html.main([class("my-16")], children)
 }
 
 pub fn prose(children: List(Element(message))) -> Element(message) {
   html.article([class("prose")], children)
+}
+
+pub type Link {
+  Link(target: route.Route, label: String)
 }
 
 pub fn link(link: Link) -> Element(message) {
