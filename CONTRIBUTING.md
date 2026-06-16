@@ -2,9 +2,9 @@
 
 This project consists of several Gleam packages for working with Pandoc documents.
 
-* [pandi](/pandi/README.md): Core package and Pandoc filters.
-* [pandoc-lustre-converter](/pandoc_lustre_converter/README.md): Pandoc to Lustre converter, with support for custom conversion rules.
-* [qcheck-pandoc](/qcheck_pandoc/README.md): Pandoc random document generator.
+- [pandi](/pandi/README.md): Core package and Pandoc filters.
+- [pandoc-lustre-converter](/pandoc_lustre_converter/README.md): Pandoc to Lustre converter, with support for custom conversion rules.
+- [qcheck-pandoc](/qcheck_pandoc/README.md): Pandoc random document generator.
 
 ## Pandoc document AST
 
@@ -78,19 +78,19 @@ The Lua implementation above should be used for a reference to the possible valu
 
 Note that all snapshot tests must be reviewed manually (by a human).
 
-Assume we add or change a constructor in [pandi/doc](./pandi/src/pandi/doc.gleam), in either the `Block` or `Inline` type.
-Now running `just check` in the project root will show all the things that needs to be implemented.
+When adding or changing a constructor in [pandi/doc](./pandi/src/pandi/doc.gleam) (either the `Block` or `Inline` type),
+now running `just check` in the project root will show the places that needs to be updated.
 
-When running `just pre-commit` passes, we are done.
+When finished, running `just pre-commit` will verify the code in various ways.
 
 Special notes:
 
-* Handling of the element in the Lustre conversion
-  * We use Pandoc's html output as a guideline
-* [pandi/test](./pandi/test/from_json_test.gleam)
-  * Add a minimal `from_json` snapshot test (follow existing examples)
-* [pandoc_lustre_converter/test](./pandoc_lustre_converter/test/)
-  * A minimal `convert_inlines` or `convert_blocks` snapshot test (follow existing examples)
-* [qcheck-pandoc](./qcheck_pandoc/src/qcheck_pandoc.gleam):
-  * A generator for the type (to be used by the document generator)
-    * We want to ensure the document generator produces readable document samples
+- Handling of elements in the Lustre conversion
+  - We use Pandoc's html output as a guideline
+- [pandi/test](./pandi/test/from_json_test.gleam)
+  - Add a minimal `from_json` snapshot test (follow existing examples)
+- [pandoc_lustre_converter/test](./pandoc_lustre_converter/test/)
+  - A minimal `convert_inlines` or `convert_blocks` snapshot test (follow existing examples)
+- [qcheck-pandoc](./qcheck_pandoc/src/qcheck_pandoc.gleam):
+  - A generator for the type (to be used by the document generator)
+    - We want to ensure the document generator produces readable document samples
