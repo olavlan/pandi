@@ -14,11 +14,9 @@ pub fn view(model: Model) -> Element(Message) {
     component.content([
       {
         case model.route {
-          route.Index -> view_post_list(model)
-          route.Posts -> view_post_list(model)
+          route.PostList -> view_post_list(model)
           route.PostById(post_id) -> view_post(model, post_id)
-          route.About -> view_post_list(model)
-          route.NotFound(_) -> view_post_list(model)
+          route.NotFound -> view_post_list(model)
         }
       },
     ]),

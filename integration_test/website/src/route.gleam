@@ -1,39 +1,37 @@
+import gleam/string
 import gleam/uri.{type Uri}
 import lustre/attribute.{type Attribute}
 
-const base_path = "/website"
+const base_path = "/blog"
 
 pub type Route {
-  Index
-  Posts
+  PostList
   PostById(id: String)
-  About
-  NotFound(uri: Uri)
+  NotFound
 }
 
-pub fn parse_route(uri: Uri) -> Route {
-  let segments = uri.path_segments(uri.path)
-  let path = case segments {
-    ["website", ..rest] -> rest
-    other -> other
-  }
-  case path {
-    [] | [""] -> Index
-    ["posts"] -> Posts
-    ["posts", post_id] -> PostById(id: post_id)
-    ["about"] -> About
-    _ -> NotFound(uri:)
+pub fn from_uri(uri: Uri) -> Route {
+  case uri.path_segments(uri.path) {
+    ["blog", ..rest] ->
+      case rest {
+        [] | [""] -> PostList
+        [post_id] -> PostById(id: post_id)
+        _ -> NotFound
+      }
+    _ -> NotFound
   }
 }
 
-pub fn href(route: Route) -> Attribute(message) {
+pub fn to_href(route: Route) -> Attribute(message) {
   let url = case route {
-    Index -> base_path <> "/"
-    About -> base_path <> "/about"
-    Posts -> base_path <> "/posts"
-    PostById(post_id) -> base_path <> "/posts/" <> post_id
-    NotFound(_) -> base_path <> "/404"
+    PostList -> [] |> segments_to_path
+    PostById(post_id) -> [post_id] |> segments_to_path
+    NotFound -> "404"
   }
 
   attribute.href(url)
+}
+
+fn segments_to_path(segments: List(String)) -> String {
+  [base_path, ..segments] |> string.join("/")
 }

@@ -21,7 +21,7 @@ pub type Link {
 }
 
 pub fn link(link: Link) -> Element(message) {
-  html.a([route.href(link.target)], [html.text(link.label)])
+  html.a([route.to_href(link.target)], [html.text(link.label)])
 }
 
 pub type PostItem {
@@ -32,7 +32,7 @@ pub fn post_listing(post_items: List(PostItem)) -> Element(message) {
   let list_items =
     list.map(post_items, fn(item) {
       html.li([], [
-        html.a([route.href(item.route), class("link hover:underline")], [
+        html.a([route.to_href(item.route), class("link hover:underline")], [
           html.text(item.title),
         ]),
         html.span([class("text-sm opacity-50 ml-2")], [html.text(item.date)]),
@@ -55,13 +55,13 @@ pub fn details(
 }
 
 pub fn definition(
-  definition_text: String,
+  definition definition: String,
   term term: Element(message),
 ) -> Element(message) {
   html.span(
     [
       class("tooltip tooltip-top"),
-      attribute.attribute("data-tip", definition_text),
+      attribute.attribute("data-tip", definition),
     ],
     [term],
   )

@@ -10,6 +10,8 @@ import pandi/doc
 import route
 import rsvp
 
+const blog_url = "https://gist.githubusercontent.com/olavlan/606f3e7a55132475bdae74515d7be47f/raw/posts.json"
+
 pub type Model {
   Model(posts: Result(Dict(String, Post), Nil), route: route.Route)
 }
@@ -25,12 +27,12 @@ pub type Post {
 
 pub fn init(_) -> #(Model, Effect(Message)) {
   let route = case modem.initial_uri() {
-    Ok(uri) -> route.parse_route(uri)
-    Error(_) -> route.Index
+    Ok(uri) -> route.from_uri(uri)
+    Error(_) -> route.NotFound
   }
 
   let modem_effect =
-    modem.init(fn(uri) { route.parse_route(uri) |> UserNavigatedTo })
+    modem.init(fn(uri) { route.from_uri(uri) |> UserNavigatedTo })
 
   #(
     Model(posts: Error(Nil), route:),
@@ -59,8 +61,6 @@ pub fn update(model: Model, message: Message) -> #(Model, Effect(Message)) {
   }
 }
 
-const blog_url = "https://raw.githubusercontent.com/olavlan/blog/master/posts.json"
-
 fn fetch_posts() -> Effect(Message) {
   rsvp.get(blog_url, rsvp.expect_text(PostsFetched))
 }
@@ -68,15 +68,19 @@ fn fetch_posts() -> Effect(Message) {
 fn post_decoder() -> decode.Decoder(Post) {
   use date_created <- decode.field("date_created", decode.string)
   use document <- decode.field("pandoc", doc.decoder())
-  let title = case document.blocks {
-    [doc.Header(..) as block] -> doc.get_text(block)
-    [block, ..] ->
-      doc.get_text(block)
+  let title = get_title(document)
+  decode.success(Post(title:, date_created:, document:))
+}
+
+fn get_title(document: doc.Document) -> String {
+  case document.blocks {
+    [doc.Header(..) as first, ..] -> doc.get_text(first)
+    [first, ..] ->
+      doc.get_text(first)
       |> string.slice(at_index: 0, length: 30)
       |> string.append("...")
     [] -> "Untitled"
   }
-  decode.success(Post(title:, date_created:, document:))
 }
 
 fn sanitize_keys(input: dict.Dict(String, a)) -> dict.Dict(String, a) {
