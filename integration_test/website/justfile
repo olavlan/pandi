@@ -1,0 +1,19 @@
+
+gist_id := "ac7edd6ff70bf72515bb12e67787b84a"
+
+build:
+    #!/bin/sh
+    echo "Building posts.json..."
+    for file in posts/*; do
+        name="$(basename "$file")"
+        date="$(date -r "$file" +"%Y-%m-%d")"
+        pandoc_json="$(pandoc "$file" -t json)" || continue
+        echo "$pandoc_json" | jq --arg name "$name" --arg date "$date" '{($name): {date_created: $date, pandoc: .}}'
+    done | jq -s 'add' > posts.json
+    echo "Done!"
+
+deploy: build
+    #!/bin/sh
+    echo "Deploying posts.json to Github Gist..."
+    gh gist edit {{gist_id}} posts.json
+    echo "Done!"

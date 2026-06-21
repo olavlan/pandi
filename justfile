@@ -97,27 +97,5 @@ docs:
 # generate README-files from templates across all packages
 generate-readme:
     #!/usr/bin/env sh
-    for pkg in {{ packages }}; do
-        (
-            cd "$pkg"
-            {{ render_readme }}
-        )
-    done
-
-render_readme := "sed -E 's/\\{\\{([^}]+)\\}\\}/cat \\1/e' README.template.md > README.md"
-
-# create a code block from a reference like "./my_file.gleam#pattern"
-create-code-block source-reference:
-    ref="{{source-reference}}"
-    file="${ref%%#*}"
-    pattern="${ref##*#}"
-    ext="${file##*.}"
-    content="$(just extract-code "$pattern" "$file")"
-    printf "```%s\n%s\n```" "$ext" "$content"
-
-# extract code between the first two occurrences of a pattern in a file
-extract-code pattern file:
-    #!/usr/bin/env sh
-    awk -v p="{{pattern}}" '$0 == p { inside = !inside; next } inside' "{{file}}"
-
-
+    cd tools
+    gleam run -m render_templates

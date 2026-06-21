@@ -1,0 +1,243 @@
+{
+  "discovering_gleam.md": {
+    "date_created": "2026-06-21",
+    "pandoc": {
+      "pandoc-api-version": [
+        1,
+        23,
+        1,
+        1
+      ],
+      "meta": {},
+      "blocks": [
+        {
+          "t": "Header",
+          "c": [
+            1,
+            [
+              "discovering-gleam",
+              [],
+              []
+            ],
+            [
+              {
+                "t": "Str",
+                "c": "Discovering"
+              },
+              {
+                "t": "Space"
+              },
+              {
+                "t": "Str",
+                "c": "Gleam"
+              }
+            ]
+          ]
+        },
+        {
+          "t": "Para",
+          "c": [
+            {
+              "t": "Str",
+              "c": "After"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "discovering"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "Gleam"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "I"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "have"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "also"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "found"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "a"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "fascination"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "for"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Span",
+              "c": [
+                [
+                  "",
+                  [],
+                  [
+                    [
+                      "definition",
+                      "Functional programming is..."
+                    ]
+                  ]
+                ],
+                [
+                  {
+                    "t": "Str",
+                    "c": "functional"
+                  },
+                  {
+                    "t": "Space"
+                  },
+                  {
+                    "t": "Str",
+                    "c": "programming"
+                  }
+                ]
+              ]
+            },
+            {
+              "t": "Str",
+              "c": "."
+            }
+          ]
+        },
+        {
+          "t": "Div",
+          "c": [
+            [
+              "",
+              [
+                "details"
+              ],
+              []
+            ],
+            [
+              {
+                "t": "Header",
+                "c": [
+                  1,
+                  [
+                    "gleam-syntax",
+                    [],
+                    []
+                  ],
+                  [
+                    {
+                      "t": "Str",
+                      "c": "Gleam"
+                    },
+                    {
+                      "t": "Space"
+                    },
+                    {
+                      "t": "Str",
+                      "c": "syntax"
+                    }
+                  ]
+                ]
+              },
+              {
+                "t": "Para",
+                "c": [
+                  {
+                    "t": "Str",
+                    "c": "Here"
+                  },
+                  {
+                    "t": "Space"
+                  },
+                  {
+                    "t": "Str",
+                    "c": "is"
+                  },
+                  {
+                    "t": "Space"
+                  },
+                  {
+                    "t": "Str",
+                    "c": "some"
+                  },
+                  {
+                    "t": "Space"
+                  },
+                  {
+                    "t": "Str",
+                    "c": "extra"
+                  },
+                  {
+                    "t": "Space"
+                  },
+                  {
+                    "t": "Str",
+                    "c": "information"
+                  },
+                  {
+                    "t": "Space"
+                  },
+                  {
+                    "t": "Str",
+                    "c": "about"
+                  },
+                  {
+                    "t": "Space"
+                  },
+                  {
+                    "t": "Str",
+                    "c": "Gleam"
+                  },
+                  {
+                    "t": "Space"
+                  },
+                  {
+                    "t": "Str",
+                    "c": "syntax."
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  }
+}

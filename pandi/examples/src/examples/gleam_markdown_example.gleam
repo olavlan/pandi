@@ -19,8 +19,7 @@ fn process_top_level_blocks(document: doc.Document) -> doc.Document {
 }
 
 pub fn main() {
-  let _ =
-    pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
-    |> process_top_level_blocks
-    |> pandoc.document_to_file(to_file: "example.html", to_format: "html")
+  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
+  |> process_top_level_blocks
+  |> pandoc.document_to_file(to_file: "example.html", to_format: "html")
 }

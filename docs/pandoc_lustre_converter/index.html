@@ -231,16 +231,103 @@
 <li>Custom conversion rules through pattern matching on <a href="https://olavlan.github.io/pandi/pandi/pandi/doc.html#Block">block</a> and <a href="https://olavlan.github.io/pandi/pandi/pandi/doc.html#Inline">inline</a> document elements.</li>
 </ul>
 <p>As an example, consider the following Markdown document:</p>
-<p>./pandoc_lustre_converter/examples/resources/example.md</p>
+<pre><code class="language-md">Here is a #gleam tag, which should be converted to a link pointing to /tags/gleam.
+
+The following should be converted to a details element:
+
+::: my-class
+
+# This is the summary
+
+These are the details, including a #lustre tag.
+:::
+</code></pre>
 <p>Here is how we can convert it using a mix of default and custom conversion:</p>
-<p>./pandoc_lustre_converter/examples/src/examples/custom_converters_with_file.gleam</p>
+<pre><code class="language-gleam">import examples/pandoc
+import lustre/attribute
+import lustre/element
+import lustre/element/html
+import pandi/doc
+import pandoc_lustre_converter as pl
+
+pub fn main() {
+  let block_converter: pl.BlockConverter(msg) = fn(block, _meta) {
+    case block {
+      doc.Div(attributes, [doc.Header(_, _, inlines), ..rest]) -&gt; {
+        use details &lt;- pl.default_blocks(rest)
+        use summary &lt;- pl.default_inlines(inlines)
+        html.details(pl.convert_attributes(attributes), [
+          html.summary([], [summary]),
+          details,
+        ])
+        |&gt; pl.custom
+      }
+      _ -&gt; pl.default
+    }
+  }
+
+  let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
+    case inline {
+      doc.Str("#" &lt;&gt; tag) -&gt;
+        html.a([attribute.href("/tags/" &lt;&gt; tag)], [html.text("#" &lt;&gt; tag)])
+        |&gt; pl.custom
+      _ -&gt; pl.default
+    }
+  }
+
+  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
+  |&gt; pl.convert_document(block_converter, inline_converter)
+  |&gt; element.to_readable_string
+  // &lt;p&gt;
+  //   Here is a
+  //   &lt;a href="/tags/gleam"&gt;
+  //     #gleam
+  //   &lt;/a&gt;
+  //   tag, which should be converted to a link pointing to /tags/gleam.
+  // &lt;/p&gt;
+  // &lt;p&gt;
+  //   The following should be converted to a details element:
+  // &lt;/p&gt;
+  // &lt;details class="my-class"&gt;
+  //   &lt;summary&gt;
+  //     This is the summary
+  //   &lt;/summary&gt;
+  //   &lt;p&gt;
+  //     These are the details, including a
+  //     &lt;a href="/tags/lustre"&gt;
+  //       #lustre
+  //     &lt;/a&gt;
+  //     tag.
+  //   &lt;/p&gt;
+  // &lt;/details&gt;
+}
+</code></pre>
 <p>See the <a href="https://olavlan.github.io/pandi/pandoc_lustre_converter/pandoc_lustre_converter.html">module docs</a> for more details on custom conversion.
 See the next section on how to integrate your Gleam/Lustre application with Pandoc.</p>
 <h2>Integrating with <a href="https://pandoc.org/">Pandoc</a></h2>
 <p><code>pandoc_lustre_converter</code> depends on <code>pandi</code>, which can only import Pandoc’s generic json format.
 If you want to import specific document formats, you have to call Pandoc with the output set to <code>json</code>,
 and then import the result:</p>
-<p>./pandoc_lustre_converter/examples/src/examples/pandoc.gleam</p>
+<pre><code class="language-gleam">import pandi/doc
+import shellout
+
+const folder = "resources/"
+
+pub fn file_to_document(
+  from_file filename: String,
+  from_format from_format: String,
+) -&gt; doc.Document {
+  let assert Ok(result) =
+    shellout.command(
+      run: "pandoc",
+      with: ["-f", from_format, "-t", "json", folder &lt;&gt; filename],
+      in: ".",
+      opt: [shellout.LetBeStderr],
+    )
+  let assert Ok(document) = doc.from_json(result)
+  document
+}
+</code></pre>
 <p>This can be extended with proper file and error handling.
 Alternatively, you can convert documents to json separately from your Gleam/Lustre application.</p>
 <p><em>The complete example exists as a Gleam project <a href="https://github.com/olavlan/pandi/tree/main/pandoc_lustre_converter/examples">here</a> along with other examples. Running it requires Pandoc to be installed.</em></p>
@@ -324,9 +411,9 @@ Alternatively, you can convert documents to json separately from your Gleam/Lust
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1782048520"></script>
+    <script src="./js/index.js?v=1782050572"></script>
     <script>
-      fetch("./search-data.json?v=1782048520")
+      fetch("./search-data.json?v=1782050572")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

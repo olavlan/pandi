@@ -10,11 +10,81 @@ This package builds on [pandi](https://olavlan.github.io/pandi/pandi/) and aims
 
 As an example, consider the following Markdown document:
 
-./pandoc_lustre_converter/examples/resources/example.md
+````md
+Here is a #gleam tag, which should be converted to a link pointing to /tags/gleam.
+
+The following should be converted to a details element:
+
+::: my-class
+
+# This is the summary
+
+These are the details, including a #lustre tag.
+:::
+````
 
 Here is how we can convert it using a mix of default and custom conversion:
 
-./pandoc_lustre_converter/examples/src/examples/custom_converters_with_file.gleam
+````gleam
+import examples/pandoc
+import lustre/attribute
+import lustre/element
+import lustre/element/html
+import pandi/doc
+import pandoc_lustre_converter as pl
+
+pub fn main() {
+  let block_converter: pl.BlockConverter(msg) = fn(block, _meta) {
+    case block {
+      doc.Div(attributes, [doc.Header(_, _, inlines), ..rest]) -> {
+        use details <- pl.default_blocks(rest)
+        use summary <- pl.default_inlines(inlines)
+        html.details(pl.convert_attributes(attributes), [
+          html.summary([], [summary]),
+          details,
+        ])
+        |> pl.custom
+      }
+      _ -> pl.default
+    }
+  }
+
+  let inline_converter: pl.InlineConverter(msg) = fn(inline, _meta) {
+    case inline {
+      doc.Str("#" <> tag) ->
+        html.a([attribute.href("/tags/" <> tag)], [html.text("#" <> tag)])
+        |> pl.custom
+      _ -> pl.default
+    }
+  }
+
+  pandoc.file_to_document(from_file: "example.md", from_format: "markdown")
+  |> pl.convert_document(block_converter, inline_converter)
+  |> element.to_readable_string
+  // <p>
+  //   Here is a
+  //   <a href="/tags/gleam">
+  //     #gleam
+  //   </a>
+  //   tag, which should be converted to a link pointing to /tags/gleam.
+  // </p>
+  // <p>
+  //   The following should be converted to a details element:
+  // </p>
+  // <details class="my-class">
+  //   <summary>
+  //     This is the summary
+  //   </summary>
+  //   <p>
+  //     These are the details, including a
+  //     <a href="/tags/lustre">
+  //       #lustre
+  //     </a>
+  //     tag.
+  //   </p>
+  // </details>
+}
+````
 
 See the [module docs](https://olavlan.github.io/pandi/pandoc_lustre_converter/pandoc_lustre_converter.html) for more details on custom conversion.
 See the next section on how to integrate your Gleam/Lustre application with Pandoc.
@@ -25,7 +95,27 @@ See the next section on how to integrate your Gleam/Lustre application with Pand
 If you want to import specific document formats, you have to call Pandoc with the output set to `json`,
 and then import the result:
 
-./pandoc_lustre_converter/examples/src/examples/pandoc.gleam
+````gleam
+import pandi/doc
+import shellout
+
+const folder = "resources/"
+
+pub fn file_to_document(
+  from_file filename: String,
+  from_format from_format: String,
+) -> doc.Document {
+  let assert Ok(result) =
+    shellout.command(
+      run: "pandoc",
+      with: ["-f", from_format, "-t", "json", folder <> filename],
+      in: ".",
+      opt: [shellout.LetBeStderr],
+    )
+  let assert Ok(document) = doc.from_json(result)
+  document
+}
+````
 
 This can be extended with proper file and error handling.
 Alternatively, you can convert documents to json separately from your Gleam/Lustre application.

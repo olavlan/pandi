@@ -10,19 +10,22 @@ import pandi/doc
 import route
 import rsvp
 
-const blog_url = "https://gist.githubusercontent.com/olavlan/606f3e7a55132475bdae74515d7be47f/raw/posts.json"
+//model
+const blog_url = "https://gist.githubusercontent.com/olavlan/ac7edd6ff70bf72515bb12e67787b84a/raw/posts.json"
 
 pub type Model {
   Model(posts: Result(Dict(String, Post), Nil), route: route.Route)
 }
 
+pub type Post {
+  Post(title: String, date_created: String, document: doc.Document)
+}
+
+//model
+
 pub type Message {
   UserNavigatedTo(route: route.Route)
   PostsFetched(Result(String, rsvp.Error))
-}
-
-pub type Post {
-  Post(title: String, date_created: String, document: doc.Document)
 }
 
 pub fn init(_) -> #(Model, Effect(Message)) {
