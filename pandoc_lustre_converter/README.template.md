@@ -5,20 +5,16 @@
 
 This package builds on [pandi](https://olavlan.github.io/pandi/pandi/) and aims to support:
 
-* Converting a [Pandoc document](https://olavlan.github.io/pandi/pandi/pandi/doc.html#Document) to a [Lustre element](https://lustre.hexdocs.pm/lustre/element.html#Element).
-* Custom conversion rules through pattern matching on [block](https://olavlan.github.io/pandi/pandi/pandi/doc.html#Block) and [inline](https://olavlan.github.io/pandi/pandi/pandi/doc.html#Inline) document elements.
+- Converting a [Pandoc document](https://olavlan.github.io/pandi/pandi/pandi/doc.html#Document) to a [Lustre element](https://lustre.hexdocs.pm/lustre/element.html#Element).
+- Custom conversion rules through pattern matching on [block](https://olavlan.github.io/pandi/pandi/pandi/doc.html#Block) and [inline](https://olavlan.github.io/pandi/pandi/pandi/doc.html#Inline) document elements.
 
 As an example, consider the following Markdown document:
 
-````md
-{{./examples/resources/example.md}}
-````
+./pandoc_lustre_converter/examples/resources/example.md
 
 Here is how we can convert it using a mix of default and custom conversion:
 
-```gleam
-{{./examples/src/examples/custom_converters_with_file.gleam}}
-```
+./pandoc_lustre_converter/examples/src/examples/custom_converters_with_file.gleam
 
 See the [module docs](https://olavlan.github.io/pandi/pandoc_lustre_converter/pandoc_lustre_converter.html) for more details on custom conversion.
 See the next section on how to integrate your Gleam/Lustre application with Pandoc.
@@ -29,11 +25,9 @@ See the next section on how to integrate your Gleam/Lustre application with Pand
 If you want to import specific document formats, you have to call Pandoc with the output set to `json`,
 and then import the result:
 
-```gleam
-{{./examples/src/examples/pandoc.gleam}}
-```
+./pandoc_lustre_converter/examples/src/examples/pandoc.gleam
 
 This can be extended with proper file and error handling.
 Alternatively, you can convert documents to json separately from your Gleam/Lustre application.
 
-*The complete example exists as a Gleam project [here](https://github.com/olavlan/pandi/tree/main/pandoc_lustre_converter/examples) along with other examples. Running it requires Pandoc to be installed.*
+_The complete example exists as a Gleam project [here](https://github.com/olavlan/pandi/tree/main/pandoc_lustre_converter/examples) along with other examples. Running it requires Pandoc to be installed._

@@ -5,8 +5,6 @@
 
 Pandoc allows you to work with documents in a format-independent way.
 
-This package's goal is to generate random Pandoc documents, which can be converted to any format and used  for property testing:
+This package's goal is to generate random Pandoc documents, which can be converted to any format and used for property testing:
 
-```gleam
-{{examples/src/examples/generate_document.gleam}}
-```
+./qcheck_pandoc/examples/src/examples/generate_document.gleam

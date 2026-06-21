@@ -226,18 +226,8 @@
 <p><a href="https://hex.pm/packages/pandi"><img src="https://img.shields.io/hexpm/v/pandi" alt="Package Version" /></a>
 <a href="https://hexdocs.pm/pandi/"><img src="https://img.shields.io/badge/hex-docs-ffaff3" alt="Hex Docs" /></a></p>
 <p>Pandoc allows you to work with documents in a format-independent way.</p>
-<p>This package’s goal is to generate random Pandoc documents, which can be converted to any format and used  for property testing:</p>
-<pre><code class="language-gleam">import pandi/doc
-import qcheck
-import qcheck_pandoc.{document_generator}
-
-pub fn main() {
-  let seed = qcheck.random_seed()
-  let #(documents, _) = qcheck.generate(document_generator(), 1, seed)
-  let assert [document] = documents
-  document |&gt; doc.to_string
-}
-</code></pre>
+<p>This package’s goal is to generate random Pandoc documents, which can be converted to any format and used for property testing:</p>
+<p>./qcheck_pandoc/examples/src/examples/generate_document.gleam</p>
 
 
       </main>
@@ -318,9 +308,9 @@ pub fn main() {
     </script>
 
     <script src="./js/lunr.min.js?v=1.17.0"></script>
-    <script src="./js/index.js?v=1782031747"></script>
+    <script src="./js/index.js?v=1782043614"></script>
     <script>
-      fetch("./search-data.json?v=1782031747")
+      fetch("./search-data.json?v=1782043614")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>
