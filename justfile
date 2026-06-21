@@ -79,7 +79,6 @@ generate-markdown:
     cd qcheck_pandoc
     gleam run -m qcheck_pandoc/generate_markdown 2>/dev/null | pandoc --from json --to markdown
 
-render_readme := "sed -E 's/\\{\\{([^}]+)\\}\\}/cat \\1/e' README.template.md > README.md"
 
 # build and collect documentation for all packages
 docs:
@@ -104,3 +103,21 @@ generate-readme:
             {{ render_readme }}
         )
     done
+
+render_readme := "sed -E 's/\\{\\{([^}]+)\\}\\}/cat \\1/e' README.template.md > README.md"
+
+# create a code block from a reference like "./my_file.gleam#pattern"
+create-code-block source-reference:
+    ref="{{source-reference}}"
+    file="${ref%%#*}"
+    pattern="${ref##*#}"
+    ext="${file##*.}"
+    content="$(just extract-code "$pattern" "$file")"
+    printf "```%s\n%s\n```" "$ext" "$content"
+
+# extract code between the first two occurrences of a pattern in a file
+extract-code pattern file:
+    #!/usr/bin/env sh
+    awk -v p="{{pattern}}" '$0 == p { inside = !inside; next } inside' "{{file}}"
+
+
