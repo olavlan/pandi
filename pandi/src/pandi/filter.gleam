@@ -380,6 +380,7 @@ fn walk_inline(
           doc.Span(attrs, walk_inlines(content, meta, filter))
         doc.Link(attrs, content, target) ->
           doc.Link(attrs, walk_inlines(content, meta, filter), target)
+        doc.Math(..) -> inline
         doc.Code(..) -> inline
         doc.Str(..) -> inline
         doc.LineBreak -> inline

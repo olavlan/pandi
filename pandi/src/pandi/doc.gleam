@@ -35,6 +35,12 @@ pub type Inline {
   Code(attributes: Attributes, text: String)
   Span(attributes: Attributes, content: List(Inline))
   Link(attributes: Attributes, content: List(Inline), target: Target)
+  Math(math_type: MathType, text: String)
+}
+
+pub type MathType {
+  InlineMath
+  DisplayMath
 }
 
 pub type Attributes {
@@ -82,6 +88,7 @@ pub fn text(text: String) -> List(Inline) {
   |> list.intersperse(Space)
 }
 
+/// Convert a block to plain text, removing all markup.
 pub fn get_text(block: Block) -> String {
   block_to_string(block)
 }
@@ -121,6 +128,7 @@ fn inline_to_string(inline: Inline) -> String {
     Code(_, text) -> text
     Span(_, content) -> inlines_to_string(content)
     Link(_, content, _) -> inlines_to_string(content)
+    Math(_, text) -> text
   }
 }
 
@@ -274,6 +282,7 @@ fn inline_decoder() -> decode.Decoder(Inline) {
     "Code" -> code_decoder()
     "Span" -> span_decoder()
     "Link" -> link_decoder()
+    "Math" -> math_decoder()
     _ -> decode.failure(Space, "Inline")
   }
 }
@@ -342,6 +351,21 @@ fn code_decoder() -> decode.Decoder(Inline) {
   use attributes <- decode_c_at(0, attributes_decoder())
   use text <- decode_c_at(1, decode.string)
   decode.success(Code(attributes, text))
+}
+
+fn math_decoder() -> decode.Decoder(Inline) {
+  use math_type <- decode_c_at(0, math_type_decoder())
+  use text <- decode_c_at(1, decode.string)
+  decode.success(Math(math_type, text))
+}
+
+fn math_type_decoder() -> decode.Decoder(MathType) {
+  use t <- decode.field("t", decode.string)
+  case t {
+    "InlineMath" -> decode.success(InlineMath)
+    "DisplayMath" -> decode.success(DisplayMath)
+    _ -> decode.failure(InlineMath, "MathType")
+  }
 }
 
 fn attributes_decoder() -> decode.Decoder(Attributes) {
@@ -492,7 +516,27 @@ fn encode_inline(inline: Inline) -> json.Json {
         #("t", json.string("Link")),
         #("c", encode_link_content(attributes, content, target)),
       ])
+    Math(math_type, text) ->
+      json.object([
+        #("t", json.string("Math")),
+        #("c", encode_math_content(math_type, text)),
+      ])
   }
+}
+
+fn encode_math_content(math_type: MathType, text: String) -> json.Json {
+  json.preprocessed_array([
+    encode_math_type(math_type),
+    json.string(text),
+  ])
+}
+
+fn encode_math_type(math_type: MathType) -> json.Json {
+  let t = case math_type {
+    InlineMath -> "InlineMath"
+    DisplayMath -> "DisplayMath"
+  }
+  json.object([#("t", json.string(t))])
 }
 
 fn encode_code_content(attributes: Attributes, text: String) -> json.Json {
@@ -724,6 +768,16 @@ fn pretty_inline(inline: Inline) -> glam.Document {
     Span(attrs, content) ->
       [pretty_attributes(attrs), glam.space, pretty_inlines(content)]
       |> pretty_element("Span")
+    Math(math_type, text) ->
+      [pretty_math_type(math_type), glam.space, pretty_string(text)]
+      |> pretty_element("Math")
+  }
+}
+
+fn pretty_math_type(math_type: MathType) -> glam.Document {
+  case math_type {
+    InlineMath -> glam.from_string("InlineMath")
+    DisplayMath -> glam.from_string("DisplayMath")
   }
 }
 

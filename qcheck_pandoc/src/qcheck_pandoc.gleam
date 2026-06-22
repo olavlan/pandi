@@ -132,6 +132,7 @@ fn non_separator_generator() -> qcheck.Generator(doc.Inline) {
   qcheck.from_generators(str_generator(), [
     line_break_generator(),
     code_generator(),
+    math_generator(),
     emph_generator(),
     strong_generator(),
     strikeout_generator(),
@@ -152,6 +153,17 @@ fn line_break_generator() -> qcheck.Generator(doc.Inline) {
 fn code_generator() -> qcheck.Generator(doc.Inline) {
   use attributes, text <- qcheck.map2(attributes_generator(), word_generator())
   doc.Code(attributes, text)
+}
+
+fn math_generator() -> qcheck.Generator(doc.Inline) {
+  use math_type, text <- qcheck.map2(math_type_generator(), word_generator())
+  doc.Math(math_type, text)
+}
+
+fn math_type_generator() -> qcheck.Generator(doc.MathType) {
+  qcheck.from_generators(qcheck.return(doc.InlineMath), [
+    qcheck.return(doc.DisplayMath),
+  ])
 }
 
 fn emph_generator() -> qcheck.Generator(doc.Inline) {
@@ -204,6 +216,7 @@ fn leaf_inline_generator() -> qcheck.Generator(doc.Inline) {
   qcheck.from_generators(str_generator(), [
     line_break_generator(),
     code_generator(),
+    math_generator(),
   ])
 }
 

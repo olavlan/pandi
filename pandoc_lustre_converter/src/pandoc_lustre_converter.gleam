@@ -446,6 +446,13 @@ fn convert_inline(
       }
       html.a(list.flatten([attributes, [href], title]), [child])
     }
+    doc.Math(math_type, text) -> {
+      let class = case math_type {
+        doc.InlineMath -> "math inline"
+        doc.DisplayMath -> "math display"
+      }
+      html.span([attribute.class(class)], [html.text(text)])
+    }
   }
 }
 

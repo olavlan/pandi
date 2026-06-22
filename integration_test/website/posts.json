@@ -239,5 +239,154 @@
         }
       ]
     }
+  },
+  "math_post.md": {
+    "date_created": "2026-06-22",
+    "pandoc": {
+      "pandoc-api-version": [
+        1,
+        23,
+        1,
+        1
+      ],
+      "meta": {},
+      "blocks": [
+        {
+          "t": "Header",
+          "c": [
+            1,
+            [
+              "math-post",
+              [],
+              []
+            ],
+            [
+              {
+                "t": "Str",
+                "c": "Math"
+              },
+              {
+                "t": "Space"
+              },
+              {
+                "t": "Str",
+                "c": "Post"
+              }
+            ]
+          ]
+        },
+        {
+          "t": "Para",
+          "c": [
+            {
+              "t": "Str",
+              "c": "Here"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "is"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "some"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "inline"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "math:"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Math",
+              "c": [
+                {
+                  "t": "InlineMath"
+                },
+                "x^2 + y^2 = z^2"
+              ]
+            },
+            {
+              "t": "Str",
+              "c": "."
+            }
+          ]
+        },
+        {
+          "t": "Para",
+          "c": [
+            {
+              "t": "Str",
+              "c": "And"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "here"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "is"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "a"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "display"
+            },
+            {
+              "t": "Space"
+            },
+            {
+              "t": "Str",
+              "c": "equation:"
+            }
+          ]
+        },
+        {
+          "t": "Para",
+          "c": [
+            {
+              "t": "Math",
+              "c": [
+                {
+                  "t": "DisplayMath"
+                },
+                "E = mc^2"
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }

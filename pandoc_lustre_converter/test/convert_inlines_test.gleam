@@ -43,6 +43,16 @@ pub fn inline_code_test() {
   |> snapshot("inline code")
 }
 
+pub fn inline_math_test() {
+  doc.Math(doc.InlineMath, "x^2")
+  |> snapshot("inline math")
+}
+
+pub fn display_math_test() {
+  doc.Math(doc.DisplayMath, "x^2")
+  |> snapshot("display math")
+}
+
 pub fn span_test() {
   doc.Span(doc.Attributes("my-id", ["class1"], [#("key", "value")]), [
     doc.Str("span text"),

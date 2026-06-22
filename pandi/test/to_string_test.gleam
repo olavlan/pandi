@@ -105,6 +105,11 @@ pub fn inline_code_test() {
   |> snapshot_with_inline("inline code")
 }
 
+pub fn inline_math_test() {
+  doc.Math(doc.InlineMath, "x^2")
+  |> snapshot_with_inline("inline math")
+}
+
 pub fn span_test() {
   doc.Span(doc.Attributes("my-id", ["class1"], [#("key", "value")]), [
     doc.Str("span text"),

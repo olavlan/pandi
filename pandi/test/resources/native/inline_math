@@ -1,0 +1,8 @@
+[ Para
+    [ Str "some"
+    , Space
+    , Math InlineMath "x^2"
+    , Space
+    , Str "math"
+    ]
+]

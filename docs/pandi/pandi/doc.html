@@ -238,6 +238,8 @@
   
   <li><a href="#ListNumberStyle">ListNumberStyle</a></li>
   
+  <li><a href="#MathType">MathType</a></li>
+  
   <li><a href="#Meta">Meta</a></li>
   
   <li><a href="#Target">Target</a></li>
@@ -541,6 +543,7 @@
     <span class="hljs-variable">content</span>: <span class="hljs-title">List</span>(<a href="#Inline"><span class="hljs-title">Inline</span></a>),
     <span class="hljs-variable">target</span>: <a href="#Target"><span class="hljs-title">Target</span></a>,
   )
+  <span class="hljs-title">Math</span>(<span class="hljs-variable">math_type</span>: <a href="#MathType"><span class="hljs-title">MathType</span></a>, <span class="hljs-variable">text</span>: <span class="hljs-title">String</span>)
 }</code></pre>
       
       <h3>
@@ -673,6 +676,19 @@
   <span class="hljs-variable">content</span>: <span class="hljs-title">List</span>(<a href="#Inline"><span class="hljs-title">Inline</span></a>),
   <span class="hljs-variable">target</span>: <a href="#Target"><span class="hljs-title">Target</span></a>,
 )</code></pre>
+          </div>
+
+          <div class="constructor-item-docs">
+            
+
+            
+          </div>
+        </li>
+        
+        <li class="constructor-item">
+          <div class="constructor-row">
+            <svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
+            <pre class="constructor-name"><code class="hljs hljs-ignore"><span class="hljs-title">Math</span>(<span class="hljs-variable">math_type</span>: <a href="#MathType"><span class="hljs-title">MathType</span></a>, <span class="hljs-variable">text</span>: <span class="hljs-title">String</span>)</code></pre>
           </div>
 
           <div class="constructor-item-docs">
@@ -898,6 +914,59 @@
   
   <div class="member">
     <div class="member-name">
+      <h2 id="MathType">
+        <a href="#MathType">
+          MathType
+        </a>
+      </h2>
+      
+    </div>
+    
+    <div class="custom-type-constructors">
+      <div class="rendered-markdown"></div>
+      <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub type </span><span class="hljs-title">MathType</span> {
+  <span class="hljs-title">InlineMath</span>
+  <span class="hljs-title">DisplayMath</span>
+}</code></pre>
+      
+      <h3>
+        Constructors
+      </h3>
+      <ul class="constructor-list">
+        
+        <li class="constructor-item">
+          <div class="constructor-row">
+            <svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
+            <pre class="constructor-name"><code class="hljs hljs-ignore"><span class="hljs-title">InlineMath</span></code></pre>
+          </div>
+
+          <div class="constructor-item-docs">
+            
+
+            
+          </div>
+        </li>
+        
+        <li class="constructor-item">
+          <div class="constructor-row">
+            <svg class="icon icon-star"><use xlink:href="#icon-star"></use></svg>
+            <pre class="constructor-name"><code class="hljs hljs-ignore"><span class="hljs-title">DisplayMath</span></code></pre>
+          </div>
+
+          <div class="constructor-item-docs">
+            
+
+            
+          </div>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </div>
+  
+  <div class="member">
+    <div class="member-name">
       <h2 id="Meta">
         <a href="#Meta">
           Meta
@@ -1041,7 +1110,8 @@ with the output format set to <code>json</code>:</p>
 
     <pre><code class="hljs hljs-ignore"><span class="hljs-keyword">pub fn </span><span class="hljs-title">get_text</span>(<span class="hljs-variable">block</span>: <a href="#Block"><span class="hljs-title">Block</span></a>) -> <span class="hljs-title">String</span></code></pre>
     
-    <div class="rendered-markdown"></div>
+    <div class="rendered-markdown"><p>Convert a block to plain text, removing all markup.</p>
+</div>
   </div>
   
   <div class="member">
@@ -1204,9 +1274,9 @@ doc.to_string(document)
     </script>
 
     <script src="../js/lunr.min.js?v=1.17.0"></script>
-    <script src="../js/index.js?v=1782050572"></script>
+    <script src="../js/index.js?v=1782145666"></script>
     <script>
-      fetch("../search-data.json?v=1782050572")
+      fetch("../search-data.json?v=1782145666")
         .then(response => response.json())
         .then(data => window.Gleam.initSearch(data));
     </script>

@@ -51,6 +51,10 @@ pub fn inline_code_test() {
   snapshot("inline_code")
 }
 
+pub fn inline_math_test() {
+  snapshot("inline_math")
+}
+
 pub fn line_break_test() {
   snapshot("line_break")
 }
