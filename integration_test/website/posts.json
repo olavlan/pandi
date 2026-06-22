@@ -1,6 +1,6 @@
 {
   "discovering_gleam.md": {
-    "date_created": "2026-06-21",
+    "date_created": "2026-06-22",
     "pandoc": {
       "pandoc-api-version": [
         1,
@@ -140,6 +140,9 @@
               "c": "."
             }
           ]
+        },
+        {
+          "t": "HorizontalRule"
         },
         {
           "t": "Div",

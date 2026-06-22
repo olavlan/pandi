@@ -448,11 +448,11 @@ fn convert_inline(
       html.a(list.flatten([attributes, [href], title]), [child])
     }
     doc.Math(math_type, text) -> {
-      let class = case math_type {
-        doc.InlineMath -> "math inline"
-        doc.DisplayMath -> "math display"
+      let delimited = case math_type {
+        doc.InlineMath -> "$" <> text <> "$"
+        doc.DisplayMath -> "$$" <> text <> "$$"
       }
-      html.span([attribute.class(class)], [html.text(text)])
+      html.text(delimited)
     }
   }
 }
