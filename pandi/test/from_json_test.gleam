@@ -86,3 +86,7 @@ pub fn strong_test() {
 pub fn block_quote_test() {
   snapshot("block_quote")
 }
+
+pub fn horizontal_rule_test() {
+  snapshot("horizontal_rule")
+}

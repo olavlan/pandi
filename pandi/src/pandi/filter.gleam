@@ -347,6 +347,7 @@ fn walk_block(
         doc.Plain(content) ->
           doc.Plain(walk_inlines(content, meta, inline_filter))
         doc.CodeBlock(..) -> block
+        doc.HorizontalRule -> block
       }
       [prepend, [original_block_with_filtered_children], append] |> list.flatten
     }

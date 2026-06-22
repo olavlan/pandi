@@ -22,6 +22,7 @@ pub type Block {
   BulletList(items: List(List(Block)))
   OrderedList(attributes: ListAttributes, items: List(List(Block)))
   BlockQuote(content: List(Block))
+  HorizontalRule
 }
 
 pub type Inline {
@@ -109,6 +110,7 @@ fn block_to_string(block: Block) -> String {
     OrderedList(_, items) ->
       list.map(items, blocks_to_string) |> string.join("\n\n")
     BlockQuote(content) -> blocks_to_string(content)
+    HorizontalRule -> ""
   }
 }
 
@@ -185,6 +187,7 @@ fn block_decoder() -> decode.Decoder(Block) {
     "BulletList" -> bullet_list_decoder()
     "OrderedList" -> ordered_list_decoder()
     "BlockQuote" -> block_quote_decoder()
+    "HorizontalRule" -> horizontal_rule_decoder()
     _ -> decode.failure(Para([]), "Block")
   }
 }
@@ -238,6 +241,10 @@ fn ordered_list_decoder() -> decode.Decoder(Block) {
 fn block_quote_decoder() -> decode.Decoder(Block) {
   use content <- decode.field("c", decode.list(decode.recursive(block_decoder)))
   decode.success(BlockQuote(content))
+}
+
+fn horizontal_rule_decoder() -> decode.Decoder(Block) {
+  decode.success(HorizontalRule)
 }
 
 fn list_attributes_decoder() -> decode.Decoder(ListAttributes) {
@@ -463,6 +470,10 @@ fn encode_block(block: Block) -> json.Json {
       json.object([
         #("t", json.string("BlockQuote")),
         #("c", json.array(content, encode_block)),
+      ])
+    HorizontalRule ->
+      json.object([
+        #("t", json.string("HorizontalRule")),
       ])
   }
 }
@@ -735,6 +746,7 @@ fn pretty_block(block: Block) -> glam.Document {
     BlockQuote(content) ->
       [pretty_blocks(content)]
       |> pretty_element("BlockQuote")
+    HorizontalRule -> pretty_void_element("HorizontalRule")
   }
 }
 

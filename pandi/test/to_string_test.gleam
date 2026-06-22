@@ -72,6 +72,11 @@ pub fn block_quote_test() {
   |> snapshot_with_block("block quote with paragraph")
 }
 
+pub fn horizontal_rule_test() {
+  doc.HorizontalRule
+  |> snapshot_with_block("horizontal rule")
+}
+
 pub fn string_test() {
   doc.Str("string") |> snapshot_with_inline("string")
 }

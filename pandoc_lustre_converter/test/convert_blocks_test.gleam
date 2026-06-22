@@ -64,3 +64,8 @@ pub fn block_quote_test() {
   ])
   |> snapshot("block quote with paragraph")
 }
+
+pub fn horizontal_rule_test() {
+  doc.HorizontalRule
+  |> snapshot("horizontal rule")
+}

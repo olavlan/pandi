@@ -18,6 +18,7 @@ pub fn block_generator() -> qcheck.Generator(doc.Block) {
     bullet_list_generator(),
     ordered_list_generator(),
     block_quote_generator(),
+    horizontal_rule_generator(),
   ])
 }
 
@@ -74,6 +75,10 @@ fn block_quote_generator() -> qcheck.Generator(doc.Block) {
   doc.BlockQuote(content)
 }
 
+fn horizontal_rule_generator() -> qcheck.Generator(doc.Block) {
+  qcheck.return(doc.HorizontalRule)
+}
+
 fn simple_blocks_generator() -> qcheck.Generator(List(doc.Block)) {
   qcheck.generic_list(leaf_block_generator(), qcheck.bounded_int(1, 3))
 }
@@ -83,6 +88,7 @@ fn leaf_block_generator() -> qcheck.Generator(doc.Block) {
     plain_generator(),
     header_generator(),
     code_block_generator(),
+    horizontal_rule_generator(),
   ])
 }
 

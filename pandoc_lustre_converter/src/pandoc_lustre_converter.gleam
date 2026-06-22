@@ -401,6 +401,7 @@ fn convert_block(
       let child = convert_blocks(content, converter, meta)
       html.blockquote([], [child])
     }
+    doc.HorizontalRule -> html.hr([])
   }
 }
 
