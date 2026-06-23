@@ -6,6 +6,7 @@ Gleam packages for working with Pandoc-compatible documents:
 
 Tasks:
 
+- test both katex and mathjax for math rendering
 - adhere to all Gleam conventions
 - test both targets in justfile
 - support all element types
