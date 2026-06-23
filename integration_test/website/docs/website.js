@@ -1133,6 +1133,31 @@ function each(loop$list, loop$f) {
 }
 
 // build/dev/javascript/gleam_stdlib/gleam/string.mjs
+function replace(string, pattern, substitute) {
+  let _pipe = string;
+  let _pipe$1 = identity(_pipe);
+  let _pipe$2 = string_replace(_pipe$1, pattern, substitute);
+  return identity(_pipe$2);
+}
+function slice(string, idx, len) {
+  let $ = len <= 0;
+  if ($) {
+    return "";
+  } else {
+    let $1 = idx < 0;
+    if ($1) {
+      let translated_idx = string_length(string) + idx;
+      let $2 = translated_idx < 0;
+      if ($2) {
+        return "";
+      } else {
+        return string_grapheme_slice(string, translated_idx, len);
+      }
+    } else {
+      return string_grapheme_slice(string, idx, len);
+    }
+  }
+}
 function split2(x, substring) {
   if (substring === "") {
     return graphemes(x);
@@ -1142,6 +1167,9 @@ function split2(x, substring) {
     let _pipe$2 = split(_pipe$1, substring);
     return map2(_pipe$2, identity);
   }
+}
+function append2(first, second) {
+  return first + second;
 }
 function concat_loop(loop$strings, loop$accumulator) {
   while (true) {
@@ -1460,6 +1488,24 @@ function identity(x) {
 function to_string(term) {
   return term.toString();
 }
+function string_replace(string3, target, substitute) {
+  return string3.replaceAll(target, substitute);
+}
+function string_length(string3) {
+  if (string3 === "") {
+    return 0;
+  }
+  const iterator = graphemes_iterator(string3);
+  if (iterator) {
+    let i = 0;
+    for (const _ of iterator) {
+      i++;
+    }
+    return i;
+  } else {
+    return string3.match(/./gsu).length;
+  }
+}
 function graphemes(string3) {
   const iterator = graphemes_iterator(string3);
   if (iterator) {
@@ -1483,6 +1529,28 @@ function lowercase(string3) {
 }
 function split(xs, pattern) {
   return arrayToList(xs.split(pattern));
+}
+function string_grapheme_slice(string3, idx, len) {
+  if (len <= 0 || idx >= string3.length) {
+    return "";
+  }
+  const iterator = graphemes_iterator(string3);
+  if (iterator) {
+    while (idx-- > 0) {
+      iterator.next();
+    }
+    let result = "";
+    while (len-- > 0) {
+      const v = iterator.next().value;
+      if (v === undefined) {
+        break;
+      }
+      result += v.segment;
+    }
+    return result;
+  } else {
+    return string3.match(/./gsu).slice(idx, idx + len).join("");
+  }
 }
 function string_codeunit_slice(str, from2, length2) {
   return str.slice(from2, from2 + length2);
@@ -1837,14 +1905,6 @@ function try$(result, fun) {
     return fun(x);
   } else {
     return result;
-  }
-}
-function unwrap2(result, default$) {
-  if (result instanceof Ok) {
-    let v = result[0];
-    return v;
-  } else {
-    return default$;
   }
 }
 function replace_error(result, error) {
@@ -2510,14 +2570,14 @@ function h6(attrs, children) {
 function main(attrs, children) {
   return element2("main", attrs, children);
 }
-function nav(attrs, children) {
-  return element2("nav", attrs, children);
-}
 function blockquote(attrs, children) {
   return element2("blockquote", attrs, children);
 }
 function div(attrs, children) {
   return element2("div", attrs, children);
+}
+function hr(attrs) {
+  return element2("hr", attrs, empty_list);
 }
 function li(attrs, children) {
   return element2("li", attrs, children);
@@ -6112,6 +6172,8 @@ class BlockQuote extends CustomType {
     this.content = content;
   }
 }
+class HorizontalRule extends CustomType {
+}
 class Str extends CustomType {
   constructor(content) {
     super();
@@ -6164,6 +6226,17 @@ class Link extends CustomType {
     this.target = target;
   }
 }
+class Math2 extends CustomType {
+  constructor(math_type, text4) {
+    super();
+    this.math_type = math_type;
+    this.text = text4;
+  }
+}
+class InlineMath extends CustomType {
+}
+class DisplayMath extends CustomType {
+}
 class Attributes extends CustomType {
   constructor(id2, classes, keyvalues) {
     super();
@@ -6203,16 +6276,116 @@ class OneParen extends CustomType {
 }
 class TwoParens extends CustomType {
 }
+function inline_to_string(inline) {
+  if (inline instanceof Str) {
+    let content = inline.content;
+    return content;
+  } else if (inline instanceof Space) {
+    return " ";
+  } else if (inline instanceof LineBreak) {
+    return `
+`;
+  } else if (inline instanceof SoftBreak) {
+    return "";
+  } else if (inline instanceof Emph) {
+    let content = inline.content;
+    return inlines_to_string(content);
+  } else if (inline instanceof Strong) {
+    let content = inline.content;
+    return inlines_to_string(content);
+  } else if (inline instanceof Strikeout) {
+    let content = inline.content;
+    return inlines_to_string(content);
+  } else if (inline instanceof Code) {
+    let text$1 = inline.text;
+    return text$1;
+  } else if (inline instanceof Span) {
+    let content = inline.content;
+    return inlines_to_string(content);
+  } else if (inline instanceof Link) {
+    let content = inline.content;
+    return inlines_to_string(content);
+  } else {
+    let text$1 = inline.text;
+    return text$1;
+  }
+}
+function inlines_to_string(inlines) {
+  let _pipe = map2(inlines, inline_to_string);
+  return concat2(_pipe);
+}
+function blocks_to_string(blocks) {
+  let _pipe = map2(blocks, block_to_string);
+  return join(_pipe, `
+
+`);
+}
+function block_to_string(block) {
+  if (block instanceof Header) {
+    let content = block.content;
+    return inlines_to_string(content);
+  } else if (block instanceof Para) {
+    let content = block.content;
+    return inlines_to_string(content);
+  } else if (block instanceof Plain) {
+    let content = block.content;
+    return inlines_to_string(content);
+  } else if (block instanceof CodeBlock) {
+    let text$1 = block.text;
+    return text$1;
+  } else if (block instanceof Div) {
+    let content = block.content;
+    return blocks_to_string(content);
+  } else if (block instanceof BulletList) {
+    let items = block.items;
+    let _pipe = map2(items, blocks_to_string);
+    return join(_pipe, `
+
+`);
+  } else if (block instanceof OrderedList) {
+    let items = block.items;
+    let _pipe = map2(items, blocks_to_string);
+    return join(_pipe, `
+
+`);
+  } else if (block instanceof BlockQuote) {
+    let content = block.content;
+    return blocks_to_string(content);
+  } else {
+    return "";
+  }
+}
+function get_text(block) {
+  return block_to_string(block);
+}
+function decode_c_at(index4, decoder, next) {
+  return field("c", at(toList([index4]), decoder), (value) => {
+    return next(value);
+  });
+}
+function math_type_decoder() {
+  return field("t", string2, (t) => {
+    if (t === "InlineMath") {
+      return success(new InlineMath);
+    } else if (t === "DisplayMath") {
+      return success(new DisplayMath);
+    } else {
+      return failure(new InlineMath, "MathType");
+    }
+  });
+}
+function math_decoder() {
+  return decode_c_at(0, math_type_decoder(), (math_type) => {
+    return decode_c_at(1, string2, (text4) => {
+      return success(new Math2(math_type, text4));
+    });
+  });
+}
 function target_decoder() {
   return field(0, string2, (url) => {
     return field(1, string2, (title2) => {
       return success(new Target(url, title2));
     });
-  });
-}
-function decode_c_at(index4, decoder, next) {
-  return field("c", at(toList([index4]), decoder), (value) => {
-    return next(value);
   });
 }
 function keyvalue_decoder() {
@@ -6305,6 +6478,8 @@ function inline_decoder() {
       return span_decoder();
     } else if (t === "Link") {
       return link_decoder();
+    } else if (t === "Math") {
+      return math_decoder();
     } else {
       return failure(new Space, "Inline");
     }
@@ -6333,6 +6508,9 @@ function meta_value_decoder() {
 function meta_decoder() {
   let _pipe = dict2(string2, meta_value_decoder());
   return map3(_pipe, to_list);
+}
+function horizontal_rule_decoder() {
+  return success(new HorizontalRule);
 }
 function list_number_delimiter_decoder() {
   return field("t", string2, (t) => {
@@ -6441,6 +6619,8 @@ function block_decoder() {
       return ordered_list_decoder();
     } else if (t === "BlockQuote") {
       return block_quote_decoder();
+    } else if (t === "HorizontalRule") {
+      return horizontal_rule_decoder();
     } else {
       return failure(new Para(toList([])), "Block");
     }
@@ -6831,9 +7011,7 @@ function get3(url, handler) {
 }
 
 // build/dev/javascript/website/route.mjs
-class Index2 extends CustomType {
-}
-class Posts extends CustomType {
+class PostList extends CustomType {
 }
 class PostById extends CustomType {
   constructor(id2) {
@@ -6841,74 +7019,53 @@ class PostById extends CustomType {
     this.id = id2;
   }
 }
-class About extends CustomType {
-}
 class NotFound extends CustomType {
-  constructor(uri) {
-    super();
-    this.uri = uri;
-  }
 }
-var base_path = "/website";
-function parse_route(uri) {
-  let segments = path_segments(uri.path);
-  let _block;
-  if (segments instanceof Empty) {
-    _block = segments;
+var base_path = "/blog";
+function from_uri2(uri) {
+  let $ = path_segments(uri.path);
+  if ($ instanceof Empty) {
+    return new NotFound;
   } else {
-    let $ = segments.head;
-    if ($ === "website") {
-      let rest = segments.tail;
-      _block = rest;
-    } else {
-      _block = segments;
-    }
-  }
-  let path = _block;
-  if (path instanceof Empty) {
-    return new Index2;
-  } else {
-    let $ = path.tail;
-    if ($ instanceof Empty) {
-      let $1 = path.head;
-      if ($1 === "") {
-        return new Index2;
-      } else if ($1 === "posts") {
-        return new Posts;
-      } else if ($1 === "about") {
-        return new About;
+    let $1 = $.head;
+    if ($1 === "blog") {
+      let rest = $.tail;
+      if (rest instanceof Empty) {
+        return new PostList;
       } else {
-        return new NotFound(uri);
-      }
-    } else {
-      let $1 = $.tail;
-      if ($1 instanceof Empty) {
-        let $2 = path.head;
-        if ($2 === "posts") {
-          let post_id = $.head;
-          return new PostById(post_id);
+        let $2 = rest.tail;
+        if ($2 instanceof Empty) {
+          let $3 = rest.head;
+          if ($3 === "") {
+            return new PostList;
+          } else {
+            let post_id = $3;
+            return new PostById(post_id);
+          }
         } else {
-          return new NotFound(uri);
+          return new NotFound;
         }
-      } else {
-        return new NotFound(uri);
       }
+    } else {
+      return new NotFound;
     }
   }
 }
-function href2(route) {
+function segments_to_path(segments) {
+  let _pipe = prepend(base_path, segments);
+  return join(_pipe, "/");
+}
+function to_href(route) {
   let _block;
-  if (route instanceof Index2) {
-    _block = base_path + "/";
-  } else if (route instanceof Posts) {
-    _block = base_path + "/posts";
+  if (route instanceof PostList) {
+    let _pipe = toList([]);
+    _block = segments_to_path(_pipe);
   } else if (route instanceof PostById) {
     let post_id = route.id;
-    _block = base_path + "/posts/" + post_id;
-  } else if (route instanceof About) {
-    _block = base_path + "/about";
+    let _pipe = toList([post_id]);
+    _block = segments_to_path(_pipe);
   } else {
-    _block = base_path + "/404";
+    _block = "404";
   }
   let url = _block;
   return href(url);
@@ -6920,6 +7077,14 @@ class Model extends CustomType {
     super();
     this.posts = posts;
     this.route = route;
+  }
+}
+class Post2 extends CustomType {
+  constructor(title2, date_created, document2) {
+    super();
+    this.title = title2;
+    this.date_created = date_created;
+    this.document = document2;
   }
 }
 class UserNavigatedTo extends CustomType {
@@ -6934,15 +7099,7 @@ class PostsFetched extends CustomType {
     this[0] = $0;
   }
 }
-class Post2 extends CustomType {
-  constructor(title2, date_created, document2) {
-    super();
-    this.title = title2;
-    this.date_created = date_created;
-    this.document = document2;
-  }
-}
-var blog_url = "https://raw.githubusercontent.com/olavlan/blog/master/posts.json";
+var blog_url = "https://gist.githubusercontent.com/olavlan/ac7edd6ff70bf72515bb12e67787b84a/raw/posts.json";
 function fetch_posts() {
   return get3(blog_url, expect_text((var0) => {
     return new PostsFetched(var0);
@@ -6953,14 +7110,13 @@ function init2(_) {
   let $ = do_initial_uri();
   if ($ instanceof Ok) {
     let uri = $[0];
-    _block = parse_route(uri);
+    _block = from_uri2(uri);
   } else {
-    _block = new Index2;
+    _block = new NotFound;
   }
   let route = _block;
   let modem_effect = init((uri) => {
-    let _pipe = parse_route(uri);
-    echo(_pipe, undefined, "src/model.gleam", 31);
+    let _pipe = from_uri2(uri);
     return new UserNavigatedTo(_pipe);
   });
   return [
@@ -6968,14 +7124,35 @@ function init2(_) {
     batch(toList([modem_effect, fetch_posts()]))
   ];
 }
+function sanitize_keys(input) {
+  let _pipe = to_list(input);
+  let _pipe$1 = map2(_pipe, (item) => {
+    let key = replace(item[0], ".", "-");
+    return [key, item[1]];
+  });
+  return from_list(_pipe$1);
+}
+function get_title(document2) {
+  let $ = document2.blocks;
+  if ($ instanceof Empty) {
+    return "Untitled";
+  } else {
+    let $1 = $.head;
+    if ($1 instanceof Header) {
+      let first = $1;
+      return get_text(first);
+    } else {
+      let first = $1;
+      let _pipe = get_text(first);
+      let _pipe$1 = slice(_pipe, 0, 30);
+      return append2(_pipe$1, "...");
+    }
+  }
+}
 function post_decoder() {
   return field("date_created", string2, (date_created) => {
     return field("pandoc", decoder(), (document2) => {
-      let _block;
-      let _pipe = from_list(document2.meta);
-      let _pipe$1 = get(_pipe, "title");
-      _block = unwrap2(_pipe$1, "No title");
-      let title2 = _block;
+      let title2 = get_title(document2);
       return success(new Post2(title2, date_created, document2));
     });
   });
@@ -6988,7 +7165,10 @@ function update2(model, message2) {
     let $ = message2[0];
     if ($ instanceof Ok) {
       let body = $[0];
-      let decoded = parse(body, dict2(string2, post_decoder()));
+      let _block;
+      let _pipe = parse(body, dict2(string2, post_decoder()));
+      _block = map4(_pipe, sanitize_keys);
+      let decoded = _block;
       if (decoded instanceof Ok) {
         let posts = decoded[0];
         return [new Model(new Ok(posts), model.route), none()];
@@ -6998,226 +7178,6 @@ function update2(model, message2) {
     } else {
       return [new Model(new Error(undefined), model.route), none()];
     }
-  }
-}
-function echo(value, message2, file, line) {
-  const grey = "\x1B[90m";
-  const reset_color = "\x1B[39m";
-  const file_line = `${file}:${line}`;
-  const inspector = new Echo$Inspector;
-  const string_value = inspector.inspect(value);
-  const string_message = message2 === undefined ? "" : " " + message2;
-  if (globalThis.process?.stderr?.write) {
-    const string5 = `${grey}${file_line}${reset_color}${string_message}
-${string_value}
-`;
-    globalThis.process.stderr.write(string5);
-  } else if (globalThis.Deno) {
-    const string5 = `${grey}${file_line}${reset_color}${string_message}
-${string_value}
-`;
-    globalThis.Deno.stderr.writeSync(new TextEncoder().encode(string5));
-  } else {
-    const string5 = `${file_line}${string_message}
-${string_value}`;
-    globalThis.console.log(string5);
-  }
-  return value;
-}
-
-class Echo$Inspector {
-  #references = new globalThis.Set;
-  #isDict(value) {
-    try {
-      const empty_dict = make();
-      const dict_class = empty_dict.constructor;
-      return value instanceof dict_class;
-    } catch {
-      return false;
-    }
-  }
-  #float(float3) {
-    const string5 = float3.toString().replace("+", "");
-    if (string5.indexOf(".") >= 0) {
-      return string5;
-    } else {
-      const index5 = string5.indexOf("e");
-      if (index5 >= 0) {
-        return string5.slice(0, index5) + ".0" + string5.slice(index5);
-      } else {
-        return string5 + ".0";
-      }
-    }
-  }
-  inspect(v) {
-    const t = typeof v;
-    if (v === true)
-      return "True";
-    if (v === false)
-      return "False";
-    if (v === null)
-      return "//js(null)";
-    if (v === undefined)
-      return "Nil";
-    if (t === "string")
-      return this.#string(v);
-    if (t === "bigint" || globalThis.Number.isInteger(v))
-      return v.toString();
-    if (t === "number")
-      return this.#float(v);
-    if (v instanceof UtfCodepoint)
-      return this.#utfCodepoint(v);
-    if (v instanceof BitArray)
-      return this.#bit_array(v);
-    if (v instanceof globalThis.RegExp)
-      return `//js(${v})`;
-    if (v instanceof globalThis.Date)
-      return `//js(Date("${v.toISOString()}"))`;
-    if (v instanceof globalThis.Error)
-      return `//js(${v.toString()})`;
-    if (v instanceof globalThis.Function) {
-      const args = [];
-      for (const i of globalThis.Array(v.length).keys())
-        args.push(globalThis.String.fromCharCode(i + 97));
-      return `//fn(${args.join(", ")}) { ... }`;
-    }
-    if (this.#references.size === this.#references.add(v).size) {
-      return "//js(circular reference)";
-    }
-    let printed;
-    if (globalThis.Array.isArray(v)) {
-      printed = `#(${v.map((v2) => this.inspect(v2)).join(", ")})`;
-    } else if (v instanceof List) {
-      printed = this.#list(v);
-    } else if (v instanceof CustomType) {
-      printed = this.#customType(v);
-    } else if (this.#isDict(v)) {
-      printed = this.#dict(v);
-    } else if (v instanceof Set) {
-      return `//js(Set(${[...v].map((v2) => this.inspect(v2)).join(", ")}))`;
-    } else {
-      printed = this.#object(v);
-    }
-    this.#references.delete(v);
-    return printed;
-  }
-  #object(v) {
-    const name = globalThis.Object.getPrototypeOf(v)?.constructor?.name || "Object";
-    const props = [];
-    for (const k of globalThis.Object.keys(v)) {
-      props.push(`${this.inspect(k)}: ${this.inspect(v[k])}`);
-    }
-    const body = props.length ? " " + props.join(", ") + " " : "";
-    const head = name === "Object" ? "" : name + " ";
-    return `//js(${head}{${body}})`;
-  }
-  #dict(map10) {
-    let body = "dict.from_list([";
-    let first = true;
-    let key_value_pairs = fold(map10, [], (pairs, key, value) => {
-      pairs.push([key, value]);
-      return pairs;
-    });
-    key_value_pairs.sort();
-    key_value_pairs.forEach(([key, value]) => {
-      if (!first)
-        body = body + ", ";
-      body = body + "#(" + this.inspect(key) + ", " + this.inspect(value) + ")";
-      first = false;
-    });
-    return body + "])";
-  }
-  #customType(record) {
-    const props = globalThis.Object.keys(record).map((label) => {
-      const value = this.inspect(record[label]);
-      return isNaN(parseInt(label)) ? `${label}: ${value}` : value;
-    }).join(", ");
-    return props ? `${record.constructor.name}(${props})` : record.constructor.name;
-  }
-  #list(list4) {
-    if (list4 instanceof Empty) {
-      return "[]";
-    }
-    let char_out = 'charlist.from_string("';
-    let list_out = "[";
-    let current = list4;
-    while (current instanceof NonEmpty) {
-      let element4 = current.head;
-      current = current.tail;
-      if (list_out !== "[") {
-        list_out += ", ";
-      }
-      list_out += this.inspect(element4);
-      if (char_out) {
-        if (globalThis.Number.isInteger(element4) && element4 >= 32 && element4 <= 126) {
-          char_out += globalThis.String.fromCharCode(element4);
-        } else {
-          char_out = null;
-        }
-      }
-    }
-    if (char_out) {
-      return char_out + '")';
-    } else {
-      return list_out + "]";
-    }
-  }
-  #string(str) {
-    let new_str = '"';
-    for (let i = 0;i < str.length; i++) {
-      const char = str[i];
-      switch (char) {
-        case `
-`:
-          new_str += "\\n";
-          break;
-        case "\r":
-          new_str += "\\r";
-          break;
-        case "\t":
-          new_str += "\\t";
-          break;
-        case "\f":
-          new_str += "\\f";
-          break;
-        case "\\":
-          new_str += "\\\\";
-          break;
-        case '"':
-          new_str += "\\\"";
-          break;
-        default:
-          if (char < " " || char > "~" && char < " ") {
-            new_str += "\\u{" + char.charCodeAt(0).toString(16).toUpperCase().padStart(4, "0") + "}";
-          } else {
-            new_str += char;
-          }
-      }
-    }
-    new_str += '"';
-    return new_str;
-  }
-  #utfCodepoint(codepoint2) {
-    return `//utfcodepoint(${globalThis.String.fromCodePoint(codepoint2.value)})`;
-  }
-  #bit_array(bits2) {
-    if (bits2.bitSize === 0) {
-      return "<<>>";
-    }
-    let acc = "<<";
-    for (let i = 0;i < bits2.byteSize - 1; i++) {
-      acc += bits2.byteAt(i).toString();
-      acc += ", ";
-    }
-    if (bits2.byteSize * 8 === bits2.bitSize) {
-      acc += bits2.byteAt(bits2.byteSize - 1).toString();
-    } else {
-      const trailingBitsCount = bits2.bitSize % 8;
-      acc += bits2.byteAt(bits2.byteSize - 1) >> 8 - trailingBitsCount;
-      acc += `:size(${trailingBitsCount})`;
-    }
-    acc += ">>";
-    return acc;
   }
 }
 // build/dev/javascript/pandoc_lustre_converter/pandoc_lustre_converter.mjs
@@ -7347,13 +7307,13 @@ function convert_inline(inline, converter, meta2) {
     let child2 = convert_inlines(content, converter, meta2);
     let attributes = convert_attributes(attrs);
     return span(attributes, toList([child2]));
-  } else {
+  } else if (inline instanceof Link) {
     let attrs = inline.attributes;
     let content = inline.content;
     let target = inline.target;
     let child2 = convert_inlines(content, converter, meta2);
     let attributes = convert_attributes(attrs);
-    let href3 = href(target.url);
+    let href2 = href(target.url);
     let _block;
     let $ = target.title;
     if ($ === "") {
@@ -7363,7 +7323,18 @@ function convert_inline(inline, converter, meta2) {
       _block = toList([title(title3)]);
     }
     let title2 = _block;
-    return a(flatten(toList([attributes, toList([href3]), title2])), toList([child2]));
+    return a(flatten(toList([attributes, toList([href2]), title2])), toList([child2]));
+  } else {
+    let math_type = inline.math_type;
+    let text4 = inline.text;
+    let _block;
+    if (math_type instanceof InlineMath) {
+      _block = "\\(" + text4 + "\\)";
+    } else {
+      _block = "\\[" + text4 + "\\]";
+    }
+    let delimited = _block;
+    return text3(delimited);
   }
 }
 function convert_list_items(items, converter, meta2) {
@@ -7422,10 +7393,12 @@ function convert_block(block, converter, meta2) {
     let list_items = convert_list_items(items, converter, meta2);
     let attributes = convert_list_attributes(attrs);
     return ol(attributes, list_items);
-  } else {
+  } else if (block instanceof BlockQuote) {
     let content = block.content;
     let child2 = convert_blocks(content, converter, meta2);
     return blockquote(toList([]), toList([child2]));
+  } else {
+    return hr(toList([]));
   }
 }
 function convert_document_element_with_action(loop$action, loop$document_element, loop$converter, loop$meta) {
@@ -7494,13 +7467,6 @@ function convert_document(document2, block_converter, inline_converter) {
 }
 
 // build/dev/javascript/website/component.mjs
-class Link2 extends CustomType {
-  constructor(target, label) {
-    super();
-    this.target = target;
-    this.label = label;
-  }
-}
 class PostItem extends CustomType {
   constructor(title2, route, date) {
     super();
@@ -7512,19 +7478,6 @@ class PostItem extends CustomType {
 function container(children) {
   return div(toList([class$("container mx-auto max-w-5xl px-8")]), children);
 }
-function link(link2) {
-  return a(toList([href2(link2.target)]), toList([text3(link2.label)]));
-}
-function navbar(logo, menu) {
-  let logo$1 = div(toList([class$("flex-1")]), toList([
-    a(toList([class$("btn btn-ghost text-xl"), href2(logo.target)]), toList([text3(logo.label)]))
-  ]));
-  let links = map2(menu, (data2) => {
-    return li(toList([]), toList([link(data2)]));
-  });
-  let menu$1 = div(toList([class$("flex-none")]), toList([ul(toList([class$("menu menu-horizontal px-1")]), links)]));
-  return nav(toList([class$("navbar bg-base-100 shadow-sm")]), toList([logo$1, menu$1]));
-}
 function content(children) {
   return main(toList([class$("my-16")]), children);
 }
@@ -7534,7 +7487,7 @@ function prose(children) {
 function post_listing(post_items) {
   let list_items = map2(post_items, (item) => {
     return li(toList([]), toList([
-      a(toList([href2(item.route), class$("link hover:underline")]), toList([text3(item.title)])),
+      a(toList([to_href(item.route), class$("link hover:underline")]), toList([text3(item.title)])),
       span(toList([class$("text-sm opacity-50 ml-2")]), toList([text3(item.date)]))
     ]));
   });
@@ -7548,10 +7501,10 @@ function details2(summary2, content2) {
     div(toList([class$("collapse-content")]), toList([content2]))
   ]));
 }
-function definition(definition_text, term) {
+function definition(definition2, term) {
   return span(toList([
     class$("tooltip tooltip-top"),
-    attribute2("data-tip", definition_text)
+    attribute2("data-tip", definition2)
   ]), toList([term]));
 }
 
@@ -7563,7 +7516,7 @@ function view_post_list(model) {
   if ($ instanceof Ok) {
     posts = $[0];
   } else {
-    throw makeError("let_assert", FILEPATH, "view", 32, "view_post_list", "Pattern match failed, no pattern matched the value.", { value: $, start: 852, end: 886, pattern_start: 863, pattern_end: 872 });
+    throw makeError("let_assert", FILEPATH, "view", 27, "view_post_list", "Pattern match failed, no pattern matched the value.", { value: $, start: 645, end: 679, pattern_start: 656, pattern_end: 665 });
   }
   let _block;
   let _pipe = to_list(posts);
@@ -7658,19 +7611,14 @@ function view_post(model, post_id) {
 }
 function view2(model) {
   return container(toList([
-    navbar(new Link2(new Index2, "olavlan"), toList([new Link2(new Posts, "Posts")])),
     content(toList([
       (() => {
         let $ = model.route;
-        if ($ instanceof Index2) {
-          return view_post_list(model);
-        } else if ($ instanceof Posts) {
+        if ($ instanceof PostList) {
           return view_post_list(model);
         } else if ($ instanceof PostById) {
           let post_id = $.id;
           return view_post(model, post_id);
-        } else if ($ instanceof About) {
-          return view_post_list(model);
         } else {
           return view_post_list(model);
         }

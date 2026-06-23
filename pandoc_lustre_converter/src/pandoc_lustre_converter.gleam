@@ -449,8 +449,8 @@ fn convert_inline(
     }
     doc.Math(math_type, text) -> {
       let delimited = case math_type {
-        doc.InlineMath -> "$" <> text <> "$"
-        doc.DisplayMath -> "$$" <> text <> "$$"
+        doc.InlineMath -> "\\(" <> text <> "\\)"
+        doc.DisplayMath -> "\\[" <> text <> "\\]"
       }
       html.text(delimited)
     }

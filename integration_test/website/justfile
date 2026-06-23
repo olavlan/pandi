@@ -17,3 +17,6 @@ deploy: build
     echo "Deploying posts.json to Github Gist..."
     gh gist edit {{gist_id}} posts.json
     echo "Done!"
+
+serve:
+    npx live-server docs/ --port=8080 --open=/
