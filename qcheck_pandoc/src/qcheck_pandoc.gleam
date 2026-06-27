@@ -142,6 +142,8 @@ fn non_separator_generator() -> qcheck.Generator(doc.Inline) {
     emph_generator(),
     strong_generator(),
     strikeout_generator(),
+    small_caps_generator(),
+    quoted_generator(),
     span_generator(),
     link_generator(),
   ])
@@ -185,6 +187,25 @@ fn strong_generator() -> qcheck.Generator(doc.Inline) {
 fn strikeout_generator() -> qcheck.Generator(doc.Inline) {
   use content <- qcheck.map(simple_inlines_generator())
   doc.Strikeout(content)
+}
+
+fn small_caps_generator() -> qcheck.Generator(doc.Inline) {
+  use content <- qcheck.map(simple_inlines_generator())
+  doc.SmallCaps(content)
+}
+
+fn quoted_generator() -> qcheck.Generator(doc.Inline) {
+  use quote_type, content <- qcheck.map2(
+    quote_type_generator(),
+    simple_inlines_generator(),
+  )
+  doc.Quoted(quote_type, content)
+}
+
+fn quote_type_generator() -> qcheck.Generator(doc.QuoteType) {
+  qcheck.from_generators(qcheck.return(doc.DoubleQuote), [
+    qcheck.return(doc.SingleQuote),
+  ])
 }
 
 fn span_generator() -> qcheck.Generator(doc.Inline) {

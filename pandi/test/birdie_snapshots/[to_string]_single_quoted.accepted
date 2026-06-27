@@ -1,0 +1,5 @@
+---
+version: 2.0.0
+title: [to_string] single quoted
+---
+[ Plain [ Quoted SingleQuote [ Str "single quoted" ] ] ]

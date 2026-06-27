@@ -130,3 +130,18 @@ pub fn link_test() {
   )
   |> snapshot_with_inline("link")
 }
+
+pub fn small_caps_test() {
+  doc.SmallCaps([doc.Str("small caps")])
+  |> snapshot_with_inline("small caps")
+}
+
+pub fn quoted_double_test() {
+  doc.Quoted(doc.DoubleQuote, [doc.Str("double quoted")])
+  |> snapshot_with_inline("double quoted")
+}
+
+pub fn quoted_single_test() {
+  doc.Quoted(doc.SingleQuote, [doc.Str("single quoted")])
+  |> snapshot_with_inline("single quoted")
+}

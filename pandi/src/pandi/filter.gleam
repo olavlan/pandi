@@ -377,6 +377,10 @@ fn walk_inline(
         doc.Strong(content) -> doc.Strong(walk_inlines(content, meta, filter))
         doc.Strikeout(content) ->
           doc.Strikeout(walk_inlines(content, meta, filter))
+        doc.SmallCaps(content) ->
+          doc.SmallCaps(walk_inlines(content, meta, filter))
+        doc.Quoted(quote_type, content) ->
+          doc.Quoted(quote_type, walk_inlines(content, meta, filter))
         doc.Span(attrs, content) ->
           doc.Span(attrs, walk_inlines(content, meta, filter))
         doc.Link(attrs, content, target) ->

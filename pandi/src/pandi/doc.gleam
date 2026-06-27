@@ -33,10 +33,17 @@ pub type Inline {
   Emph(content: List(Inline))
   Strong(content: List(Inline))
   Strikeout(content: List(Inline))
+  SmallCaps(content: List(Inline))
+  Quoted(quote_type: QuoteType, content: List(Inline))
   Code(attributes: Attributes, text: String)
   Span(attributes: Attributes, content: List(Inline))
   Link(attributes: Attributes, content: List(Inline), target: Target)
   Math(math_type: MathType, text: String)
+}
+
+pub type QuoteType {
+  DoubleQuote
+  SingleQuote
 }
 
 pub type MathType {
@@ -127,6 +134,8 @@ fn inline_to_string(inline: Inline) -> String {
     Emph(content) -> inlines_to_string(content)
     Strong(content) -> inlines_to_string(content)
     Strikeout(content) -> inlines_to_string(content)
+    SmallCaps(content) -> inlines_to_string(content)
+    Quoted(_, content) -> inlines_to_string(content)
     Code(_, text) -> text
     Span(_, content) -> inlines_to_string(content)
     Link(_, content, _) -> inlines_to_string(content)
@@ -286,6 +295,8 @@ fn inline_decoder() -> decode.Decoder(Inline) {
     "Emph" -> emph_decoder()
     "Strong" -> strong_decoder()
     "Strikeout" -> strikeout_decoder()
+    "SmallCaps" -> small_caps_decoder()
+    "Quoted" -> quoted_decoder()
     "Code" -> code_decoder()
     "Span" -> span_decoder()
     "Link" -> link_decoder()
@@ -352,6 +363,29 @@ fn strikeout_decoder() -> decode.Decoder(Inline) {
     decode.list(decode.recursive(inline_decoder)),
   )
   decode.success(Strikeout(content))
+}
+
+fn small_caps_decoder() -> decode.Decoder(Inline) {
+  use content <- decode.field(
+    "c",
+    decode.list(decode.recursive(inline_decoder)),
+  )
+  decode.success(SmallCaps(content))
+}
+
+fn quoted_decoder() -> decode.Decoder(Inline) {
+  use quote_type <- decode_c_at(0, quote_type_decoder())
+  use content <- decode_c_at(1, decode.list(decode.recursive(inline_decoder)))
+  decode.success(Quoted(quote_type, content))
+}
+
+fn quote_type_decoder() -> decode.Decoder(QuoteType) {
+  use t <- decode.field("t", decode.string)
+  case t {
+    "DoubleQuote" -> decode.success(DoubleQuote)
+    "SingleQuote" -> decode.success(SingleQuote)
+    _ -> decode.failure(DoubleQuote, "QuoteType")
+  }
 }
 
 fn code_decoder() -> decode.Decoder(Inline) {
@@ -512,6 +546,16 @@ fn encode_inline(inline: Inline) -> json.Json {
         #("t", json.string("Strikeout")),
         #("c", json.array(content, encode_inline)),
       ])
+    SmallCaps(content) ->
+      json.object([
+        #("t", json.string("SmallCaps")),
+        #("c", json.array(content, encode_inline)),
+      ])
+    Quoted(quote_type, content) ->
+      json.object([
+        #("t", json.string("Quoted")),
+        #("c", encode_quoted_content(quote_type, content)),
+      ])
     Code(attributes, text) ->
       json.object([
         #("t", json.string("Code")),
@@ -546,6 +590,24 @@ fn encode_math_type(math_type: MathType) -> json.Json {
   let t = case math_type {
     InlineMath -> "InlineMath"
     DisplayMath -> "DisplayMath"
+  }
+  json.object([#("t", json.string(t))])
+}
+
+fn encode_quoted_content(
+  quote_type: QuoteType,
+  content: List(Inline),
+) -> json.Json {
+  json.preprocessed_array([
+    encode_quote_type(quote_type),
+    json.array(content, encode_inline),
+  ])
+}
+
+fn encode_quote_type(quote_type: QuoteType) -> json.Json {
+  let t = case quote_type {
+    DoubleQuote -> "DoubleQuote"
+    SingleQuote -> "SingleQuote"
   }
   json.object([#("t", json.string(t))])
 }
@@ -774,6 +836,16 @@ fn pretty_inline(inline: Inline) -> glam.Document {
     Strikeout(content) ->
       [pretty_inlines(content)]
       |> pretty_element("Strikeout")
+    SmallCaps(content) ->
+      [pretty_inlines(content)]
+      |> pretty_element("SmallCaps")
+    Quoted(quote_type, content) ->
+      [
+        pretty_quote_type(quote_type),
+        glam.space,
+        pretty_inlines(content),
+      ]
+      |> pretty_element("Quoted")
     Code(attrs, text) ->
       [pretty_attributes(attrs), glam.space, pretty_string(text)]
       |> pretty_element("Code")
@@ -790,6 +862,13 @@ fn pretty_math_type(math_type: MathType) -> glam.Document {
   case math_type {
     InlineMath -> glam.from_string("InlineMath")
     DisplayMath -> glam.from_string("DisplayMath")
+  }
+}
+
+fn pretty_quote_type(quote_type: QuoteType) -> glam.Document {
+  case quote_type {
+    DoubleQuote -> glam.from_string("DoubleQuote")
+    SingleQuote -> glam.from_string("SingleQuote")
   }
 }
 

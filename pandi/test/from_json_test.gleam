@@ -90,3 +90,11 @@ pub fn block_quote_test() {
 pub fn horizontal_rule_test() {
   snapshot("horizontal_rule")
 }
+
+pub fn small_caps_test() {
+  snapshot("small_caps")
+}
+
+pub fn quoted_test() {
+  snapshot("quoted")
+}

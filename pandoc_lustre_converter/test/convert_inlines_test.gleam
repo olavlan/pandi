@@ -68,3 +68,17 @@ pub fn link_test() {
   )
   |> snapshot("link")
 }
+
+pub fn small_caps_test() {
+  doc.SmallCaps([doc.Str("small caps")]) |> snapshot("small caps")
+}
+
+pub fn quoted_double_test() {
+  doc.Quoted(doc.DoubleQuote, [doc.Str("double quoted")])
+  |> snapshot("double quoted")
+}
+
+pub fn quoted_single_test() {
+  doc.Quoted(doc.SingleQuote, [doc.Str("single quoted")])
+  |> snapshot("single quoted")
+}

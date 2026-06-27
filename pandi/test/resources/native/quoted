@@ -1,0 +1,6 @@
+[ Para
+    [ Quoted DoubleQuote [ Str "double" , Space , Str "quoted" ]
+    , Space
+    , Quoted SingleQuote [ Str "single" , Space , Str "quoted" ]
+    ]
+]

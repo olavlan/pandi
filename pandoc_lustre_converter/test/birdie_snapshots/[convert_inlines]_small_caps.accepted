@@ -1,0 +1,10 @@
+---
+version: 2.0.0
+title: [convert_inlines] small caps
+---
+<span class="smallcaps">
+  small caps
+
+</span>
+
+

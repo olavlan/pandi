@@ -428,6 +428,18 @@ fn convert_inline(
       let child = convert_inlines(content, converter, meta)
       html.del([], [child])
     }
+    doc.SmallCaps(content) -> {
+      let child = convert_inlines(content, converter, meta)
+      html.span([attribute.class("smallcaps")], [child])
+    }
+    doc.Quoted(quote_type, content) -> {
+      let child = convert_inlines(content, converter, meta)
+      let #(opening, closing) = case quote_type {
+        doc.DoubleQuote -> #("“", "”")
+        doc.SingleQuote -> #("‘", "’")
+      }
+      lustre.fragment([html.text(opening), child, html.text(closing)])
+    }
     doc.Code(attrs, text) -> {
       let attributes = convert_attributes(attrs)
       html.code(attributes, [html.text(text)])
